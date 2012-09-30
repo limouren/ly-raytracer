@@ -13,3 +13,6 @@ class color {
 };
 
 END_RAYTRACER
+
+
+#endif
