@@ -3,7 +3,7 @@
 
 #include "config.h"
 #include "vector.h"
-
+#include "point.h"
 
 BEGIN_RAYTRACER
 
@@ -33,6 +33,11 @@ class Ray {
     P_FLT normalize() {
       return dir.normalize();
     };
+
+    Point& ray_point(P_FLT t) {
+      Vector point_vector = orig + (dir * t);
+      return Point(point_vector);
+    }
 };
 
 
