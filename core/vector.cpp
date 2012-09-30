@@ -1,6 +1,6 @@
 #include <math.h>
 
-#include "Vector.h"
+#include "vector.h"
 
 
 BEGIN_RAYTRACER

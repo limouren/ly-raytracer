@@ -24,7 +24,7 @@ class Vector {
       vector_[2] = z;
     }
 
-    P_FLT& operator[](int index) {
+    P_FLT operator[](int index) {
       return vector_[index];
     }
 
