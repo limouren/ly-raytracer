@@ -1,12 +1,12 @@
 # Compiler
 CXX = g++
 CFLAGS = $(includes)
-VPATH = core:tests
+VPATH = $(SRC_DIR):$(TEST_DIR)
 
 O_DIR = bin
 
 CONFIG_DIR = config
-CORE_DIR = core
+SRC_DIR = src
 TEST_DIR = tests
 
 includes = $(include_config) $(include_libs) $(include_dirs)
@@ -26,7 +26,7 @@ all: $(objects)
 tests = $(wildcard $(TEST_DIR)/*_test.cpp)
 
 include_libs = -I$(boost_dir)
-include_dirs = -I$(CORE_DIR)
+include_dirs = -I$(SRC_DIR)
 
 .PHONY : tests
 tests: $(O_DIR)/run_tests
