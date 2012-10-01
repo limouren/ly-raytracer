@@ -1,7 +1,7 @@
 #ifndef COLOR_H
 #define COLOR_H
 
-#include "config.h"
+#include "../config.h"
 
 BEGIN_RAYTRACER
 

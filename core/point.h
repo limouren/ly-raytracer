@@ -1,7 +1,7 @@
 #ifndef POINT_H
 #define POINT_H
 
-#include "config.h"
+#include "../config.h"
 #include "vector.h"
 
 
