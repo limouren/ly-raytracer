@@ -1,0 +1,93 @@
+#include <math.h>
+#include <boost/test/included/unit_test.hpp>
+
+#include "config.h"
+
+#include "vector.cpp"
+
+#ifndef P_FLT_TOLERANCE
+#define P_FLT_TOLERANCE 0.001
+#endif
+
+
+BEGIN_RAYTRACER
+
+
+BOOST_AUTO_TEST_SUITE(VectorTest)
+
+BOOST_AUTO_TEST_CASE(Constructor) {
+  Vector v1;
+  BOOST_CHECK_CLOSE(v1[0], 0.0, P_FLT_TOLERANCE);
+  BOOST_CHECK_CLOSE(v1[1], 0.0, P_FLT_TOLERANCE);
+  BOOST_CHECK_CLOSE(v1[2], 0.0, P_FLT_TOLERANCE);
+
+  Vector v2(1.0, 2.0, -3.0);
+  BOOST_CHECK_CLOSE(v2[0], 1.0, P_FLT_TOLERANCE);
+  BOOST_CHECK_CLOSE(v2[1], 2.0, P_FLT_TOLERANCE);
+  BOOST_CHECK_CLOSE(v2[2], -3.0, P_FLT_TOLERANCE);
+}
+
+BOOST_AUTO_TEST_CASE(Operators) {
+  Vector u(1.0, 1.0, 1.0), v(1.0, 2.0, -3.0);
+
+  Vector x = v;
+  BOOST_CHECK_CLOSE(x[0], 1.0, P_FLT_TOLERANCE);
+  BOOST_CHECK_CLOSE(x[1], 2.0, P_FLT_TOLERANCE);
+  BOOST_CHECK_CLOSE(x[2], -3.0, P_FLT_TOLERANCE);
+
+  x = u + v;
+  BOOST_CHECK_CLOSE(x[0], 2.0, P_FLT_TOLERANCE);
+  BOOST_CHECK_CLOSE(x[1], 3.0, P_FLT_TOLERANCE);
+  BOOST_CHECK_CLOSE(x[2], -2.0, P_FLT_TOLERANCE);
+
+  x = u - v;
+  BOOST_CHECK_CLOSE(x[0], 0.0, P_FLT_TOLERANCE);
+  BOOST_CHECK_CLOSE(x[1], -1.0, P_FLT_TOLERANCE);
+  BOOST_CHECK_CLOSE(x[2], 4.0, P_FLT_TOLERANCE);
+
+  Vector y;
+  y += v;
+  BOOST_CHECK_CLOSE(y[0], 1.0, P_FLT_TOLERANCE);
+  BOOST_CHECK_CLOSE(y[1], 2.0, P_FLT_TOLERANCE);
+  BOOST_CHECK_CLOSE(y[2], -3.0, P_FLT_TOLERANCE);
+
+  Vector z;
+  z -= v;
+  BOOST_CHECK_CLOSE(z[0], -1.0, P_FLT_TOLERANCE);
+  BOOST_CHECK_CLOSE(z[1], -2.0, P_FLT_TOLERANCE);
+  BOOST_CHECK_CLOSE(z[2], 3.0, P_FLT_TOLERANCE);
+}
+
+BOOST_AUTO_TEST_CASE(methods) {
+  Vector u(1.0, 1.0, 1.0), v(1.0, 2.0, -3.0);
+
+  Vector x = v.copy();
+  BOOST_CHECK_CLOSE(x[0], 1.0, P_FLT_TOLERANCE);
+  BOOST_CHECK_CLOSE(x[1], 2.0, P_FLT_TOLERANCE);
+  BOOST_CHECK_CLOSE(x[2], -3.0, P_FLT_TOLERANCE);
+
+  P_FLT dot_product1 = u.dot(v);
+  BOOST_CHECK_CLOSE(dot_product1, 0.0, P_FLT_TOLERANCE);
+
+  P_FLT dot_product2 = v.dot(u);
+  BOOST_CHECK_CLOSE(dot_product2, 0.0, P_FLT_TOLERANCE);
+
+  P_FLT length = u.length();
+  BOOST_CHECK_CLOSE(length, 1.732051, P_FLT_TOLERANCE); // sqrt(3)
+
+  x = v.copy();
+  x.mult(4.0);
+  BOOST_CHECK_CLOSE(x[0], 4.0, P_FLT_TOLERANCE);
+  BOOST_CHECK_CLOSE(x[1], 8.0, P_FLT_TOLERANCE);
+  BOOST_CHECK_CLOSE(x[2], -12.0, P_FLT_TOLERANCE);
+
+  x.normalize();
+  BOOST_CHECK_CLOSE(x[0], 0.267261, P_FLT_TOLERANCE); // 1/sqrt(14)
+  BOOST_CHECK_CLOSE(x[1], 0.534522, P_FLT_TOLERANCE); // 2/sqrt(14)
+  BOOST_CHECK_CLOSE(x[2], -0.801784, P_FLT_TOLERANCE); // -3/sqrt(14)
+}
+
+BOOST_AUTO_TEST_SUITE_END()
+
+
+END_RAYTRACER

@@ -18,13 +18,17 @@ class Vector {
       vector_[2] = 0.0;
     }
 
-    Vector(P_FLT x, P_FLT y, P_FLT z) {
+    Vector(const P_FLT x, const P_FLT y, const P_FLT z) {
       vector_[0] = x;
       vector_[1] = y;
       vector_[2] = z;
     }
 
-    P_FLT operator[](int index) {
+    P_FLT operator[](const unsigned int index) const {
+      return vector_[index];
+    }
+
+    P_FLT& operator[](const unsigned int index) {
       return vector_[index];
     }
 
@@ -44,3 +48,6 @@ class Vector {
 
 
 END_RAYTRACER
+
+
+#endif
