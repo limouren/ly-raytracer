@@ -1,4 +1,4 @@
-#include "config.h"
+#define BOOST_TEST_MODULE RaytracerTest
 
-int main() {
-}
+
+#include "color_test.cpp"
