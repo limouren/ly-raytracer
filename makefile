@@ -3,10 +3,11 @@ CXX = g++
 CFLAGS = $(include_dirs)
 VPATH = core:tests
 
+CONFIG_DIR = config
 O_DIR = bin
 TEST_DIR = tests
 
-include_dirs = -L$(boost_dir)
+include_dirs = -I$(CONFIG_DIR) -L$(boost_dir)
 
 
 # C++ Boost

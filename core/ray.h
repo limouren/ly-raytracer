@@ -1,7 +1,7 @@
 #ifndef RAY_H
 #define RAY_H
 
-#include "../config.h"
+#include "config.h"
 #include "vector.h"
 #include "point.h"
 
