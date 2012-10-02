@@ -1,2 +1,3 @@
 # Ignore bin folder contents
 bin/
+*.swp
