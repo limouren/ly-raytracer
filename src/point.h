@@ -12,9 +12,18 @@ class Point {
     P_FLT x, y, z;
 
     Point(): x(0.0), y(0.0), z(0.0) {}
+
     Point(P_FLT x, P_FLT y, P_FLT z): x(x), y(y), z(z) {}
 
     Point(Vector vector): x(vector.x), y(vector.y), z(vector.z) {}
+
+    P_FLT operator[](const unsigned int index) const {
+      return (&x)[index]; // Referenced from yafaray
+    }
+
+    P_FLT& operator[](const unsigned int index) {
+      return (&x)[index]; // Referenced from yafaray
+    }
 
     Point& operator =(const Point &vec);
 
@@ -22,8 +31,6 @@ class Point {
     Point operator -(const Vector &vec);
     Point& operator +=(const Vector &vec);
     Point& operator -=(const Vector &vec);
-
-    Point copy();
 };
 
 

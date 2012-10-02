@@ -45,9 +45,4 @@ Point& Point::operator -=(const Vector &vector) {
 }
 
 
-Point Point::copy() {
-  return Point(x, y, z);
-}
-
-
 END_RAYTRACER

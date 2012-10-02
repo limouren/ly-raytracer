@@ -1,0 +1,68 @@
+#include <math.h>
+#include <boost/test/included/unit_test.hpp>
+
+#include "config.h"
+
+#include "point.cpp"
+
+
+BEGIN_RAYTRACER
+
+
+BOOST_AUTO_TEST_SUITE(PointTest)
+
+BOOST_AUTO_TEST_CASE(Constructor) {
+  Point p1;
+  BOOST_CHECK_CLOSE(p1.x, 0.0, P_FLT_TOLERANCE);
+  BOOST_CHECK_CLOSE(p1.y, 0.0, P_FLT_TOLERANCE);
+  BOOST_CHECK_CLOSE(p1.z, 0.0, P_FLT_TOLERANCE);
+
+  Point p2(1.0, 2.0, -3.0);
+  BOOST_CHECK_CLOSE(p2.x, 1.0, P_FLT_TOLERANCE);
+  BOOST_CHECK_CLOSE(p2.y, 2.0, P_FLT_TOLERANCE);
+  BOOST_CHECK_CLOSE(p2.z, -3.0, P_FLT_TOLERANCE);
+
+  Vector v(2.0, 3.0, -4.0);
+  Point p3(v);
+  BOOST_CHECK_CLOSE(p3.x, 2.0, P_FLT_TOLERANCE);
+  BOOST_CHECK_CLOSE(p3.y, 3.0, P_FLT_TOLERANCE);
+  BOOST_CHECK_CLOSE(p3.z, -4.0, P_FLT_TOLERANCE);
+}
+
+BOOST_AUTO_TEST_CASE(Operators) {
+  Point p(1.0, 2.0, -3.0);
+  Vector v(2.0, 3.0, -4.0);
+
+  Point p1 = p;
+  BOOST_CHECK_CLOSE(p1.x, 1.0, P_FLT_TOLERANCE);
+  BOOST_CHECK_CLOSE(p1.y, 2.0, P_FLT_TOLERANCE);
+  BOOST_CHECK_CLOSE(p1.z, -3.0, P_FLT_TOLERANCE);
+
+
+  Point p2 = p + v;
+  BOOST_CHECK_CLOSE(p2.x, 3.0, P_FLT_TOLERANCE);
+  BOOST_CHECK_CLOSE(p2.y, 5.0, P_FLT_TOLERANCE);
+  BOOST_CHECK_CLOSE(p2.z, -7.0, P_FLT_TOLERANCE);
+
+  Point p3 = p - v;
+  BOOST_CHECK_CLOSE(p3.x, -1.0, P_FLT_TOLERANCE);
+  BOOST_CHECK_CLOSE(p3.y, -1.0, P_FLT_TOLERANCE);
+  BOOST_CHECK_CLOSE(p3.z, 1.0, P_FLT_TOLERANCE);
+
+  Point p4 = p;
+  p4 += v;
+  BOOST_CHECK_CLOSE(p4.x, 3.0, P_FLT_TOLERANCE);
+  BOOST_CHECK_CLOSE(p4.y, 5.0, P_FLT_TOLERANCE);
+  BOOST_CHECK_CLOSE(p4.z, -7.0, P_FLT_TOLERANCE);
+
+  Point p5 = p;
+  p5 -= v;
+  BOOST_CHECK_CLOSE(p5.x, -1.0, P_FLT_TOLERANCE);
+  BOOST_CHECK_CLOSE(p5.y, -1.0, P_FLT_TOLERANCE);
+  BOOST_CHECK_CLOSE(p5.z, 1.0, P_FLT_TOLERANCE);
+}
+
+BOOST_AUTO_TEST_SUITE_END()
+
+
+END_RAYTRACER
