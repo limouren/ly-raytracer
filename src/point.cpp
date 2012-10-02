@@ -17,6 +17,11 @@ Point& Point::operator =(const Point &point) {
 }
 
 
+const Vector Point::operator -(const Point &point) {
+  return Vector(x - point.x, y - point.y, z - point.z);
+}
+
+
 const Point Point::operator +(const Vector &vector) {
   Point result = *this;
   result += vector;
