@@ -5,10 +5,6 @@
 
 #include "vector.cpp"
 
-#ifndef P_FLT_TOLERANCE
-#define P_FLT_TOLERANCE 0.001
-#endif
-
 
 BEGIN_RAYTRACER
 
