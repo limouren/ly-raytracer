@@ -73,11 +73,6 @@ Vector& Vector::operator /=(const P_FLT scalar) {
 }
 
 
-Vector Vector::copy() {
-  return Vector(x, y, z);
-}
-
-
 P_FLT Vector::dot(const Vector &vec) {
   return (x * vec.x) + (y * vec.y) + (z * vec.z);
 }

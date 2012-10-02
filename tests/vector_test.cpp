@@ -81,11 +81,6 @@ BOOST_AUTO_TEST_CASE(Operators) {
 BOOST_AUTO_TEST_CASE(methods) {
   Vector u(1.0, 1.0, 1.0), v(1.0, 2.0, -3.0);
 
-  Vector x = v.copy();
-  BOOST_CHECK_CLOSE(x.x, 1.0, P_FLT_TOLERANCE);
-  BOOST_CHECK_CLOSE(x.y, 2.0, P_FLT_TOLERANCE);
-  BOOST_CHECK_CLOSE(x.z, -3.0, P_FLT_TOLERANCE);
-
   P_FLT dot_product1 = u.dot(v);
   BOOST_CHECK_CLOSE(dot_product1, 0.0, P_FLT_TOLERANCE);
 
@@ -95,6 +90,7 @@ BOOST_AUTO_TEST_CASE(methods) {
   P_FLT length = u.length();
   BOOST_CHECK_CLOSE(length, 1.732051, P_FLT_TOLERANCE); // sqrt(3)
 
+  Vector x = v;
   x.normalize();
   BOOST_CHECK_CLOSE(x.x, 0.267261, P_FLT_TOLERANCE); // 1/sqrt(14)
   BOOST_CHECK_CLOSE(x.y, 0.534522, P_FLT_TOLERANCE); // 2/sqrt(14)

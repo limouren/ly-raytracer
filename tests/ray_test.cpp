@@ -36,14 +36,6 @@ BOOST_AUTO_TEST_CASE(Methods) {
   Vector orig1(1.0, 2.0, -3.0), dir1(1.0, 1.0, 1.0);
   Ray r1(orig1, dir1);
 
-  Ray r2 = r1.copy();
-  BOOST_CHECK_CLOSE(r2.orig.x, 1.0, P_FLT_TOLERANCE);
-  BOOST_CHECK_CLOSE(r2.orig.y, 2.0, P_FLT_TOLERANCE);
-  BOOST_CHECK_CLOSE(r2.orig.z, -3.0, P_FLT_TOLERANCE);
-  BOOST_CHECK_CLOSE(r2.dir.x, 1.0, P_FLT_TOLERANCE);
-  BOOST_CHECK_CLOSE(r2.dir.y, 1.0, P_FLT_TOLERANCE);
-  BOOST_CHECK_CLOSE(r2.dir.z, 1.0, P_FLT_TOLERANCE);
-
   Point p = r1.ray_point(2.0);
   BOOST_CHECK_CLOSE(p.x, 3.0, P_FLT_TOLERANCE); // 1/sqrt(14)
   BOOST_CHECK_CLOSE(p.y, 4.0, P_FLT_TOLERANCE); // 2/sqrt(14)

@@ -17,8 +17,15 @@ class Ray {
 
     Ray(Vector orig, Vector dir): orig(orig), dir(dir) {}
 
-    Ray copy() {
-      return Ray(orig.copy(), dir.copy());
+    Ray& operator =(const Ray &ray) {
+      if (this == &ray) {
+        return *this;
+      }
+
+      orig = ray.orig;
+      dir = ray.dir;
+
+      return *this;
     }
 
     Point ray_point(P_FLT t) {

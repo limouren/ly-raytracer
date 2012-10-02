@@ -35,8 +35,6 @@ class Vector {
     Vector& operator *=(const P_FLT scalar);
     Vector& operator /=(const P_FLT scalar);
 
-    Vector copy();
-
     P_FLT dot(const Vector &vec);
     P_FLT length();
     P_FLT normalize();
