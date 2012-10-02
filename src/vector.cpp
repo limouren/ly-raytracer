@@ -51,6 +51,7 @@ Vector Vector::operator *(const P_FLT scalar) {
 
 
 Vector Vector::operator /(const P_FLT scalar) {
+  // TODO: Divison by zero?
   return Vector(x / scalar, y / scalar, z / scalar);
 }
 
@@ -64,6 +65,7 @@ Vector& Vector::operator *=(const P_FLT scalar) {
 
 
 Vector& Vector::operator /=(const P_FLT scalar) {
+  // TODO: Divison by zero?
   x /= scalar;
   y /= scalar;
   z /= scalar;
@@ -89,8 +91,9 @@ P_FLT Vector::length() {
 P_FLT Vector::normalize() {
   // TODO: See if we can use inv. sqrt hack
   P_FLT len = this->length();
-  P_FLT len_inv = 1.0 / len;
-  *this *= len_inv;
+  if (len != 0.0) {
+    *this *= (1.0 / len);
+  }
 
   return len;
 }
