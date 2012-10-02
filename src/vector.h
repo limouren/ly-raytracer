@@ -15,7 +15,7 @@ class Vector {
 
     Vector(const P_FLT x, const P_FLT y, const P_FLT z): x(x), y(y), z(z) {}
 
-    P_FLT operator[](const unsigned int index) const {
+    P_FLT const operator[](const unsigned int index) const {
       return (&x)[index]; // Referenced from yafaray
     }
 
@@ -23,15 +23,15 @@ class Vector {
       return (&x)[index]; // Referenced from yafaray
     }
 
-    Vector& operator =(const Vector &vec);
+    Vector& operator =(const Vector &vector);
 
-    Vector operator +(const Vector &vec);
-    Vector operator -(const Vector &vec);
-    Vector& operator +=(const Vector &vec);
-    Vector& operator -=(const Vector &vec);
+    const Vector operator +(const Vector &vector);
+    const Vector operator -(const Vector &vector);
+    Vector& operator +=(const Vector &vector);
+    Vector& operator -=(const Vector &vector);
 
-    Vector operator *(const P_FLT scalar);
-    Vector operator /(const P_FLT scalar);
+    const Vector operator *(const P_FLT scalar);
+    const Vector operator /(const P_FLT scalar);
     Vector& operator *=(const P_FLT scalar);
     Vector& operator /=(const P_FLT scalar);
 

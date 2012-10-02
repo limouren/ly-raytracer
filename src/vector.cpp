@@ -6,53 +6,67 @@
 BEGIN_RAYTRACER
 
 
-Vector& Vector::operator =(const Vector &vec) {
-  if (this == &vec) {
+Vector& Vector::operator =(const Vector &vector) {
+  if (this == &vector) {
     return *this;
   }
 
-  x = vec.x;
-  y = vec.y;
-  z = vec.z;
+  x = vector.x;
+  y = vector.y;
+  z = vector.z;
 
   return *this;
 }
 
 
-Vector Vector::operator +(const Vector &vec) {
-  return Vector(x + vec.x, y + vec.y, z + vec.z);
+const Vector Vector::operator +(const Vector &vector) {
+  Vector result = *this;
+  result += vector;
+
+  return result;
 }
 
 
-Vector Vector::operator -(const Vector &vec) {
-  return Vector(x - vec.x, y - vec.y, z - vec.z);
+const Vector Vector::operator -(const Vector &vector) {
+  Vector result = *this;
+  result -= vector;
+
+  return result;
 }
 
 
-Vector& Vector::operator +=(const Vector &vec) {
-  x += vec.x;
-  y += vec.y;
-  z += vec.z;
+Vector& Vector::operator +=(const Vector &vector) {
+  x += vector.x;
+  y += vector.y;
+  z += vector.z;
+
   return *this;
 }
 
 
-Vector& Vector::operator -=(const Vector &vec) {
-  x -= vec.x;
-  y -= vec.y;
-  z -= vec.z;
+Vector& Vector::operator -=(const Vector &vector) {
+  x -= vector.x;
+  y -= vector.y;
+  z -= vector.z;
+
   return *this;
 }
 
 
-Vector Vector::operator *(const P_FLT scalar) {
-  return Vector(x * scalar, y * scalar, z * scalar);
+const Vector Vector::operator *(const P_FLT scalar) {
+  Vector result = *this;
+  result *= scalar;
+
+  return result;
 }
 
 
-Vector Vector::operator /(const P_FLT scalar) {
+const Vector Vector::operator /(const P_FLT scalar) {
   // TODO: Divison by zero?
-  return Vector(x / scalar, y / scalar, z / scalar);
+  Vector result = *this;
+  result /= scalar;
+
+  return result;
 }
 
 
@@ -60,6 +74,7 @@ Vector& Vector::operator *=(const P_FLT scalar) {
   x *= scalar;
   y *= scalar;
   z *= scalar;
+
   return *this;
 }
 
@@ -69,6 +84,7 @@ Vector& Vector::operator /=(const P_FLT scalar) {
   x /= scalar;
   y /= scalar;
   z /= scalar;
+
   return *this;
 }
 
