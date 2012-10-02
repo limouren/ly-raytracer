@@ -22,7 +22,8 @@ BOOST_AUTO_TEST_CASE(Constructor) {
   BOOST_CHECK_CLOSE(r1.dir.y, 0.0, P_FLT_TOLERANCE);
   BOOST_CHECK_CLOSE(r1.dir.z, 0.0, P_FLT_TOLERANCE);
 
-  Vector orig2(1.0, 2.0, -3.0), dir2(1.0, 1.0, 1.0);
+  Point orig2(1.0, 2.0, -3.0);
+  Vector dir2(1.0, 1.0, 1.0);
   Ray r2(orig2, dir2);
   BOOST_CHECK_CLOSE(r2.orig.x, 1.0, P_FLT_TOLERANCE);
   BOOST_CHECK_CLOSE(r2.orig.y, 2.0, P_FLT_TOLERANCE);
@@ -33,7 +34,8 @@ BOOST_AUTO_TEST_CASE(Constructor) {
 }
 
 BOOST_AUTO_TEST_CASE(Methods) {
-  Vector orig1(1.0, 2.0, -3.0), dir1(1.0, 1.0, 1.0);
+  Point orig1(1.0, 2.0, -3.0);
+  Vector dir1(1.0, 1.0, 1.0);
   Ray r1(orig1, dir1);
 
   Point p = r1.ray_point(2.0);

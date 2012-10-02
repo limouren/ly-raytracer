@@ -11,11 +11,12 @@ BEGIN_RAYTRACER
 
 class Ray {
   public:
-    Vector orig, dir;
+    Point orig;
+    Vector dir;
 
-    Ray(): orig(Vector()), dir(Vector()) {}
+    Ray(): orig(Point()), dir(Vector()) {}
 
-    Ray(Vector orig, Vector dir): orig(orig), dir(dir) {}
+    Ray(Point orig, Vector dir): orig(orig), dir(dir) {}
 
     Ray& operator =(const Ray &ray) {
       if (this == &ray) {
@@ -29,8 +30,7 @@ class Ray {
     }
 
     Point ray_point(P_FLT t) {
-      Vector point_vector = orig + (dir * t);
-      return Point(point_vector);
+      return orig + (dir * t);
     }
 };
 
