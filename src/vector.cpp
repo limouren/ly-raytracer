@@ -95,13 +95,18 @@ P_FLT Vector::dot(const Vector &vec) {
 
 
 P_FLT Vector::length() {
-  return sqrt(x * x + y * y + z * z);
+  return sqrt(length_sqr());
+}
+
+
+P_FLT Vector::length_sqr() {
+  return x * x + y * y + z * z;
 }
 
 
 P_FLT Vector::normalize() {
   // TODO: See if we can use inv. sqrt hack
-  P_FLT len = this->length();
+  P_FLT len = length();
   if (len != 0.0) {
     *this *= (1.0 / len);
   }

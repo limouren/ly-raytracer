@@ -90,6 +90,9 @@ BOOST_AUTO_TEST_CASE(methods) {
   P_FLT length = u.length();
   BOOST_CHECK_CLOSE(length, 1.732051, P_FLT_TOLERANCE); // sqrt(3)
 
+  P_FLT length_sqr = u.length_sqr();
+  BOOST_CHECK_CLOSE(length_sqr, 3.0, P_FLT_TOLERANCE);
+
   Vector x = v;
   x.normalize();
   BOOST_CHECK_CLOSE(x.x, 0.267261, P_FLT_TOLERANCE); // 1/sqrt(14)
