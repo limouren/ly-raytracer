@@ -8,41 +8,37 @@ BEGIN_RAYTRACER
 
 
 class Vector {
-  private:
-    P_FLT vector_[3];
-
   public:
-    Vector() {
-      vector_[0] = 0.0;
-      vector_[1] = 0.0;
-      vector_[2] = 0.0;
-    }
+    P_FLT x, y, z;
 
-    Vector(const P_FLT x, const P_FLT y, const P_FLT z) {
-      vector_[0] = x;
-      vector_[1] = y;
-      vector_[2] = z;
-    }
+    Vector(): x(0.0), y(0.0), z(0.0) {}
+
+    Vector(const P_FLT x, const P_FLT y, const P_FLT z): x(x), y(y), z(z) {}
 
     P_FLT operator[](const unsigned int index) const {
-      return vector_[index];
+      return (&x)[index]; // Referenced from yafaray
     }
 
     P_FLT& operator[](const unsigned int index) {
-      return vector_[index];
+      return (&x)[index]; // Referenced from yafaray
     }
 
     Vector& operator =(const Vector &vec);
-    Vector& operator +(const Vector &vec);
-    Vector& operator -(const Vector &vec);
+
+    Vector operator +(const Vector &vec);
+    Vector operator -(const Vector &vec);
     Vector& operator +=(const Vector &vec);
     Vector& operator -=(const Vector &vec);
 
-    Vector& copy();
+    Vector operator *(const P_FLT scalar);
+    Vector operator /(const P_FLT scalar);
+    Vector& operator *=(const P_FLT scalar);
+    Vector& operator /=(const P_FLT scalar);
+
+    Vector copy();
 
     P_FLT dot(const Vector &vec);
     P_FLT length();
-    void mult(const P_FLT scalar);
     P_FLT normalize();
 };
 
