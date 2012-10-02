@@ -9,7 +9,7 @@ BEGIN_RAYTRACER
 
 class Point {
   public:
-    P_FLT x, y, z
+    P_FLT x, y, z;
 
     Point(): x(0.0), y(0.0), z(0.0) {}
     Point(P_FLT x, P_FLT y, P_FLT z): x(x), y(y), z(z) {}
@@ -24,7 +24,7 @@ class Point {
     Point& operator -=(const Vector &vec);
 
     Point copy();
-}:
+};
 
 
 END_RAYTRACER
