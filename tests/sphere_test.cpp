@@ -85,6 +85,15 @@ BOOST_AUTO_TEST_CASE(Intersect) {
   BOOST_CHECK_EQUAL(intersection_num4, 0);
 }
 
+BOOST_AUTO_TEST_CASE(normalAt) {
+  Sphere s1(0.0, 0.0, 0.0, 1.0);
+  Point p1(0.577350, 0.577350, 0.577350); // All sqrt(1/3)
+  Vector norm1 = s1.normalAt(p1);
+  BOOST_CHECK_CLOSE(norm1.x, 0.577350, P_FLT_TOLERANCE); // sqrt(1/3)
+  BOOST_CHECK_CLOSE(norm1.y, 0.577350, P_FLT_TOLERANCE); // sqrt(1/3)
+  BOOST_CHECK_CLOSE(norm1.z, 0.577350, P_FLT_TOLERANCE); // sqrt(1/3)
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 

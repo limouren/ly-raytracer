@@ -35,5 +35,11 @@ int Sphere::intersect(Ray &ray, P_FLT ** t_values_ptr) {
   return 2;
 }
 
+const Vector Sphere::normalAt(Point &point) {
+  Vector center_to_point = point - (*center);
+  center_to_point.normalize();
+
+  return center_to_point;
+}
 
 END_RAYTRACER

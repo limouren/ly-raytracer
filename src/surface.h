@@ -5,15 +5,17 @@
 
 #include "point.h"
 #include "ray.h"
+#include "vector.h"
 
 
 BEGIN_RAYTRACER
 
 
 class Surface {
-   public:
-     int intersect(Ray &ray, P_FLT &intersects);
-     bool contains(Point &point);
+  public:
+    int intersect(Ray &ray, P_FLT &intersects);
+    bool contains(Point &point);
+    const Vector normalAt(Point &point);
 };
 
 
@@ -29,6 +31,7 @@ class Sphere: Surface {
     Sphere(Point &center, P_FLT radius): center(&center), radius(radius) {}
 
     int intersect(Ray &ray, P_FLT ** intersects);
+    const Vector normalAt(Point &point);
 };
 
 
