@@ -37,7 +37,7 @@ class Vector {
 
     P_FLT dot(const Vector &vec);
     P_FLT length();
-    P_FLT length_sqr();
+    P_FLT lengthSqr();
     P_FLT normalize();
 };
 

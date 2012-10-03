@@ -95,11 +95,11 @@ P_FLT Vector::dot(const Vector &vec) {
 
 
 P_FLT Vector::length() {
-  return sqrt(length_sqr());
+  return sqrt(lengthSqr());
 }
 
 
-P_FLT Vector::length_sqr() {
+P_FLT Vector::lengthSqr() {
   return x * x + y * y + z * z;
 }
 

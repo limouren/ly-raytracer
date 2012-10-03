@@ -29,7 +29,7 @@ class Ray {
       return *this;
     }
 
-    Point ray_point(P_FLT t) {
+    Point rayPoint(P_FLT t) {
       return orig + (dir * t);
     }
 };
