@@ -14,10 +14,23 @@ BEGIN_RAYTRACER
 class Surface {
   public:
     int intersect(Ray &ray, P_FLT &intersects);
-    bool contains(Point &point);
     const Vector normalAt(Point &point);
 };
 
+// Simple surfaces start here
+class Triangle {
+  public:
+    Point v1, v2, v3; // Vertices
+    Vector norm; // Precomputed
+
+    Triangle(Point &v1, Point &v2, Point &v3);
+    Triangle(P_FLT x1, P_FLT y1, P_FLT x2, P_FLT y2, P_FLT x3, P_FLT y3);
+
+    int intersect(Ray &ray, P_FLT &intersects);
+    const Vector normalAt(Point &point);
+};
+
+// Quadratic surfaces start here
 
 class Sphere: Surface {
   public:
