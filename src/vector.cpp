@@ -89,11 +89,6 @@ Vector& Vector::operator /=(const P_FLT scalar) {
 }
 
 
-P_FLT Vector::dot(const Vector &vec) {
-  return (x * vec.x) + (y * vec.y) + (z * vec.z);
-}
-
-
 P_FLT Vector::length() {
   return sqrt(lengthSqr());
 }

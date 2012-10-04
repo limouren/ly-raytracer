@@ -35,11 +35,25 @@ class Vector {
     Vector& operator *=(const P_FLT scalar);
     Vector& operator /=(const P_FLT scalar);
 
-    P_FLT dot(const Vector &vec);
     P_FLT length();
     P_FLT lengthSqr();
     P_FLT normalize();
 };
+
+
+
+Vector crossProduct(const Vector &u, const Vector &v) {
+  return Vector(u.y * v.z - u.z * v.y,
+                u.z * v.x - u.x * v.z,
+                u.x * v.y - u.y * v.x);
+}
+
+
+P_FLT dotProduct(const Vector &u, const Vector &v) {
+  return (u.x * v.x) +
+         (u.y * v.y) +
+         (u.z * v.z);
+}
 
 
 END_RAYTRACER

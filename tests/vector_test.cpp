@@ -81,12 +81,6 @@ BOOST_AUTO_TEST_CASE(Operators) {
 BOOST_AUTO_TEST_CASE(methods) {
   Vector u(1.0, 1.0, 1.0), v(1.0, 2.0, -3.0);
 
-  P_FLT dot_product1 = u.dot(v);
-  BOOST_CHECK_CLOSE(dot_product1, 0.0, P_FLT_TOLERANCE);
-
-  P_FLT dot_product2 = v.dot(u);
-  BOOST_CHECK_CLOSE(dot_product2, 0.0, P_FLT_TOLERANCE);
-
   P_FLT length = u.length();
   BOOST_CHECK_CLOSE(length, 1.732051, P_FLT_TOLERANCE); // sqrt(3)
 
@@ -98,6 +92,21 @@ BOOST_AUTO_TEST_CASE(methods) {
   BOOST_CHECK_CLOSE(x.x, 0.267261, P_FLT_TOLERANCE); // 1/sqrt(14)
   BOOST_CHECK_CLOSE(x.y, 0.534522, P_FLT_TOLERANCE); // 2/sqrt(14)
   BOOST_CHECK_CLOSE(x.z, -0.801784, P_FLT_TOLERANCE); // -3/sqrt(14)
+}
+
+BOOST_AUTO_TEST_CASE(products) {
+  Vector u(1.0, 1.0, 1.0), v(1.0, 2.0, -3.0);
+
+  P_FLT dot_product1 = dotProduct(u, v);
+  BOOST_CHECK_CLOSE(dot_product1, 0.0, P_FLT_TOLERANCE);
+
+  P_FLT dot_product2 = dotProduct(v, u);
+  BOOST_CHECK_CLOSE(dot_product2, 0.0, P_FLT_TOLERANCE);
+
+  Vector w = crossProduct(u, v);
+  BOOST_CHECK_CLOSE(w.x, -5.0, P_FLT_TOLERANCE);
+  BOOST_CHECK_CLOSE(w.y, 4.0, P_FLT_TOLERANCE);
+  BOOST_CHECK_CLOSE(w.z, 1.0, P_FLT_TOLERANCE);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

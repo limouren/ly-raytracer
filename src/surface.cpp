@@ -13,7 +13,7 @@ int Sphere::intersect(Ray &ray, P_FLT ** t_values_ptr) {
 
   origin_to_center = (*center) - ray.orig;
   oc_sqr = origin_to_center.lengthSqr();
-  ray_closest_approach = origin_to_center.dot(ray.dir);
+  ray_closest_approach = dotProduct(origin_to_center, ray.dir);
 
   if (ray_closest_approach < 0) {
     return 0;
