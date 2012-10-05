@@ -6,6 +6,13 @@
 BEGIN_RAYTRACER
 
 
+void Plane::computeD(const Point &point) {
+  // Replace when dotProduct is imlemented for points
+  const Vector origin_to_point = point - Point();
+  d = -dotProduct(norm, origin_to_point);
+}
+
+
 int Sphere::intersect(Ray &ray, P_FLT ** t_values_ptr) {
   Vector origin_to_center;
   P_FLT oc_sqr, ray_closest_approach, half_chord_squared, half_chord,

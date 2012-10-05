@@ -17,21 +17,62 @@ class Surface {
     const Vector normalAt(Point &point);
 };
 
-// Simple surfaces start here
-class Triangle {
-  public:
-    Point v1, v2, v3; // Vertices
-    Vector norm; // Precomputed
 
-    Triangle(Point &v1, Point &v2, Point &v3);
-    Triangle(P_FLT x1, P_FLT y1, P_FLT x2, P_FLT y2, P_FLT x3, P_FLT y3);
+// Plane surfaces
+class Plane: Surface {
+  protected:
+    void computeD(const Point &point);
+
+  public:
+    // A plane is denoted by Ax+By+Cz+D = 0
+    P_FLT d; // D
+    Vector norm; // {A, B, C}
+
+    Plane() {}
+
+    Plane(const Point &point, const Vector &vector) {
+      norm = vector;
+      norm.normalize();
+
+      computeD(point);
+    }
 
     int intersect(Ray &ray, P_FLT &intersects);
     const Vector normalAt(Point &point);
 };
 
-// Quadratic surfaces start here
 
+class Polygon: Plane {
+  public:
+    int vertex_num;
+    Point ** vertices;
+
+    Polygon(Point ** points, int point_num): vertex_num(point_num) {
+      if (point_num < 3) {
+        // Raise exception
+      }
+
+      // Compute norm
+      norm = crossProduct(*points[1] - *points[0], *points[2] - *points[0]);
+      norm.normalize();
+
+      vertices = new Point*[vertex_num];
+      for(int i = 0;i < vertex_num;i++) {
+        vertices[i] = points[i];
+      }
+
+      computeD(*vertices[0]);
+    };
+
+    ~Polygon() {
+      delete vertices;
+    }
+
+    int intersect(Ray &ray, P_FLT &intersects);
+};
+
+
+// Quadric surfaces
 class Sphere: Surface {
   public:
     P_FLT radius;
