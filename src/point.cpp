@@ -17,7 +17,7 @@ Point& Point::operator =(const Point &point) {
 }
 
 
-const Vector Point::operator -(const Point &point) {
+const Vector Point::operator -(const Point &point) const {
   return Vector(x - point.x, y - point.y, z - point.z);
 }
 
