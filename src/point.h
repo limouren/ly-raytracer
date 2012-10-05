@@ -36,6 +36,23 @@ class Point {
 };
 
 
+const P_FLT dotProduct(const Point &a, const Point &b) {
+  return (a.x * b.x) +
+         (a.y * b.y) +
+         (a.z * b.z);
+}
+const P_FLT dotProduct(const Point &a, const Vector &v) {
+  return (a.x * v.x) +
+         (a.y * v.y) +
+         (a.z * v.z);
+}
+const P_FLT dotProduct(const Vector &u, const Point &b) {
+  return (u.x * b.x) +
+         (u.y * b.y) +
+         (u.z * b.z);
+}
+
+
 END_RAYTRACER
 
 

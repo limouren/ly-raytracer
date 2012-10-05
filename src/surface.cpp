@@ -7,9 +7,7 @@ BEGIN_RAYTRACER
 
 
 void Plane::computeD(const Point &point) {
-  // Replace when dotProduct is imlemented for points
-  const Vector origin_to_point = point - Point();
-  d = -dotProduct(norm, origin_to_point);
+  d = -dotProduct(norm, point);
 }
 
 
