@@ -19,7 +19,7 @@ Vector& Vector::operator =(const Vector &vector) {
 }
 
 
-const Vector Vector::operator +(const Vector &vector) {
+const Vector Vector::operator +(const Vector &vector) const {
   Vector result = *this;
   result += vector;
 
@@ -27,7 +27,7 @@ const Vector Vector::operator +(const Vector &vector) {
 }
 
 
-const Vector Vector::operator -(const Vector &vector) {
+const Vector Vector::operator -(const Vector &vector) const {
   Vector result = *this;
   result -= vector;
 
@@ -53,7 +53,7 @@ Vector& Vector::operator -=(const Vector &vector) {
 }
 
 
-const Vector Vector::operator *(const P_FLT scalar) {
+const Vector Vector::operator *(const P_FLT scalar) const {
   Vector result = *this;
   result *= scalar;
 
@@ -61,7 +61,7 @@ const Vector Vector::operator *(const P_FLT scalar) {
 }
 
 
-const Vector Vector::operator /(const P_FLT scalar) {
+const Vector Vector::operator /(const P_FLT scalar) const {
   // TODO: Divison by zero?
   Vector result = *this;
   result /= scalar;
@@ -89,17 +89,17 @@ Vector& Vector::operator /=(const P_FLT scalar) {
 }
 
 
-P_FLT Vector::length() {
+const P_FLT Vector::length() const {
   return sqrt(lengthSqr());
 }
 
 
-P_FLT Vector::lengthSqr() {
+const P_FLT Vector::lengthSqr() const {
   return x * x + y * y + z * z;
 }
 
 
-P_FLT Vector::normalize() {
+const P_FLT Vector::normalize() {
   // TODO: See if we can use inv. sqrt hack
   P_FLT len = length();
   if (len != 0.0) {

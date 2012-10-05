@@ -97,16 +97,16 @@ BOOST_AUTO_TEST_CASE(methods) {
 BOOST_AUTO_TEST_CASE(products) {
   Vector u(1.0, 1.0, 1.0), v(1.0, 2.0, -3.0);
 
+  Vector w = crossProduct(u, v);
+  BOOST_CHECK_CLOSE(w.x, -5.0, P_FLT_TOLERANCE);
+  BOOST_CHECK_CLOSE(w.y, 4.0, P_FLT_TOLERANCE);
+  BOOST_CHECK_CLOSE(w.z, 1.0, P_FLT_TOLERANCE);
+
   P_FLT dot_product1 = dotProduct(u, v);
   BOOST_CHECK_CLOSE(dot_product1, 0.0, P_FLT_TOLERANCE);
 
   P_FLT dot_product2 = dotProduct(v, u);
   BOOST_CHECK_CLOSE(dot_product2, 0.0, P_FLT_TOLERANCE);
-
-  Vector w = crossProduct(u, v);
-  BOOST_CHECK_CLOSE(w.x, -5.0, P_FLT_TOLERANCE);
-  BOOST_CHECK_CLOSE(w.y, 4.0, P_FLT_TOLERANCE);
-  BOOST_CHECK_CLOSE(w.z, 1.0, P_FLT_TOLERANCE);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
