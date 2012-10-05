@@ -22,7 +22,7 @@ const Vector Point::operator -(const Point &point) const {
 }
 
 
-const Point Point::operator +(const Vector &vector) {
+const Point Point::operator +(const Vector &vector) const {
   Point result = *this;
   result += vector;
 
@@ -30,7 +30,7 @@ const Point Point::operator +(const Vector &vector) {
 }
 
 
-const Point Point::operator -(const Vector &vector) {
+const Point Point::operator -(const Vector &vector) const {
   Point result = *this;
   result -= vector;
 
