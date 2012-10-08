@@ -37,6 +37,7 @@ class Plane: Surface {
       computeD(point);
     }
 
+    // TODO: Add test cases for planes
     const int intersect(Ray &ray, P_FLT ** t_values);
     const Vector normalAt(Point &point);
 };
