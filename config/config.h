@@ -15,6 +15,9 @@ typedef float C_FLT;
 // Double precision position
 typedef double P_FLT;
 
+// Float comparison epsilon
+P_FLT P_FLT_EPSILON = 1.0e-8;
+
 
 END_RAYTRACER
 
