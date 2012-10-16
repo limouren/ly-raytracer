@@ -13,8 +13,8 @@ BEGIN_RAYTRACER
 
 class Surface {
   public:
-    const int intersect(Ray &ray, P_FLT ** t_values);
-    const Vector normalAt(Point &point);
+    virtual const int intersect(Ray &ray, P_FLT ** t_values) = 0;
+    virtual const Vector normalAt(Point &point) = 0;
 };
 
 
@@ -37,12 +37,14 @@ class Plane: Surface {
       computeD(point);
     }
 
-    // TODO: Add test cases for planes
-    const int intersect(Ray &ray, P_FLT ** t_values);
-    const Vector normalAt(Point &point);
+    virtual const int intersect(Ray &ray, P_FLT ** t_values);
+    virtual const Vector normalAt(Point &point) {
+      return norm;
+    }
 };
 
 
+// TODO: Add test cases for polygons
 class Polygon: Plane {
   public:
     int vertex_num;
@@ -69,7 +71,7 @@ class Polygon: Plane {
       delete vertices;
     }
 
-    const int intersect(Ray &ray, P_FLT ** t_values);
+    virtual const int intersect(Ray &ray, P_FLT ** t_values);
 };
 
 
