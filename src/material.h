@@ -21,3 +21,9 @@ class Material {
              C_FLT refrindex): kdiff(kdiff), kspec(kspec), ktran(ktran),
                                color(color), refrindex(refrindex) {}
 };
+
+
+END_RAYTRACER
+
+
+#endif
