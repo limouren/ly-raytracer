@@ -19,6 +19,10 @@ typedef double P_FLT;
 P_FLT P_FLT_EPSILON = 1.0e-8;
 
 
+// Camera Settings
+P_FLT DEFAULT_ASPECT_RATIO = 1.33
+
+
 END_RAYTRACER
 
 #endif
