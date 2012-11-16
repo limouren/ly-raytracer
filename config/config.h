@@ -15,6 +15,12 @@ typedef float C_FLT;
 // Double precision position
 typedef double P_FLT;
 
+// Max raytrace recurse depth
+int MAX_LEVEL = 5;
+
+// Minimum ray weght threshold
+P_FLT MIN_WEIGHT = 0.01;
+
 // Float comparison epsilon
 P_FLT P_FLT_EPSILON = 1.0e-8;
 
