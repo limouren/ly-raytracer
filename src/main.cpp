@@ -1,9 +1,11 @@
 #include "config.h"
 
 #include "camera.cpp"
+#include "light.cpp"
 #include "point.cpp"
-#include "solid.cpp"
+#include "scene.cpp"
 #include "screen.cpp"
+#include "solid.cpp"
 #include "surface.cpp"
 #include "vector.cpp"
 
@@ -16,20 +18,12 @@ BEGIN_RAYTRACER
 Solid * ReadScene() {
   // TODO: read Scene and Camera from file
   string file_name = "models.txt";
-
-  Primitive * ball = new Primitive();
-  ball->material = new Material(0.3, 0.3, 0.0, Color(1.0, 0.0, 0.0), 0.0);
-  Point center(0.0, 0.0, 0.0);
-  Sphere * sphere = new Sphere(center, 1.0);
-  ball->surface = (Surface *)(sphere);
-
-  Solid * scene = (Solid *)ball;
-  return scene;
+  return NULL;
 }
 
 
 int main() {
-  Solid * scene = ReadScene();
+  ReadScene();
 
   P_FLT angle = 1.570796;
   P_FLT aspect_ratio = 1.333;
@@ -39,7 +33,7 @@ int main() {
 
   Camera camera(viewpoint, target, angle, aspect_ratio, up);
 
-  Screen screen(scene, camera);
+  Screen screen(camera);
 }
 
 

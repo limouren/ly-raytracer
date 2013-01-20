@@ -11,6 +11,7 @@
 #include "color.h"
 #include "point.h"
 #include "ray.h"
+#include "scene.h"
 #include "solid.h"
 #include "trace.cpp"
 #include "vector.h"
@@ -21,13 +22,12 @@ BEGIN_RAYTRACER
 
 class Screen {
   public:
-    Solid * scene;
     Camera camera;
 
 
-    Screen(Solid * scene, Camera camera): scene(scene), camera(camera) {
-      int height = 480;
-      int width = 640;
+    Screen(Camera camera): camera(camera) {
+      int height = 960;
+      int width = 1280;
       bitmap_image image(width, height);
 
       Vector dir = camera.target - camera.viewpoint;
@@ -57,7 +57,7 @@ class Screen {
 
           Color * color = new Color();
 
-          hits += trace(0, 1.0, scene, ray, color);
+          hits += trace(0, 1.0, scene.solids[0], ray, color);
           total++;
 
           int r = int(color->r * 255 + 0.5);

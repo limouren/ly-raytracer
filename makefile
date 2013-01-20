@@ -48,4 +48,4 @@ $(O_DIR)/main: main.cpp $(OBJS)
 
 .PHONY : clean
 clean:
-	rm -rf $(O_DIR)/*
+	rm -rf $(O_DIR)/* $(SRC_DIR)/*.o

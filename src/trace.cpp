@@ -15,9 +15,9 @@
 BEGIN_RAYTRACER
 
 
-int intersect(Ray ray, Solid * scene, Intersection * intercept) {
+int intersect(Ray ray, Solid * solid, Intersection * intercept) {
   P_FLT * t_values;
-  Primitive * prim = (Primitive *) scene;
+  Primitive * prim = (Primitive *) solid;
 
 //  std::printf("Intersecting ray %f, %f, %f\n",
 //              ray.dir.x, ray.dir.y, ray.dir.z);
@@ -41,10 +41,10 @@ int intersect(Ray ray, Solid * scene, Intersection * intercept) {
 }
 
 
-int trace(int level, C_FLT weight, Solid * scene, Ray ray, Color * color) {
+int trace(int level, C_FLT weight, Solid * solid, Ray ray, Color * color) {
   Intersection intercept[MAX_INTERSECTIONS];
 
-  int intercept_num = intersect(ray, scene, intercept);
+  int intercept_num = intersect(ray, solid, intercept);
   if (intercept_num != 0) {
     Primitive * hit_prim = (intercept[0].prim);
 
