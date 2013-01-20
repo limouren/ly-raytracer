@@ -1,5 +1,5 @@
 #ifndef INTERSECTION_H
-#define #INTERSECTION_H
+#define INTERSECTION_H
 
 
 #include "config.h"

@@ -2,7 +2,7 @@
 #define CONSTANTS_H
 
 #define RAYTRACER_NAMESPACE raytracer
-#define BEGIN_RAYTRACER namespace RAYTRACER {
+#define BEGIN_RAYTRACER namespace RAYTRACER_NAMESPACE {
 #define END_RAYTRACER }
 
 
