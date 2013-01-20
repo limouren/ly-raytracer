@@ -17,11 +17,11 @@ bitmap_dir = 3rdparty/bitmap/
 # C++ Boost
 boost_dir = 3rdparty/boost/latest/
 
-OBJS := $(patsubst %.cpp,%.o,$(wildcard $(SRC_DIR)/*.cpp))
+OBJS := $(patsubst %.h,%.o,$(wildcard $(SRC_DIR)/*.h))
 
 
 .PHONY : %(SRC_DIR)/%.h
-$(SRC_DIR)/%.o: $(SRC_DIR)/%.cpp $(SRC_DIR)/%.h
+$(SRC_DIR)/%.o: $(SRC_DIR)/%.h
 	$(CXX) $(CFLAGS) -c $< -o $@
 
 .PHONY : all

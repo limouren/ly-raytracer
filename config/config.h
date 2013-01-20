@@ -24,6 +24,7 @@ P_FLT MIN_WEIGHT = 0.01;
 // Float comparison epsilon
 P_FLT P_FLT_EPSILON = 1.0e-8;
 
+int MAX_INTERSECTIONS = 4;
 
 // Camera Settings
 P_FLT DEFAULT_ASPECT_RATIO = 1.33;

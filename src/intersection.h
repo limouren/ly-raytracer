@@ -14,7 +14,7 @@ BEGIN_RAYTRACER
 class Intersection {
   public:
     P_FLT t;
-    Solid * solid;
+    Primitive * prim;
     bool enter;
     Material * material;
 };

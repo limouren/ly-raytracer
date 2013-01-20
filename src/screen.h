@@ -21,11 +21,11 @@ BEGIN_RAYTRACER
 
 class Screen {
   public:
-    Solid scene;
+    Solid * scene;
     Camera camera;
 
 
-    Screen(Solid scene, Camera camera): scene(scene), camera(camera) {
+    Screen(Solid * scene, Camera camera): scene(scene), camera(camera) {
       int height = 480;
       int width = 640;
       bitmap_image image(width, height);
@@ -48,21 +48,29 @@ class Screen {
       Vector top_left_pixel = top_left - camera.viewpoint +
                               (i_step * 0.5) + (j_step * 0.5);
 
+      int hits = 0, total = 0;
       for (int i = 0;i < width;i++) {
         for (int j = 0;j < height;j++) {
           Vector ray_dir = top_left_pixel + (i_step * i) + (j_step * j);
+          ray_dir.normalize();
           Ray ray(camera.viewpoint, ray_dir);
 
-          Color c = trace(ray);
+          Color * color = new Color();
 
-          int r = int(c.r * 255 + 0.5);
-          int g = int(c.g * 255 + 0.5);
-          int b = int(c.b * 255 + 0.5);
+          hits += trace(0, 1.0, scene, ray, color);
+          total++;
+
+          int r = int(color->r * 255 + 0.5);
+          int g = int(color->g * 255 + 0.5);
+          int b = int(color->b * 255 + 0.5);
+
+          delete color;
 
           image.set_pixel(i, j, r, g, b);
         }
       }
 
+      std::printf("Saving image, %d hits out of %d total\n", hits, total);
       image.save_image("out/output.bmp");
     }
 };
