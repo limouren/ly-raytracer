@@ -22,23 +22,30 @@ class Scene {
     Solid * modelRoot;
 
     void init_lights() {
-      Light * light = new Light();
+      Light * light1 = new Light();
+      light1->orig = Point(1.0, 1.0, 0.0);
+      light1->color = Color(1.0, 0.0, 0.0);
+      light1->intensity = 1.0;
+      lights.push_back(light1);
 
-      Point orig(5.0, 5.0, 0.0);
-      light->orig = orig;
-      Color color(1.0, 1.0, 1.0);
-      light->color = color;
-      C_FLT intensity = 1.0;
-      light->intensity = intensity;
+      Light * light2 = new Light();
+      light2->orig = Point(0.0, -1.414, 0.0);
+      light2->color = Color(0.0, 0.0, 1.0);
+      light2->intensity = 1.0;
+      lights.push_back(light2);
 
-      lights.push_back(light);
+      Light * light3 = new Light();
+      light3->orig = Point(-1.0, 1.0, 0.0);
+      light3->color = Color(0.0, 1.0, 0.0);
+      light3->intensity = 1.0;
+      lights.push_back(light3);
     }
 
     void init_solids_and_materials() {
       Primitive * ball = new Primitive();
 
-      Material * red_plastic = new Material(0.3, 0.3, 0.0,
-                                            Color(1.0, 0.0, 0.0), 0.0);
+      Material * red_plastic = new Material(0.7, 0.1, 0.0,
+                                            Color(0.0, 0.0, 0.0), 0.0);
       materials.push_back(red_plastic);
       ball->material = red_plastic;
 

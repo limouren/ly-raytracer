@@ -16,7 +16,7 @@ typedef float C_FLT;
 typedef double P_FLT;
 
 // Max raytrace recurse depth
-int MAX_LEVEL = 2;
+int MAX_LEVEL = 5;
 
 // Minimum ray weght threshold
 P_FLT MIN_WEIGHT = 0.01;

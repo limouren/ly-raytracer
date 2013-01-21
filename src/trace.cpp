@@ -104,7 +104,7 @@ C_FLT Shadow(Ray ray, P_FLT t) {
 }
 
 
-int trace(int level, C_FLT weight, Ray ray, Color * &color) {
+int trace(int level, C_FLT weight, Ray ray, Color * color) {
   Intersection intercepts[MAX_INTERSECTIONS];
 
   int intercept_num = intersect(ray, scene.modelRoot, intercepts);
@@ -117,7 +117,8 @@ int trace(int level, C_FLT weight, Ray ray, Color * &color) {
       normal *= -1;
     }
 
-    *color = *shade(level, weight, first_intercept, normal, ray.dir, intercepts);
+    shade(level, weight, first_intercept, normal, ray.dir,
+          intercepts, color);
     return 1;
   }
 

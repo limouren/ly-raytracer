@@ -22,7 +22,7 @@ Intersection * intersectMerge(int op, int hit_left,
 
 C_FLT Shadow(Ray ray, P_FLT t);
 
-int trace(int level, C_FLT weight, Ray ray, Color * &color);
+int trace(int level, C_FLT weight, Ray ray, Color * color);
 
 
 END_RAYTRACER

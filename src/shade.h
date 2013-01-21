@@ -17,9 +17,9 @@
 BEGIN_RAYTRACER
 
 
-Color * shade(int level, C_FLT weight, Point point, Vector normal,
-              Vector incident, Intersection * intercepts) {
-  Color * color = new Color(0.0, 0.0, 0.0);
+void shade(int level, C_FLT weight, Point point, Vector normal,
+           Vector incident, Intersection * intercepts, Color * color) {
+  Material * material = intercepts[0].material;
 
   for (int i = 0;i < scene.lights.size();i++) {
     Light * light = scene.lights[i];
@@ -31,14 +31,12 @@ Color * shade(int level, C_FLT weight, Point point, Vector normal,
     if (ray_dot_normal < 0 || Shadow(ray_to_light, distance_to_light) < 1.0 ) {
       continue;
     }
-    *color += (light->color * ray_dot_normal);
+    *color += (light->color * material->color * ray_dot_normal);
   }
 
   if (level >= MAX_LEVEL || weight < MIN_WEIGHT) {
-    return color;
+    return;
   }
-
-  Material * material = intercepts[0].material;
 
   P_FLT specWeight = material->kspec * weight;
   if (specWeight > MIN_WEIGHT) {
@@ -48,7 +46,7 @@ Color * shade(int level, C_FLT weight, Point point, Vector normal,
     *color += (*specColor) * material->kspec;
   }
 
-  return color;
+  return;
 }
 
 

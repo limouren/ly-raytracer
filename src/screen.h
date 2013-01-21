@@ -56,9 +56,8 @@ class Screen {
           Ray ray(camera.viewpoint, ray_dir);
 
           // TODO: Initiate with background color
-          Color * color = new Color(0.2, 0.2, 0.2);
+          Color * color = new Color(0.0, 0.0, 0.0);
           hits += trace(0, 1.0, ray, color);
-          printf("zomg %f %f %f\n", color->r, color->g, color->b);
           total++;
 
           int r = int(color->r * 255 + 0.5);

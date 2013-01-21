@@ -29,6 +29,11 @@ class Color {
 
     const Color operator *(const C_FLT scalar) const;
     Color operator *=(const C_FLT scalar);
+
+    const Color operator *(const Color color) const;
+    Color operator *=(const Color color);
+
+    void copyFrom(const Color color);
 };
 
 END_RAYTRACER
