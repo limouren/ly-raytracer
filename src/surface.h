@@ -79,13 +79,13 @@ class Polygon: Plane {
 class Sphere: Surface {
   public:
     P_FLT radius;
-    Point * center;
+    Point center;
 
     Sphere(P_FLT x, P_FLT y, P_FLT z, P_FLT radius): radius(radius) {
       // TODO: Clean up this new point in destructor
-      center = new Point(x, y, z);
+      center = Point(x, y, z);
     }
-    Sphere(Point &center, P_FLT radius): center(&center), radius(radius) {}
+    Sphere(Point center, P_FLT radius): center(center), radius(radius) {}
 
     const int intersect(Ray &ray, P_FLT ** t_values);
     const Vector normalAt(Point &point);

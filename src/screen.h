@@ -25,8 +25,8 @@ class Screen {
 
 
     Screen(Camera camera): camera(camera) {
-      int height = 60;
-      int width = 80;
+      int height = 600;
+      int width = 800;
       bitmap_image image(width, height);
 
       Vector dir = camera.target - camera.viewpoint;
@@ -55,16 +55,15 @@ class Screen {
           ray_dir.normalize();
           Ray ray(camera.viewpoint, ray_dir);
 
-          Color * color = new Color();
-
+          // TODO: Initiate with background color
+          Color * color = new Color(0.2, 0.2, 0.2);
           hits += trace(0, 1.0, ray, color);
+          printf("zomg %f %f %f\n", color->r, color->g, color->b);
           total++;
 
           int r = int(color->r * 255 + 0.5);
           int g = int(color->g * 255 + 0.5);
           int b = int(color->b * 255 + 0.5);
-
-          delete color;
 
           image.set_pixel(i, j, r, g, b);
         }

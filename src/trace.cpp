@@ -31,8 +31,9 @@ int intersect(Ray ray, Solid * solid, Intersection * intercept) {
     else {
       hit_right = intersect(ray, composite->right, intercept_right);
 
-      return intersectMerge(composite->op, hit_left, intercept_left, hit_right,
-                            intercept_right);
+      intercept = intersectMerge(composite->op, hit_left, intercept_left,
+                                 hit_right, intercept_right);
+      return hit_left + hit_right;
     }
   }
   else {
@@ -57,8 +58,9 @@ int intersect(Ray ray, Solid * solid, Intersection * intercept) {
   }
 }
 
-int intersectMerge(int op, int hit_left, Intersection * intercept_left,
-                   int hit_right, Intersection * intercept_right) {
+Intersection * intersectMerge(int op, int hit_left,
+                              Intersection * intercept_left, int hit_right,
+                              Intersection * intercept_right) {
   // Assume union only for now
   // TODO: Handle non unions
   Intersection * merged = new Intersection[hit_left + hit_right];
@@ -86,7 +88,7 @@ int intersectMerge(int op, int hit_left, Intersection * intercept_left,
     }
   }
 
-  return hit_left + hit_right;
+  return merged;
 }
 
 
@@ -102,7 +104,7 @@ C_FLT Shadow(Ray ray, P_FLT t) {
 }
 
 
-int trace(int level, C_FLT weight, Ray ray, Color * color) {
+int trace(int level, C_FLT weight, Ray ray, Color * &color) {
   Intersection intercepts[MAX_INTERSECTIONS];
 
   int intercept_num = intersect(ray, scene.modelRoot, intercepts);
@@ -115,12 +117,12 @@ int trace(int level, C_FLT weight, Ray ray, Color * color) {
       normal *= -1;
     }
 
-    color = Shade(level, weight, first_intercept, normal, ray.dir, intercepts);
+    *color = *shade(level, weight, first_intercept, normal, ray.dir, intercepts);
     return 1;
   }
 
   if (level > MAX_LEVEL || weight < MIN_WEIGHT) {
-    return 2;
+    return 0;
   }
   return 0;
 }

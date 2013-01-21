@@ -40,7 +40,7 @@ const int Sphere::intersect(Ray &ray, P_FLT ** t_values) {
 
   *t_values = new P_FLT[2];
 
-  origin_to_center = (*center) - ray.orig;
+  origin_to_center = center - ray.orig;
   ray_closest_approach = dotProduct(origin_to_center, ray.dir);
 
   if (ray_closest_approach < 0) {
@@ -64,10 +64,11 @@ const int Sphere::intersect(Ray &ray, P_FLT ** t_values) {
 }
 
 const Vector Sphere::normalAt(Point &point) {
-  Vector center_to_point = point - (*center);
+  Vector center_to_point = point - center;
   center_to_point.normalize();
 
   return center_to_point;
 }
+
 
 END_RAYTRACER

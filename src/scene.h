@@ -28,7 +28,7 @@ class Scene {
       light->orig = orig;
       Color color(1.0, 1.0, 1.0);
       light->color = color;
-      C_FLT intensity = 0.5;
+      C_FLT intensity = 1.0;
       light->intensity = intensity;
 
       lights.push_back(light);
@@ -42,8 +42,7 @@ class Scene {
       materials.push_back(red_plastic);
       ball->material = red_plastic;
 
-      Point center(0.0, 0.0, 5.0);
-      Sphere * sphere = new Sphere(center, 1.0);
+      Sphere * sphere = new Sphere(0.0, 0.0, 5.0, 2.0);
       ball->surface = (Surface *)sphere;
 
       modelRoot = (Solid *)ball;

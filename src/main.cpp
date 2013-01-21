@@ -14,6 +14,7 @@
 
 using namespace std;
 
+
 BEGIN_RAYTRACER
 
 
@@ -41,8 +42,6 @@ int main() {
 
 END_RAYTRACER
 
-
-using namespace std;
 
 int main() {
   RAYTRACER_NAMESPACE::main();
