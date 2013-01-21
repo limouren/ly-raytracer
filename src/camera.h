@@ -2,8 +2,6 @@
 #define CAMERA_H
 
 
-#include "math.h"
-
 #include "config.h"
 
 #include "point.h"
@@ -28,8 +26,8 @@ class Camera {
       viewpoint(viewpoint),
       up(Vector(0.0, 0.0, 1.0))
       {}
-    Camera(Point &viewpoint, Point &target, P_FLT &angle, P_FLT &aspect_ratio,
-           Vector &up):
+    Camera(Point viewpoint, Point target, P_FLT &angle, P_FLT aspect_ratio,
+           Vector up):
       angle(angle),
       aspect_ratio(aspect_ratio),
       target(target),

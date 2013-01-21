@@ -23,6 +23,12 @@ class Color {
       g = g_;
       b = b_;
     }
+
+    const Color operator +(const Color color) const;
+    Color operator +=(const Color color);
+
+    const Color operator *(const C_FLT scalar) const;
+    Color operator *=(const C_FLT scalar);
 };
 
 END_RAYTRACER

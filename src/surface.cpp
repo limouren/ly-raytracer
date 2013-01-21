@@ -41,13 +41,13 @@ const int Sphere::intersect(Ray &ray, P_FLT ** t_values) {
   *t_values = new P_FLT[2];
 
   origin_to_center = (*center) - ray.orig;
-  oc_sqr = origin_to_center.lengthSqr();
   ray_closest_approach = dotProduct(origin_to_center, ray.dir);
 
   if (ray_closest_approach < 0) {
     return 0;
   }
 
+  oc_sqr = origin_to_center.lengthSqr();
   half_chord_squared = (radius * radius) - oc_sqr +
     (ray_closest_approach * ray_closest_approach);
 

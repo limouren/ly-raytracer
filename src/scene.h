@@ -19,12 +19,12 @@ class Scene {
   public:
     std::vector<Light * > lights;
     std::vector<Material * > materials;
-    std::vector<Solid * > solids;
+    Solid * modelRoot;
 
     void init_lights() {
       Light * light = new Light();
 
-      Point orig(-5.0, 5.0, 0.0);
+      Point orig(5.0, 5.0, 0.0);
       light->orig = orig;
       Color color(1.0, 1.0, 1.0);
       light->color = color;
@@ -42,10 +42,11 @@ class Scene {
       materials.push_back(red_plastic);
       ball->material = red_plastic;
 
-      Point center(0.0, 0.0, 0.0);
-      ball->surface = (Surface *)(new Sphere(center, 1.0));
+      Point center(0.0, 0.0, 5.0);
+      Sphere * sphere = new Sphere(center, 1.0);
+      ball->surface = (Surface *)sphere;
 
-      solids.push_back((Solid *)ball);
+      modelRoot = (Solid *)ball;
     }
 
     Scene() {
