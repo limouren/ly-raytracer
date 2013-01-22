@@ -3,7 +3,9 @@
 
 #include "config.h"
 
+
 BEGIN_RAYTRACER
+
 
 class Color {
   public:
@@ -24,6 +26,9 @@ class Color {
       b = b_;
     }
 
+
+    Color& operator =(const Color &color);
+
     const Color operator +(const Color color) const;
     Color operator +=(const Color color);
 
@@ -35,6 +40,7 @@ class Color {
 
     void scale();
 };
+
 
 END_RAYTRACER
 

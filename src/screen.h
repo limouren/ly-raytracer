@@ -37,20 +37,21 @@ class Screen {
           if (pixels[i][j]->b > factor) {
             factor = pixels[i][j]->b;
           }
-
         }
       }
 
-      factor = 1.0 / factor;
-      for (int i = 0;i < width;i++) {
-        for (int j = 0;j < height;j++) {
-          pixels[i][j]->r *= factor;
-          pixels[i][j]->g *= factor;
-          pixels[i][j]->b *= factor;
+      if (factor > 1.0) {
+        factor = 1.0 / factor;
+        for (int i = 0;i < width;i++) {
+          for (int j = 0;j < height;j++) {
+            (*pixels[i][j]) *= factor;
+          }
         }
+        printf("Calbiration complete.\n");
       }
-
-      printf("Calbiration complete.\n");
+      else {
+        printf("Calbiration not required.\n");
+      }
     }
 
     Screen(Camera camera): camera(camera) {

@@ -6,6 +6,19 @@
 BEGIN_RAYTRACER
 
 
+Color& Color::operator =(const Color &color) {
+  if (this == &color) {
+    return *this;
+  }
+
+  r = color.r;
+  g = color.g;
+  b = color.b;
+
+  return *this;
+}
+
+
 const Color Color::operator +(const Color color) const {
   Color result = *this;
   result += color;
