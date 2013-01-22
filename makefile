@@ -1,6 +1,7 @@
 # Compiler
 CXX = g++
-CFLAGS = $(includes)
+CFLAGS = $(includes) $(DEBUG_FLAGS)
+DEBUG_FLAGS = -ggdb
 VPATH = $(SRC_DIR):$(TEST_DIR)
 
 O_DIR = bin
