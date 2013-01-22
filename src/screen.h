@@ -25,8 +25,8 @@ class Screen {
 
 
     Screen(Camera camera): camera(camera) {
-      int height = 600;
-      int width = 800;
+      int height = 60;
+      int width = 80;
       bitmap_image image(width, height);
 
       Vector dir = camera.target - camera.viewpoint;

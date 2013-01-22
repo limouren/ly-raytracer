@@ -19,15 +19,6 @@ boost_dir = 3rdparty/boost/latest/
 
 OBJS := $(patsubst %.h,%.o,$(wildcard $(SRC_DIR)/*.h))
 
-
-.PHONY : %(SRC_DIR)/%.h
-$(SRC_DIR)/%.o: $(SRC_DIR)/%.h
-	$(CXX) $(CFLAGS) -c $< -o $@
-
-.PHONY : all
-all: $(objects)
-
-
 tests = $(wildcard $(TEST_DIR)/*_test.cpp)
 
 include_libs = -I$(boost_dir) -I$(bitmap_dir)
@@ -43,7 +34,7 @@ $(O_DIR)/run_tests: run_tests.cpp $(tests)
 .PHONY : main
 main: $(O_DIR)/main
 
-$(O_DIR)/main: main.cpp $(OBJS)
+$(O_DIR)/main: main.cpp $(SRC_DIR)/*.cpp $(SRC_DIR)/*.h
 	$(CXX) $(CFLAGS) $< -o $@
 
 .PHONY : clean

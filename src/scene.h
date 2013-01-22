@@ -22,22 +22,11 @@ class Scene {
     Solid * modelRoot;
 
     void init_lights() {
-      Light * light1 = new Light();
-      light1->orig = Point(1.0, 1.0, 0.0);
-      light1->color = Color(1.0, 0.0, 0.0);
-      light1->intensity = 1.0;
+      Light * light1 = new Light(Point(1.0, 1.0, 0.0), Color(1.0, 0.0, 0.0), 1.0);
+      Light * light2 = new Light(Point(-1.0, 1.0, 0.0), Color(0.0, 1.0, 0.0), 1.0);
+      Light * light3 = new Light(Point(0.0, -1.0, 0.0), Color(0.0, 0.0, 1.0), 1.0);
       lights.push_back(light1);
-
-      Light * light2 = new Light();
-      light2->orig = Point(0.0, -1.414, 0.0);
-      light2->color = Color(0.0, 0.0, 1.0);
-      light2->intensity = 1.0;
       lights.push_back(light2);
-
-      Light * light3 = new Light();
-      light3->orig = Point(-1.0, 1.0, 0.0);
-      light3->color = Color(0.0, 1.0, 0.0);
-      light3->intensity = 1.0;
       lights.push_back(light3);
     }
 

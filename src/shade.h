@@ -28,12 +28,11 @@ void shade(int level, C_FLT weight, Point point, Vector normal,
     Ray ray_to_light(point, point_to_light);
 
     P_FLT ray_dot_normal = dotProduct(point_to_light, normal);
-    if (ray_dot_normal < 0 || Shadow(ray_to_light, distance_to_light) < 1.0 ) {
-      continue;
+    if (ray_dot_normal > 0.0 &&
+        shadow(ray_to_light, distance_to_light) > 0.0) {
+      *color += (light->color * material->color * ray_dot_normal);
     }
-    *color += (light->color * material->color * ray_dot_normal);
   }
-
   if (level >= MAX_LEVEL || weight < MIN_WEIGHT) {
     return;
   }

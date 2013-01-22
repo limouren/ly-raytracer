@@ -18,10 +18,9 @@ using namespace std;
 BEGIN_RAYTRACER
 
 
-Solid * ReadScene() {
+void ReadScene() {
   // TODO: read Scene and Camera from file
   string file_name = "models.txt";
-  return NULL;
 }
 
 

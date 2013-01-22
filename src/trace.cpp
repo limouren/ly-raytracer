@@ -92,7 +92,7 @@ Intersection * intersectMerge(int op, int hit_left,
 }
 
 
-C_FLT Shadow(Ray ray, P_FLT t) {
+C_FLT shadow(Ray ray, P_FLT t) {
   Intersection intercepts[MAX_INTERSECTIONS];
 
   int intercept_num = intersect(ray, scene.modelRoot, intercepts);
@@ -117,8 +117,7 @@ int trace(int level, C_FLT weight, Ray ray, Color * color) {
       normal *= -1;
     }
 
-    shade(level, weight, first_intercept, normal, ray.dir,
-          intercepts, color);
+    shade(level, weight, first_intercept, normal, ray.dir, intercepts, color);
     return 1;
   }
 

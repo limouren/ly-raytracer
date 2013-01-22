@@ -14,6 +14,9 @@ class Light {
     C_FLT intensity; // 0.0 - 1.0
     Color color;
     Point orig;
+
+    Light(Point orig, Color color, C_FLT intensity):
+      intensity(intensity), color(color), orig(orig) {}
 };
 
 
