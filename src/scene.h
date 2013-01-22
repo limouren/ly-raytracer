@@ -23,9 +23,9 @@ class Scene {
 
     void init_lights() {
       Light * light1 = new Light(Point(0.5, 2.0, 0.0), Color(1.0, 1.0, 1.0), 1.0);
-      Light * light2 = new Light(Point(-0.5, 2.0, 0.0), Color(1.0, 1.0, 1.0), 1.0);
+      //Light * light2 = new Light(Point(-0.5, 2.0, 0.0), Color(1.0, 1.0, 1.0), 1.0);
       lights.push_back(light1);
-      lights.push_back(light2);
+      //lights.push_back(light2);
     }
 
     void init_solids_and_materials() {

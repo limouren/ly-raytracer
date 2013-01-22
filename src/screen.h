@@ -2,7 +2,7 @@
 #define SCREEN_H
 
 
-#include <fstream>
+#include <stdio.h>
 #include "bitmap_image.hpp"
 
 #include "config.h"
@@ -22,13 +22,38 @@ BEGIN_RAYTRACER
 class Screen {
   public:
     Camera camera;
+    Color * pixels[width][height];
 
+    void calibrate() {
+      C_FLT factor = 0.0;
+      for (int i = 0;i < width;i++) {
+        for (int j = 0;j < height;j++) {
+          if (pixels[i][j]->r > factor) {
+            factor = pixels[i][j]->r;
+          }
+          if (pixels[i][j]->g > factor) {
+            factor = pixels[i][j]->g;
+          }
+          if (pixels[i][j]->b > factor) {
+            factor = pixels[i][j]->b;
+          }
+
+        }
+      }
+
+      factor = 1.0 / factor;
+      for (int i = 0;i < width;i++) {
+        for (int j = 0;j < height;j++) {
+          pixels[i][j]->r *= factor;
+          pixels[i][j]->g *= factor;
+          pixels[i][j]->b *= factor;
+        }
+      }
+
+      printf("Calbiration complete.\n");
+    }
 
     Screen(Camera camera): camera(camera) {
-      int height = 600;
-      int width = 800;
-      bitmap_image image(width, height);
-
       Vector dir = camera.target - camera.viewpoint;
       dir.normalize();
 
@@ -47,28 +72,35 @@ class Screen {
       Vector top_left_pixel = top_left - camera.viewpoint +
                               (i_step * 0.5) + (j_step * 0.5);
 
-      int hits = 0, total = 0;
+      int hits = 0;
       for (int i = 0;i < width;i++) {
         for (int j = 0;j < height;j++) {
           Vector ray_dir = top_left_pixel +
                            (i_step * (P_FLT)i) + (j_step * (P_FLT)j);
           ray_dir.normalize();
           Ray ray(camera.viewpoint, ray_dir);
+          pixels[i][j] = new Color();
 
-          // TODO: Initiate with background color
-          Color * color = new Color();
-          hits += trace(0, 1.0, ray, color);
-          total++;
+          hits += trace(0, 1.0, ray, pixels[i][j]);
+        }
+      }
 
-          int r = int(color->r * 255 + 0.5);
-          int g = int(color->g * 255 + 0.5);
-          int b = int(color->b * 255 + 0.5);
+      printf("Tracing complete, %d hits out of %d total\n", hits,
+             width * height);
+      calibrate();
+    }
+
+    void save() {
+      bitmap_image image(width, height);
+      for (int i = 0;i < width;i++) {
+        for (int j = 0;j < height;j++) {
+          int r = int(pixels[i][j]->r * 255 + 0.5);
+          int g = int(pixels[i][j]->g * 255 + 0.5);
+          int b = int(pixels[i][j]->b * 255 + 0.5);
 
           image.set_pixel(i, j, r, g, b);
         }
       }
-
-      std::printf("Saving image, %d hits out of %d total\n", hits, total);
       image.save_image("out/output.bmp");
     }
 };

@@ -32,6 +32,8 @@ class Color {
 
     const Color operator *(const Color color) const;
     Color operator *=(const Color color);
+
+    void scale();
 };
 
 END_RAYTRACER

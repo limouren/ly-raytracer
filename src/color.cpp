@@ -57,4 +57,24 @@ Color Color::operator *=(const Color color) {
 }
 
 
+void Color::scale() {
+  C_FLT factor;
+  if (r > g) {
+    if (b > r) {
+      factor = 1.0 / b;
+    } else {
+      factor = 1.0 / r;
+    }
+  } else if (b > g) {
+    factor = 1.0 / b;
+  } else {
+    factor = 1.0 / g;
+  }
+
+  r *= factor;
+  g *= factor;
+  b *= factor;
+}
+
+
 END_RAYTRACER

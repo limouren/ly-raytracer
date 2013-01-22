@@ -33,6 +33,7 @@ int main() {
   Camera camera(viewpoint, target, angle, aspect_ratio, up);
 
   Screen screen(camera);
+  screen.save();
 
   return 0;
 }

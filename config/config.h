@@ -30,6 +30,10 @@ typedef float C_FLT;
 typedef double P_FLT;
 
 
+const int height = 600;
+const int width = 800;
+
+
 END_RAYTRACER
 
 #endif
