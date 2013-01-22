@@ -57,11 +57,4 @@ Color Color::operator *=(const Color color) {
 }
 
 
-void Color::copyFrom(const Color color) {
-  r = color.r;
-  g = color.g;
-  b = color.b;
-}
-
-
 END_RAYTRACER

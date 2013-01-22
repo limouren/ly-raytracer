@@ -40,9 +40,12 @@ void shade(int level, C_FLT weight, Point point, Vector normal,
   P_FLT specWeight = material->kspec * weight;
   if (specWeight > MIN_WEIGHT) {
     Ray specRay(point, incident - (normal * dotProduct(normal, incident) * 2));
-    Color * specColor;
+    Color * specColor = new Color();
     int flag = trace(level + 1, specWeight, specRay, specColor);
-    *color += (*specColor) * material->kspec;
+    if (flag) {
+      *color += (*specColor) * material->kspec;
+    }
+    delete specColor;
   }
 
   return;

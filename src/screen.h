@@ -25,8 +25,8 @@ class Screen {
 
 
     Screen(Camera camera): camera(camera) {
-      int height = 60;
-      int width = 80;
+      int height = 600;
+      int width = 800;
       bitmap_image image(width, height);
 
       Vector dir = camera.target - camera.viewpoint;
@@ -56,7 +56,7 @@ class Screen {
           Ray ray(camera.viewpoint, ray_dir);
 
           // TODO: Initiate with background color
-          Color * color = new Color(0.0, 0.0, 0.0);
+          Color * color = new Color();
           hits += trace(0, 1.0, ray, color);
           total++;
 
