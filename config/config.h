@@ -5,6 +5,20 @@
 #define BEGIN_RAYTRACER namespace RAYTRACER_NAMESPACE {
 #define END_RAYTRACER }
 
+// Camera Settings
+#define DEFAULT_ASPECT_RATIO 1.33
+
+// Minimum ray weght threshold
+#define MIN_WEIGHT 0.01
+
+// Max intersections per ray against solid
+#define MAX_INTERSECTIONS 4
+
+// Max raytrace recurse depth
+#define MAX_LEVEL 2
+
+// Float comparison epsilon
+#define P_FLT_EPSILON 1.0e-8
 
 BEGIN_RAYTRACER
 
@@ -14,21 +28,6 @@ typedef float C_FLT;
 
 // Double precision position
 typedef double P_FLT;
-
-// Max raytrace recurse depth
-int MAX_LEVEL = 2;
-
-// Minimum ray weght threshold
-P_FLT MIN_WEIGHT = 0.01;
-
-// Float comparison epsilon
-P_FLT P_FLT_EPSILON = 1.0e-8;
-
-// Max intersections per ray against solid
-int MAX_INTERSECTIONS = 4;
-
-// Camera Settings
-P_FLT DEFAULT_ASPECT_RATIO = 1.33;
 
 
 END_RAYTRACER

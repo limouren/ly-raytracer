@@ -12,15 +12,12 @@
 #include "vector.cpp"
 
 
-using namespace std;
-
-
 BEGIN_RAYTRACER
 
 
 void ReadScene() {
   // TODO: read Scene and Camera from file
-  string file_name = "models.txt";
+  char file_name[80] = "models.txt";
 }
 
 
@@ -36,12 +33,18 @@ int main() {
   Camera camera(viewpoint, target, angle, aspect_ratio, up);
 
   Screen screen(camera);
+
+  return 0;
 }
 
 
 END_RAYTRACER
 
 
+using namespace std;
+
+
 int main() {
   RAYTRACER_NAMESPACE::main();
+  return 0;
 }
