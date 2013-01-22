@@ -23,18 +23,16 @@ class Scene {
 
     void init_lights() {
       Light * light1 = new Light(Point(1.0, 1.0, 0.0), Color(1.0, 0.0, 0.0), 1.0);
-      Light * light2 = new Light(Point(-1.0, 1.0, 0.0), Color(0.0, 1.0, 0.0), 1.0);
-      Light * light3 = new Light(Point(0.0, -1.0, 0.0), Color(0.0, 0.0, 1.0), 1.0);
+      Light * light2 = new Light(Point(-1.0, 1.0, 0.0), Color(0.0, 1.0, 1.0), 1.0);
       lights.push_back(light1);
       lights.push_back(light2);
-      lights.push_back(light3);
     }
 
     void init_solids_and_materials() {
       Primitive * ball = new Primitive();
 
-      Material * red_plastic = new Material(0.7, 0.1, 0.0,
-                                            Color(0.0, 0.0, 0.0), 0.0);
+      Material * red_plastic = new Material(0.5, 0.5, 0.0,
+                                            Color(1.0, 1.0, 1.0), 0.0);
       materials.push_back(red_plastic);
       ball->material = red_plastic;
 
