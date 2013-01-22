@@ -21,7 +21,6 @@ BEGIN_RAYTRACER
 
 class Screen {
   public:
-    Camera camera;
     Color * pixels[width][height];
 
     void calibrate() {
@@ -54,7 +53,7 @@ class Screen {
       }
     }
 
-    Screen(Camera camera): camera(camera) {
+    Screen() {
       Vector dir = camera.target - camera.viewpoint;
       dir.normalize();
 

@@ -24,15 +24,7 @@ void ReadScene() {
 int main() {
   ReadScene();
 
-  P_FLT angle = 1.570796;
-  P_FLT aspect_ratio = 1.333;
-  Point target(0.0, 0.0, 1.0);
-  Point viewpoint(0.0, 0.0, 0.0);
-  Vector up(0.0, 1.0, 0.0);
-
-  Camera camera(viewpoint, target, angle, aspect_ratio, up);
-
-  Screen screen(camera);
+  Screen screen = Screen();
   screen.save();
 
   return 0;

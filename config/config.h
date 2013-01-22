@@ -1,6 +1,8 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
+#define DEBUG 1
+
 #define RAYTRACER_NAMESPACE raytracer
 #define BEGIN_RAYTRACER namespace RAYTRACER_NAMESPACE {
 #define END_RAYTRACER }

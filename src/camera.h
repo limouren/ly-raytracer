@@ -36,7 +36,17 @@ class Camera {
       {
       up.normalize();
     }
-};
+
+#if DEBUG
+    Camera() {
+      angle = 1.570796;
+      aspect_ratio = 1.333;
+      target = Point(0.0, 0.0, 1.0);
+      viewpoint = Point(0.0, 0.0, 0.0);
+      up = Vector(0.0, 1.0, 0.0);
+    }
+#endif
+} camera;
 
 
 END_RAYTRACER
