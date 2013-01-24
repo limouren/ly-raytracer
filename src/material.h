@@ -3,6 +3,7 @@
 
 
 #include "config.h"
+
 #include "color.h"
 
 
@@ -11,15 +12,21 @@ BEGIN_RAYTRACER
 
 class Material {
   public:
-    C_FLT kdiff;
-    C_FLT kspec;
-    C_FLT ktran;
-    Color color;
-    C_FLT refrindex;
+    Coeff ambience;
+    Coeff diffuse;
+    Coeff specular;
+    Coeff ktran;
+    Color emittance;
 
-    Material(C_FLT kdiff, C_FLT kspec, C_FLT ktran, Color color,
-             C_FLT refrindex): kdiff(kdiff), kspec(kspec), ktran(ktran),
-                               color(color), refrindex(refrindex) {}
+    C_FLT attenuation;
+    C_FLT refraction;
+    C_FLT roughness;
+
+    Material(Coeff ambience, Coeff diffuse, Coeff specular, Color emittance,
+             P_FLT roughness):
+             ambience(ambience), diffuse(diffuse), specular(specular),
+             emittance(emittance), roughness(roughness) {
+    }
 };
 
 

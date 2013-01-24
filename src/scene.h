@@ -6,6 +6,7 @@
 
 #include "config.h"
 
+#include "color.h"
 #include "light.h"
 #include "material.h"
 #include "surface.h"
@@ -17,32 +18,43 @@ BEGIN_RAYTRACER
 
 class Scene {
   public:
+    Color ambience;
     std::vector<Light * > lights;
     std::vector<Material * > materials;
     Solid * modelRoot;
 
+    void init_ambience() {
+      ambience = Color(0.3, 0.3, 0.3);
+    }
+
     void init_lights() {
-      Light * light1 = new Light(Point(1.5, 1.0, 0.0), Color(1.0, 0.0, 0.0), 1.0);
-      Light * light2 = new Light(Point(-1.5, 1.0, 0.0), Color(0.0, 0.0, 1.0), 1.0);
+      Light * light1 = new Light(Point(1.5, 0.5, 0.0), Color(1.0, 1.0, 1.0),
+                                 1.0);
+      //Light * light2 = new Light(Point(-1.5, 0.5, 0.0), Color(1.0, 1.0, 1.0),
+      //                           1.0);
       lights.push_back(light1);
-      lights.push_back(light2);
+      //lights.push_back(light2);
     }
 
     void init_solids_and_materials() {
       Primitive * ball = new Primitive();
 
-      Material * red_plastic = new Material(0.5, 0.5, 0.0,
-                                            Color(1.0, 0.0, 0.0), 0.0);
+      Material * red_plastic = new Material(Coeff(0.2, 0.2, 0.2),
+                                            Coeff(0.8, 0.2, 0.2),
+                                            Coeff(0.5, 0.5, 0.5),
+                                            Color(),
+                                            0.6);
       materials.push_back(red_plastic);
       ball->material = red_plastic;
 
-      Sphere * sphere = new Sphere(0.0, 0.0, 5.0, 2.0);
+      Sphere * sphere = new Sphere(0.0, 0.0, 3.0, 1.0);
       ball->surface = (Surface *)sphere;
 
       modelRoot = (Solid *)ball;
     }
 
     Scene() {
+      init_ambience();
       init_lights();
       init_solids_and_materials();
     }

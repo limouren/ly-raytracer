@@ -7,36 +7,39 @@
 BEGIN_RAYTRACER
 
 
-class Color {
+class Coeff {
   public:
     C_FLT r;
     C_FLT g;
     C_FLT b;
 
+    Coeff(): r(0.0), g(0.0), b(0.0) {}
+    Coeff(C_FLT r, C_FLT g, C_FLT b): r(r), g(g), b(b) {}
 
-    Color () {
-      r = 0.0;
-      g = 0.0;
-      b = 0.0;
+    C_FLT luminance() {
+      return (r * 0.299)  + (g * 0.587) + (b * 0.114);
     }
+};
 
-    Color (C_FLT r_, C_FLT g_, C_FLT b_) {
-      r = r_;
-      g = g_;
-      b = b_;
-    }
 
+class Color: public Coeff {
+  public:
+    Color(): Coeff() {}
+    Color(C_FLT r, C_FLT g, C_FLT b): Coeff(r, g, b) {}
 
     Color& operator =(const Color &color);
 
     const Color operator +(const Color color) const;
     Color operator +=(const Color color);
 
+    const Color operator *(const Color color) const;
+    Color operator *=(const Color color);
+
     const Color operator *(const C_FLT scalar) const;
     Color operator *=(const C_FLT scalar);
 
-    const Color operator *(const Color color) const;
-    Color operator *=(const Color color);
+    const Color operator *(const Coeff coeff) const;
+    Color operator *=(const Coeff coeff);
 
     void scale();
 };

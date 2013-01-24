@@ -36,23 +36,6 @@ Color Color::operator +=(const Color color) {
 }
 
 
-const Color Color::operator *(const C_FLT scalar) const {
-  Color result = *this;
-  result *= scalar;
-
-  return result;
-}
-
-
-Color Color::operator *=(const C_FLT scalar) {
-  r *= scalar;
-  g *= scalar;
-  b *= scalar;
-
-  return *this;
-}
-
-
 const Color Color::operator *(const Color color) const {
   Color result = *this;
   result *= color;
@@ -70,23 +53,37 @@ Color Color::operator *=(const Color color) {
 }
 
 
-void Color::scale() {
-  C_FLT factor;
-  if (r > g) {
-    if (b > r) {
-      factor = 1.0 / b;
-    } else {
-      factor = 1.0 / r;
-    }
-  } else if (b > g) {
-    factor = 1.0 / b;
-  } else {
-    factor = 1.0 / g;
-  }
+const Color Color::operator *(const Coeff coeff) const {
+  Color result = *this;
+  result *= coeff;
 
-  r *= factor;
-  g *= factor;
-  b *= factor;
+  return result;
+}
+
+
+Color Color::operator *=(const Coeff coeff) {
+  r *= coeff.r;
+  g *= coeff.g;
+  b *= coeff.b;
+
+  return *this;
+}
+
+
+const Color Color::operator *(const C_FLT scalar) const {
+  Color result = *this;
+  result *= scalar;
+
+  return result;
+}
+
+
+Color Color::operator *=(const C_FLT scalar) {
+  r *= scalar;
+  g *= scalar;
+  b *= scalar;
+
+  return *this;
 }
 
 

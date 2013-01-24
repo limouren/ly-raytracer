@@ -6,6 +6,7 @@
 #include "point.cpp"
 #include "scene.cpp"
 #include "screen.cpp"
+#include "shade.cpp"
 #include "solid.cpp"
 #include "surface.cpp"
 #include "trace.cpp"
