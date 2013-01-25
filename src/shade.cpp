@@ -3,6 +3,7 @@
 
 
 #include <math.h>
+#include <stdio.h>
 
 #include "config.h"
 
@@ -22,7 +23,6 @@ BEGIN_RAYTRACER
 
 const Vector refDir(Vector incident, Vector normal) {
   Vector result = incident - (normal * dotProduct(normal, incident) * 2);
-  result.normalize();
   return result;
 }
 
@@ -45,6 +45,14 @@ void shade(int level, C_FLT weight, Point point, Vector normal,
     if (rayDotNormal > 0.0 &&
         shadow(rayToLight, distance_to_light) > 0.0) {
       *color += light->color * material->diffuse * rayDotNormal;
+
+      Vector refLight = refDir(-pointToLight, normal);
+      P_FLT specDot = dotProduct(refLight, -incident);
+
+      if (specDot > 0.0) {
+        *color += light->color * material->specular *
+                  pow(specDot, material->roughness);
+      }
     }
   }
 
