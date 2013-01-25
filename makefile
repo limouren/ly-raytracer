@@ -13,16 +13,14 @@ TEST_DIR = tests
 includes = $(include_config) $(include_libs) $(include_dirs)
 include_config = -I$(CONFIG_DIR)
 
-bitmap_dir = 3rdparty/bitmap/
-
-# C++ Boost
-boost_dir = 3rdparty/boost/latest/
 
 OBJS := $(patsubst %.h,%.o,$(wildcard $(SRC_DIR)/*.h))
 
 tests = $(wildcard $(TEST_DIR)/*_test.cpp)
 
-include_libs = -I$(boost_dir) -I$(bitmap_dir)
+THIRD_PARTY_DIRS = $(wildcard 3rdparty/*/latest/)
+
+include_libs = $(foreach includedir,$(THIRD_PARTY_DIRS), -I$(includedir))
 include_dirs = -I$(SRC_DIR)
 
 .PHONY : tests
