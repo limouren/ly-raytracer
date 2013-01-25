@@ -5,7 +5,7 @@
 #include "config.h"
 
 #include "color.h"
-#include "intersection.h"
+#include "intercept.h"
 #include "model.h"
 #include "ray.h"
 
@@ -13,11 +13,11 @@
 BEGIN_RAYTRACER
 
 
-int intersect(Ray ray, MODEL_CLS * model, Intersection intercepts[]);
+int intersect(Ray ray, MODEL_CLS * model, Intercept intercepts[]);
 
-int intersectMerge(int op, int hit_left, Intersection intercept_left[],
-                   int hit_right, Intersection intercept_right[],
-                   Intersection merged[]);
+int intersectMerge(int op, int hit_left, Intercept intercept_left[],
+                   int hit_right, Intercept intercept_right[],
+                   Intercept merged[]);
 
 
 C_FLT shadow(Ray ray, P_FLT t);

@@ -7,7 +7,7 @@
 #include "config.h"
 
 #include "color.h"
-#include "intersection.h"
+#include "intercept.h"
 #include "light.h"
 #include "material.h"
 #include "point.h"
@@ -28,7 +28,7 @@ const Vector refDir(Vector incident, Vector normal) {
 
 
 void shade(int level, C_FLT weight, Point point, Vector normal,
-           Vector incident, Intersection * intercepts, Color * color) {
+           Vector incident, Intercept * intercepts, Color * color) {
   Material * material = intercepts[0].primitive->material;
 
   *color += scene.ambience * material->ambience;

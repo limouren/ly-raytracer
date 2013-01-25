@@ -9,7 +9,7 @@
 BEGIN_RAYTRACER
 
 
-const int Plane::intersect(Ray &ray, Intersection intercepts[]) {
+const int Plane::intersect(Ray &ray, Intercept intercepts[]) {
   P_FLT v_d, v_o, t;
 
   v_d = dotProduct(norm, ray.dir);
@@ -25,12 +25,12 @@ const int Plane::intersect(Ray &ray, Intersection intercepts[]) {
     return 0;
   }
 
-  intercepts[0] = Intersection(t, v_d < 0.0);
+  intercepts[0] = Intercept(t, v_d < 0.0);
   return 1;
 }
 
 
-const int Sphere::intersect(Ray &ray, Intersection intercepts[]) {
+const int Sphere::intersect(Ray &ray, Intercept intercepts[]) {
   Vector origin_to_center;
   P_FLT oc_sqr, ray_closest_approach, half_chord_squared, half_chord;
 
@@ -51,8 +51,8 @@ const int Sphere::intersect(Ray &ray, Intersection intercepts[]) {
 
   half_chord = sqrt(half_chord_squared);
 
-  intercepts[0] = Intersection(ray_closest_approach - half_chord, true);
-  intercepts[1] = Intersection(ray_closest_approach + half_chord, false);
+  intercepts[0] = Intercept(ray_closest_approach - half_chord, true);
+  intercepts[1] = Intercept(ray_closest_approach + half_chord, false);
 
   return 2;
 }

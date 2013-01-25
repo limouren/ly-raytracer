@@ -1,7 +1,7 @@
 #include "config.h"
 
 #include "color.h"
-#include "intersection.h"
+#include "intercept.h"
 #include "model.h"
 #include "point.h"
 #include "ray.h"
@@ -15,12 +15,12 @@
 BEGIN_RAYTRACER
 
 
-int intersect(Ray ray, MODEL_CLS * model, Intersection intercepts[]) {
+int intersect(Ray ray, MODEL_CLS * model, Intercept intercepts[]) {
   if (model->composite_flag) {
     Composite * composite = (Composite *) model;
 
     int hits_left, hits_right;
-    Intersection intercepts_left[MAX_INTERSECTIONS],
+    Intercept intercepts_left[MAX_INTERSECTIONS],
                  intercepts_right[MAX_INTERSECTIONS];
 
     hits_left = intersect(ray, composite->left, intercepts_left);
@@ -48,9 +48,9 @@ int intersect(Ray ray, MODEL_CLS * model, Intersection intercepts[]) {
   }
 }
 
-int intersectMerge(int op, int hit_left, Intersection intercepts_left[],
-                   int hit_right, Intersection intercepts_right[],
-                   Intersection merged[]) {
+int intersectMerge(int op, int hit_left, Intercept intercepts_left[],
+                   int hit_right, Intercept intercepts_right[],
+                   Intercept merged[]) {
   // Assume union only for now
   // TODO: Handle non unions
 
@@ -92,7 +92,7 @@ int intersectMerge(int op, int hit_left, Intersection intercepts_left[],
 
 
 C_FLT shadow(Ray ray, P_FLT t) {
-  Intersection intercepts[MAX_INTERSECTIONS];
+  Intercept intercepts[MAX_INTERSECTIONS];
 
   int hits = intersect(ray, scene.modelRoot, intercepts);
   if (hits == 0 || intercepts[0].t > t - P_FLT_EPSILON) {
@@ -104,7 +104,7 @@ C_FLT shadow(Ray ray, P_FLT t) {
 
 
 int trace(int level, C_FLT weight, Ray ray, Color * color) {
-  Intersection intercepts[MAX_INTERSECTIONS];
+  Intercept intercepts[MAX_INTERSECTIONS];
 
   int hits = intersect(ray, scene.modelRoot, intercepts);
   if (hits != 0) {

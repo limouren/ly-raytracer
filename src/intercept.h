@@ -12,14 +12,14 @@ BEGIN_RAYTRACER
 class Primitive;
 
 
-class Intersection {
+class Intercept {
   public:
     bool enter;
     P_FLT t;
     Primitive * primitive;
 
-    Intersection() {}
-    Intersection(P_FLT t, bool enter): t(t), enter(enter) {}
+    Intercept() {}
+    Intercept(P_FLT t, bool enter): t(t), enter(enter) {}
 };
 
 

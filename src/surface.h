@@ -3,7 +3,7 @@
 
 #include "config.h"
 
-#include "intersection.h"
+#include "intercept.h"
 #include "point.h"
 #include "ray.h"
 #include "vector.h"
@@ -14,7 +14,7 @@ BEGIN_RAYTRACER
 
 class Surface {
   public:
-    virtual const int intersect(Ray &ray, Intersection intercepts[]) {}
+    virtual const int intersect(Ray &ray, Intercept intercepts[]) {}
     virtual const Vector normalAt(Point &point) {}
 };
 
@@ -35,7 +35,7 @@ class Plane: Surface {
       d = - dotProduct(point, vector);
     }
 
-    virtual const int intersect(Ray &ray, Intersection intercepts[]);
+    virtual const int intersect(Ray &ray, Intercept intercepts[]);
     virtual const Vector normalAt(Point &point) {
       return norm;
     }
@@ -68,7 +68,7 @@ class Polygon: Plane {
       delete vertex;
     }
 
-    virtual const int intersect(Ray &ray, Intersection intercepts[]);
+    virtual const int intersect(Ray &ray, Intercept intercepts[]);
 };
 
 
@@ -84,7 +84,7 @@ class Sphere: Surface {
     }
     Sphere(Point center, P_FLT radius): center(center), radius(radius) {}
 
-    const int intersect(Ray &ray, Intersection intercepts[]);
+    const int intersect(Ray &ray, Intercept intercepts[]);
     const Vector normalAt(Point &point);
 };
 
