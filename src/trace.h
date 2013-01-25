@@ -13,11 +13,11 @@
 BEGIN_RAYTRACER
 
 
-int intersect(Ray ray, MODEL_CLS * model, Intersection * intercept);
+int intersect(Ray ray, MODEL_CLS * model, Intersection intercepts[]);
 
-Intersection * intersectMerge(int op, int hit_left,
-                              Intersection * intercept_left, int hit_right,
-                              Intersection * intercept_right);
+int intersectMerge(int op, int hit_left, Intersection intercept_left[],
+                   int hit_right, Intersection intercept_right[],
+                   Intersection merged[]);
 
 
 C_FLT shadow(Ray ray, P_FLT t);

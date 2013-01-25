@@ -15,80 +15,90 @@
 BEGIN_RAYTRACER
 
 
-int intersect(Ray ray, MODEL_CLS * model, Intersection * intercept) {
-  int hit_left, hit_right;
-  Intersection intercept_left[MAX_INTERSECTIONS],
-               intercept_right[MAX_INTERSECTIONS];
-
-  Primitive * prim = (Primitive *) model;
+int intersect(Ray ray, MODEL_CLS * model, Intersection intercepts[]) {
   if (model->composite_flag) {
     Composite * composite = (Composite *) model;
 
-    hit_left = intersect(ray, composite->left, intercept_left);
-    if (hit_left == 0 && composite->op != '|') {
+    int hits_left, hits_right;
+    Intersection intercepts_left[MAX_INTERSECTIONS],
+                 intercepts_right[MAX_INTERSECTIONS];
+
+    hits_left = intersect(ray, composite->left, intercepts_left);
+    if (hits_left == 0 && composite->op != '|') {
       return 0;
     }
     else {
-      hit_right = intersect(ray, composite->right, intercept_right);
+      hits_right = intersect(ray, composite->right, intercepts_right);
 
-      intercept = intersectMerge(composite->op, hit_left, intercept_left,
-                                 hit_right, intercept_right);
-      return hit_left + hit_right;
+      int hits = intersectMerge(composite->op, hits_left, intercepts_left,
+                                hits_right, intercepts_right, intercepts);
+      return hits;
     }
   }
   else {
-    // TODO: Handle non spheres...
-    P_FLT * t_values;
-    int intercept_num = (prim->surface->intersect)(ray, &t_values);
+    Primitive * prim = (Primitive *) model;
 
-    if (intercept_num == 0) {
+    // TODO: Handle non spheres...
+    P_FLT t_values[MAX_INTERSECTIONS];
+    int hits = (prim->surface->intersect)(ray, t_values);
+
+    if (hits == 0) {
       return 0;
     }
 
-    for (int i = 0;i < intercept_num;i++) {
-      intercept[i] = Intersection();
-      intercept[i].t = t_values[i];
-      intercept[i].prim = prim;
-      intercept[i].material = prim->material;
-      intercept[i].enter = false;
+    for (int i = 0;i < hits;i++) {
+      intercepts[i] = Intersection();
+      intercepts[i].t = t_values[i];
+      intercepts[i].prim = prim;
+      intercepts[i].material = prim->material;
+      intercepts[i].enter = false;
     }
-    intercept[0].enter = true;
+    intercepts[0].enter = true;
 
-    return intercept_num;
+    return hits;
   }
 }
 
-Intersection * intersectMerge(int op, int hit_left,
-                              Intersection * intercept_left, int hit_right,
-                              Intersection * intercept_right) {
+int intersectMerge(int op, int hit_left, Intersection intercepts_left[],
+                   int hit_right, Intersection intercepts_right[],
+                   Intersection merged[]) {
   // Assume union only for now
   // TODO: Handle non unions
-  Intersection * merged = new Intersection[hit_left + hit_right];
 
-  int left = 0, right = 0;
-  while (left != hit_left && right != hit_right) {
-    if (intercept_left[left].t < intercept_right[right].t) {
-      merged[left + right] = intercept_left[left];
-      left++;
+  int left_index = 0, right_index = 0, index = 0;
+  while (left_index != hit_left &&
+         right_index != hit_right) {
+    if (intercepts_left[left_index].t < intercepts_right[right_index].t) {
+      merged[index] = intercepts_left[left_index];
+      left_index++;
+      index++;
     } else {
-      merged[left + right] = intercept_right[right];
-      right++;
+      merged[index] = intercepts_right[right_index];
+      right_index++;
+      index++;
+    }
+
+    if (index == MAX_INTERSECTIONS) {
+      return MAX_INTERSECTIONS;
     }
   }
 
-  if (left != hit_left) {
-    while (left != hit_left) {
-      merged[left + right] = intercept_left[left];
-      left++;
+  if (left_index != hit_left) {
+    while (left_index != hit_left && index < MAX_INTERSECTIONS) {
+      merged[index] = intercepts_left[left_index];
+      left_index++;
+      index++;
     }
-  } else {
-    while (right != hit_right) {
-      merged[left + right] = intercept_right[right];
-      right++;
+  }
+  else {
+    while (right_index != hit_right) {
+      merged[index] = intercepts_right[right_index];
+      right_index++;
+      index++;
     }
   }
 
-  return merged;
+  return index;
 }
 
 

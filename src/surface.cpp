@@ -12,9 +12,8 @@ void Plane::computeD(const Point &point) {
 }
 
 
-const int Plane::intersect(Ray &ray, P_FLT ** t_values) {
+const int Plane::intersect(Ray &ray, P_FLT t_values[]) {
   P_FLT v_d, v_o, t;
-  *t_values = new P_FLT[1];
 
   v_d = dotProduct(norm, ray.dir);
 
@@ -29,16 +28,14 @@ const int Plane::intersect(Ray &ray, P_FLT ** t_values) {
     return 0;
   }
 
-  (*t_values)[0] = t;
+  t_values[0] = t;
   return 1;
 }
 
 
-const int Sphere::intersect(Ray &ray, P_FLT ** t_values) {
+const int Sphere::intersect(Ray &ray, P_FLT t_values[]) {
   Vector origin_to_center;
   P_FLT oc_sqr, ray_closest_approach, half_chord_squared, half_chord;
-
-  *t_values = new P_FLT[2];
 
   origin_to_center = center - ray.orig;
   ray_closest_approach = dotProduct(origin_to_center, ray.dir);
@@ -57,8 +54,8 @@ const int Sphere::intersect(Ray &ray, P_FLT ** t_values) {
 
   half_chord = sqrt(half_chord_squared);
 
-  (*t_values)[0] = ray_closest_approach - half_chord;
-  (*t_values)[1] = ray_closest_approach + half_chord;
+  t_values[0] = ray_closest_approach - half_chord;
+  t_values[1] = ray_closest_approach + half_chord;
 
   return 2;
 }
