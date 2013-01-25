@@ -2,11 +2,11 @@
 
 #include "color.h"
 #include "intersection.h"
+#include "model.h"
 #include "point.h"
 #include "ray.h"
 #include "scene.h"
 #include "shade.h"
-#include "solid.h"
 #include "surface.h"
 #include "trace.h"
 #include "vector.h"
@@ -15,14 +15,14 @@
 BEGIN_RAYTRACER
 
 
-int intersect(Ray ray, Solid * solid, Intersection * intercept) {
+int intersect(Ray ray, MODEL_CLS * model, Intersection * intercept) {
   int hit_left, hit_right;
   Intersection intercept_left[MAX_INTERSECTIONS],
                intercept_right[MAX_INTERSECTIONS];
 
-  Primitive * prim = (Primitive *) solid;
-  if (solid->composite_flag) {
-    Composite * composite = (Composite *) solid;
+  Primitive * prim = (Primitive *) model;
+  if (model->composite_flag) {
+    Composite * composite = (Composite *) model;
 
     hit_left = intersect(ray, composite->left, intercept_left);
     if (hit_left == 0 && composite->op != '|') {

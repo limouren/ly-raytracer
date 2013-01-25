@@ -11,30 +11,30 @@ BEGIN_RAYTRACER
 
 
 // Ref: An Introduction to Ray Tracing; A.S. Glassner (1989)
-class Solid {
+class MODEL_CLS {
   public:
     int composite_flag;
 
-    Solid(int composite_flag): composite_flag(composite_flag) {}
+    MODEL_CLS(int composite_flag): composite_flag(composite_flag) {}
 };
 
 
-class Composite: Solid {
+class Composite: MODEL_CLS {
   public:
     int op;
-    struct Solid * left;
-    struct Solid * right;
+    struct MODEL_CLS * left;
+    struct MODEL_CLS * right;
 
-    Composite(): Solid(1) {}
+    Composite(): MODEL_CLS(1) {}
 };
 
 
-class Primitive: Solid {
+class Primitive: MODEL_CLS {
   public:
     Material * material;
     Surface * surface;
 
-    Primitive(): Solid(0) {}
+    Primitive(): MODEL_CLS(0) {}
 };
 
 

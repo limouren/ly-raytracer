@@ -11,7 +11,7 @@
 #include "color.h"
 #include "point.h"
 #include "ray.h"
-#include "solid.h"
+#include "model.h"
 #include "trace.h"
 #include "vector.h"
 

@@ -6,14 +6,14 @@
 
 #include "color.h"
 #include "intersection.h"
+#include "model.h"
 #include "ray.h"
-#include "solid.h"
 
 
 BEGIN_RAYTRACER
 
 
-int intersect(Ray ray, Solid * solid, Intersection * intercept);
+int intersect(Ray ray, MODEL_CLS * model, Intersection * intercept);
 
 Intersection * intersectMerge(int op, int hit_left,
                               Intersection * intercept_left, int hit_right,

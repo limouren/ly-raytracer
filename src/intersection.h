@@ -4,7 +4,7 @@
 
 #include "config.h"
 #include "material.h"
-#include "solid.h"
+#include "model.h"
 #include "vector.h"
 
 

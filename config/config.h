@@ -1,11 +1,14 @@
-#ifndef CONSTANTS_H
-#define CONSTANTS_H
+#ifndef CONFIG_H
+#define CONFIG_H
+
 
 #define DEBUG 1
+
 
 #define RAYTRACER_NAMESPACE raytracer
 #define BEGIN_RAYTRACER namespace RAYTRACER_NAMESPACE {
 #define END_RAYTRACER }
+
 
 // Camera Settings
 #define DEFAULT_ASPECT_RATIO 1.33
@@ -21,6 +24,10 @@
 
 // Float comparison epsilon
 #define P_FLT_EPSILON 1.0e-8
+
+
+#define MODEL_CLS model
+
 
 BEGIN_RAYTRACER
 
