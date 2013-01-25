@@ -3,20 +3,23 @@
 
 
 #include "config.h"
-#include "material.h"
-#include "model.h"
-#include "vector.h"
 
 
 BEGIN_RAYTRACER
 
 
+// TODO: Refactor and remove forward declaration
+class Primitive;
+
+
 class Intersection {
   public:
-    P_FLT t;
-    Primitive * prim;
     bool enter;
-    Material * material;
+    P_FLT t;
+    Primitive * primitive;
+
+    Intersection() {}
+    Intersection(P_FLT t, bool enter): t(t), enter(enter) {}
 };
 
 

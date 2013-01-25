@@ -39,22 +39,11 @@ int intersect(Ray ray, MODEL_CLS * model, Intersection intercepts[]) {
     Primitive * prim = (Primitive *) model;
 
     // TODO: Handle non spheres...
-    P_FLT t_values[MAX_INTERSECTIONS];
-    int hits = (prim->surface->intersect)(ray, t_values);
-
-    if (hits == 0) {
-      return 0;
-    }
+    int hits = (prim->surface->intersect)(ray, intercepts);
 
     for (int i = 0;i < hits;i++) {
-      intercepts[i] = Intersection();
-      intercepts[i].t = t_values[i];
-      intercepts[i].prim = prim;
-      intercepts[i].material = prim->material;
-      intercepts[i].enter = false;
+      intercepts[i].primitive = prim;
     }
-    intercepts[0].enter = true;
-
     return hits;
   }
 }
@@ -105,8 +94,8 @@ int intersectMerge(int op, int hit_left, Intersection intercepts_left[],
 C_FLT shadow(Ray ray, P_FLT t) {
   Intersection intercepts[MAX_INTERSECTIONS];
 
-  int intercept_num = intersect(ray, scene.modelRoot, intercepts);
-  if (intercept_num == 0 || intercepts[0].t > t - P_FLT_EPSILON) {
+  int hits = intersect(ray, scene.modelRoot, intercepts);
+  if (hits == 0 || intercepts[0].t > t - P_FLT_EPSILON) {
     return 1.0;
   }
 
@@ -117,11 +106,10 @@ C_FLT shadow(Ray ray, P_FLT t) {
 int trace(int level, C_FLT weight, Ray ray, Color * color) {
   Intersection intercepts[MAX_INTERSECTIONS];
 
-  int intercept_num = intersect(ray, scene.modelRoot, intercepts);
-  if (intercept_num != 0) {
-    Primitive * hit_prim = (intercepts[0].prim);
-
+  int hits = intersect(ray, scene.modelRoot, intercepts);
+  if (hits != 0) {
     Point first_intercept = ray.rayPoint(intercepts[0].t);
+    Primitive * hit_prim = intercepts[0].primitive;
     Vector normal = (hit_prim->surface->normalAt)(first_intercept);
     if (dotProduct(ray.dir, normal) > 0.0) {
       normal *= -1;

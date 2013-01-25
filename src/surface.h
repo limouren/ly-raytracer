@@ -3,6 +3,7 @@
 
 #include "config.h"
 
+#include "intersection.h"
 #include "point.h"
 #include "ray.h"
 #include "vector.h"
@@ -13,16 +14,13 @@ BEGIN_RAYTRACER
 
 class Surface {
   public:
-    virtual const int intersect(Ray &ray, P_FLT * t_values) = 0;
-    virtual const Vector normalAt(Point &point) = 0;
+    virtual const int intersect(Ray &ray, Intersection intercepts[]) {}
+    virtual const Vector normalAt(Point &point) {}
 };
 
 
 // Plane surfaces
 class Plane: Surface {
-  protected:
-    void computeD(const Point &point);
-
   public:
     // A plane is denoted by Ax+By+Cz+D = 0
     P_FLT d; // D
@@ -34,10 +32,10 @@ class Plane: Surface {
       norm = vector;
       norm.normalize();
 
-      computeD(point);
+      d = - dotProduct(point, vector);
     }
 
-    virtual const int intersect(Ray &ray, P_FLT * t_values);
+    virtual const int intersect(Ray &ray, Intersection intercepts[]);
     virtual const Vector normalAt(Point &point) {
       return norm;
     }
@@ -48,30 +46,29 @@ class Plane: Surface {
 class Polygon: Plane {
   public:
     int vertex_num;
-    Point ** vertices;
+    Point * vertex;
 
-    Polygon(Point ** points, int point_num): vertex_num(point_num) {
-      if (point_num < 3) {
+    Polygon(int point_num, Point * points):
+      vertex_num(point_num) {
+      if (vertex_num < 3) {
         // Raise exception
       }
 
       // Compute norm
-      norm = crossProduct(*points[1] - *points[0], *points[2] - *points[0]);
-      norm.normalize();
+      norm = crossProduct(points[1] - points[0],
+                          points[2] - points[0]);
 
-      vertices = new Point*[vertex_num];
+      vertex = new Point[vertex_num];
       for(int i = 0;i < vertex_num;i++) {
-        vertices[i] = points[i];
+        vertex[i] = points[i];
       }
-
-      computeD(*vertices[0]);
     };
 
     ~Polygon() {
-      delete vertices;
+      delete vertex;
     }
 
-    virtual const int intersect(Ray &ray, P_FLT * t_values);
+    virtual const int intersect(Ray &ray, Intersection intercepts[]);
 };
 
 
@@ -87,7 +84,7 @@ class Sphere: Surface {
     }
     Sphere(Point center, P_FLT radius): center(center), radius(radius) {}
 
-    const int intersect(Ray &ray, P_FLT * t_values);
+    const int intersect(Ray &ray, Intersection intercepts[]);
     const Vector normalAt(Point &point);
 };
 

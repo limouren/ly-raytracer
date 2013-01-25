@@ -1,4 +1,6 @@
-#include "math.h"
+#include <math.h>
+
+#include "config.h"
 
 #include "math_util.h"
 #include "surface.h"
@@ -7,12 +9,7 @@
 BEGIN_RAYTRACER
 
 
-void Plane::computeD(const Point &point) {
-  d = -dotProduct(norm, point);
-}
-
-
-const int Plane::intersect(Ray &ray, P_FLT t_values[]) {
+const int Plane::intersect(Ray &ray, Intersection intercepts[]) {
   P_FLT v_d, v_o, t;
 
   v_d = dotProduct(norm, ray.dir);
@@ -28,12 +25,12 @@ const int Plane::intersect(Ray &ray, P_FLT t_values[]) {
     return 0;
   }
 
-  t_values[0] = t;
+  intercepts[0] = Intersection(t, v_d < 0.0);
   return 1;
 }
 
 
-const int Sphere::intersect(Ray &ray, P_FLT t_values[]) {
+const int Sphere::intersect(Ray &ray, Intersection intercepts[]) {
   Vector origin_to_center;
   P_FLT oc_sqr, ray_closest_approach, half_chord_squared, half_chord;
 
@@ -54,8 +51,8 @@ const int Sphere::intersect(Ray &ray, P_FLT t_values[]) {
 
   half_chord = sqrt(half_chord_squared);
 
-  t_values[0] = ray_closest_approach - half_chord;
-  t_values[1] = ray_closest_approach + half_chord;
+  intercepts[0] = Intersection(ray_closest_approach - half_chord, true);
+  intercepts[1] = Intersection(ray_closest_approach + half_chord, false);
 
   return 2;
 }

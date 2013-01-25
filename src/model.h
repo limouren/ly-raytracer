@@ -1,5 +1,5 @@
-#ifndef SOLID_H
-#define SOLID_H
+#ifndef MODEL_H
+#define MODEL_H
 
 
 #include "config.h"
@@ -26,6 +26,7 @@ class Composite: MODEL_CLS {
     MODEL_CLS * left;
     MODEL_CLS * right;
 
+    Composite(): MODEL_CLS(1) {}
     Composite(MODEL_CLS * left, MODEL_CLS * right):
       left(left), right(right), MODEL_CLS(1) {
       op = '|';
@@ -38,6 +39,7 @@ class Primitive: MODEL_CLS {
     Material * material;
     Surface * surface;
 
+    Primitive(): MODEL_CLS(0) {}
     Primitive(Material * material, Surface * surface):
       material(material), surface(surface), MODEL_CLS(0) {
     }
