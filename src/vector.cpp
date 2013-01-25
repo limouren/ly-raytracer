@@ -110,4 +110,11 @@ const P_FLT Vector::normalize() {
 }
 
 
+const Vector Vector::negate() {
+  x = -x;
+  y = -y;
+  z = -z;
+}
+
+
 END_RAYTRACER

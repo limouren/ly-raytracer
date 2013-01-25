@@ -67,8 +67,11 @@ class Screen {
 
       Point center = camera.viewpoint + dir;
       Point top_left = center + top - right;
+
       Vector i_step = right / (float)(width / 2);
-      Vector j_step = top / (float)(height / 2) * -1.0;
+      Vector j_step = (top / (float)(height / 2));
+      j_step.negate();
+
       Vector top_left_pixel = top_left - camera.viewpoint +
                               (i_step * 0.5) + (j_step * 0.5);
 

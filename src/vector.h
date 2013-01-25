@@ -38,6 +38,7 @@ class Vector {
     const P_FLT length() const;
     const P_FLT lengthSqr() const;
     const P_FLT normalize();
+    const Vector negate();
 };
 
 

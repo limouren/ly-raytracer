@@ -112,7 +112,7 @@ int trace(int level, C_FLT weight, Ray ray, Color * color) {
     Primitive * hit_prim = intercepts[0].primitive;
     Vector normal = (hit_prim->surface->normalAt)(first_intercept);
     if (dotProduct(ray.dir, normal) > 0.0) {
-      normal *= -1;
+      normal.negate();
     }
 
     shade(level, weight, first_intercept, normal, ray.dir, intercepts, color);
