@@ -28,29 +28,28 @@ class Scene {
     }
 
     void init_lights() {
-      Light * light1 = new Light(Point(1.5, 0.5, 0.0), Color(1.0, 1.0, 1.0),
-                                 1.0);
-      //Light * light2 = new Light(Point(-1.5, 0.5, 0.0), Color(1.0, 1.0, 1.0),
-      //                           1.0);
+      Light * light1 = new Light(Point(1.5, 0.5, 0.0), Color(1.0, 1.0, 1.0));
+      Light * light2 = new Light(Point(-1.5, 0.5, 0.0), Color(1.0, 1.0, 1.0));
       lights.push_back(light1);
-      //lights.push_back(light2);
+      lights.push_back(light2);
     }
 
     void init_models_and_materials() {
-      Primitive * ball = new Primitive();
-
       Material * red_plastic = new Material(Coeff(0.2, 0.2, 0.2),
                                             Coeff(0.8, 0.2, 0.2),
                                             Coeff(0.5, 0.5, 0.5),
-                                            Color(),
                                             0.6);
       materials.push_back(red_plastic);
-      ball->material = red_plastic;
 
-      Sphere * sphere = new Sphere(0.0, 0.0, 3.0, 1.0);
-      ball->surface = (Surface *)sphere;
+      Surface * sphere1 = (Surface *) new Sphere(-2.0, 0.0, 3.0, 1.0);
+      //Surface * sphere2 = (Surface *) new Sphere(2.0, 0.0, 3.0, 1.0);
 
-      modelRoot = (MODEL_CLS *)ball;
+      MODEL_CLS * ball1 = (MODEL_CLS *) new Primitive(red_plastic, sphere1);
+      //MODEL_CLS * ball2 = (MODEL_CLS *) new Primitive(red_plastic, sphere2);
+
+      //Composite * root = (MODEL_CLS *) new Composite(ball1, ball2);
+
+      modelRoot = ball1;
     }
 
     Scene() {
