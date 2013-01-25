@@ -21,39 +21,17 @@ BEGIN_RAYTRACER
 
 class Screen {
   public:
-    Color * pixels[width][height];
-
-    void calibrate() {
-      C_FLT factor = 0.0;
-      for (int i = 0;i < width;i++) {
-        for (int j = 0;j < height;j++) {
-          if (pixels[i][j]->r > factor) {
-            factor = pixels[i][j]->r;
-          }
-          if (pixels[i][j]->g > factor) {
-            factor = pixels[i][j]->g;
-          }
-          if (pixels[i][j]->b > factor) {
-            factor = pixels[i][j]->b;
-          }
-        }
-      }
-
-      if (factor > 1.0) {
-        factor = 1.0 / factor;
-        for (int i = 0;i < width;i++) {
-          for (int j = 0;j < height;j++) {
-            (*pixels[i][j]) *= factor;
-          }
-        }
-        printf("Calbiration complete.\n");
-      }
-      else {
-        printf("Calbiration not required.\n");
-      }
-    }
+    Color *** pixels;
+    int height, width;
 
     Screen() {
+      height = image_height * INT_RES_FACTOR;
+      width = image_width * INT_RES_FACTOR;
+      pixels = new Color ** [width];
+      for (int i = 0;i < width;i++) {
+        pixels[i] = new Color * [height];
+      }
+
       Vector dir = camera.target - camera.viewpoint;
       dir.normalize();
 
@@ -93,19 +71,8 @@ class Screen {
       calibrate();
     }
 
-    void save() {
-      bitmap_image image(width, height);
-      for (int i = 0;i < width;i++) {
-        for (int j = 0;j < height;j++) {
-          int r = int(pixels[i][j]->r * 255 + 0.5);
-          int g = int(pixels[i][j]->g * 255 + 0.5);
-          int b = int(pixels[i][j]->b * 255 + 0.5);
-
-          image.set_pixel(i, j, r, g, b);
-        }
-      }
-      image.save_image("out/output.bmp");
-    }
+    void calibrate();
+    void save();
 };
 
 

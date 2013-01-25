@@ -42,6 +42,11 @@ class Vector {
 };
 
 
+const Vector operator -(const Vector &vector) {
+  return Vector(vector.x, vector.y, vector.z);
+}
+
+
 const Vector crossProduct(const Vector &u, const Vector &v) {
   return Vector(u.y * v.z - u.z * v.y,
                 u.z * v.x - u.x * v.z,

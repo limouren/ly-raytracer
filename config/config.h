@@ -27,6 +27,8 @@
 
 
 #define MODEL_CLS model
+// Internal resolution factor for sampling
+#define INT_RES_FACTOR 3
 
 
 BEGIN_RAYTRACER
@@ -39,9 +41,8 @@ typedef float C_FLT;
 typedef double P_FLT;
 
 
-const int height = 600;
-const int width = 800;
-
+const int image_height = 600;
+const int image_width = 800;
 
 END_RAYTRACER
 
