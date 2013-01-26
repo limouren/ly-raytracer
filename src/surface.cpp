@@ -37,7 +37,7 @@ const int Sphere::intersect(const Ray &ray, Intercept intercepts[]) {
   origin_to_center = center - ray.orig;
   ray_closest_approach = dotProduct(origin_to_center, ray.dir);
 
-  if (ray_closest_approach < 0) {
+  if (fLessThan(ray_closest_approach, 0.0)) {
     return 0;
   }
 
@@ -46,7 +46,7 @@ const int Sphere::intersect(const Ray &ray, Intercept intercepts[]) {
   half_chord_squared = (radius * radius) - oc_sqr +
     (ray_closest_approach * ray_closest_approach);
 
-  if (half_chord_squared < 0) {
+  if (fLessThan(half_chord_squared, 0.0)) {
     return 0;
   }
 
