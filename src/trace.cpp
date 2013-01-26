@@ -98,18 +98,6 @@ int intersectMerge(int op, int hit_left, Intercept intercepts_left[],
 }
 
 
-C_FLT shadow(const Ray &ray, P_FLT t) {
-  Intercept intercepts[MAX_INTERSECTIONS];
-
-  int hits = intersect(ray, scene.modelRoot, intercepts, NULL);
-  if (hits == 0 || fGreaterThan(intercepts[0].t, t)) {
-    return 1.0;
-  }
-
-  return 0.0;
-}
-
-
 int trace(int level, C_FLT weight, const Ray &ray, Color * color) {
   Intercept intercepts[MAX_INTERSECTIONS];
 

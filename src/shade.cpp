@@ -20,6 +20,18 @@
 BEGIN_RAYTRACER
 
 
+C_FLT shadow(const Ray &ray, P_FLT t, Material * material) {
+  Intercept intercepts[MAX_INTERSECTIONS];
+
+  int hits = intersect(ray, scene.modelRoot, intercepts, material);
+  if (hits == 0 || intercepts[0].t > t) {
+    return 1.0;
+  }
+
+  return 0.0;
+}
+
+
 int specularDirection(const Vector &incident, const Vector &normal,
                       Vector &result) {
   result = incident - (normal * dotProduct(normal, incident) * 2);
@@ -65,12 +77,12 @@ void shade(int &level, C_FLT weight, const Point &point, const Vector &normal,
 
     Vector pointToLight = light->orig - point;
 
-    P_FLT distance_to_light = pointToLight.normalize();
+    P_FLT distanceToLight = pointToLight.normalize();
     Ray rayToLight(point, pointToLight);
 
     P_FLT rayDotNormal = dotProduct(pointToLight, normal);
     if (rayDotNormal > 0.0 &&
-        shadow(rayToLight, distance_to_light) > 0.0) {
+        shadow(rayToLight, distanceToLight, material) > 0.0) {
 
       // Light source diffuse reflection
       *color += light->color * material->diffuse * rayDotNormal;

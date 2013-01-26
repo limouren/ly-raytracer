@@ -17,6 +17,9 @@ void shade(int level, C_FLT weight, const Point point, const Vector normal,
 
 void shadeBackground(const Ray &ray, Color * color);
 
+C_FLT shadow(const Ray &ray, P_FLT t, Material * material);
+
+
 END_RAYTRACER
 
 
