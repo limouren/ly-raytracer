@@ -2,6 +2,8 @@
 #define MATERIAL_H
 
 
+#include <string>
+
 #include "config.h"
 
 #include "color.h"
@@ -12,18 +14,22 @@ BEGIN_RAYTRACER
 
 class Material {
   public:
-    Coeff ambience,
-          diffuse,
-          specular,
-          transmission;
+    std::string name;
 
     C_FLT attenuation,
           refraction,
           roughness;
 
-    Material(Coeff ambience, Coeff diffuse, Coeff specular, P_FLT roughness):
-             ambience(ambience), diffuse(diffuse), specular(specular),
-             roughness(roughness) {
+    Coeff ambience,
+          diffuse,
+          specular,
+          transmission;
+
+    Material(std::string name, Coeff ambience, Coeff diffuse, Coeff specular,
+             Coeff transmission, C_FLT refraction, C_FLT roughness):
+             name(name), ambience(ambience), diffuse(diffuse),
+             specular(specular), transmission(transmission),
+             refraction(refraction), roughness(roughness) {
     }
 };
 
