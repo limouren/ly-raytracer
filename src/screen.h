@@ -99,7 +99,9 @@ class Screen {
 
     void calibrate();
     void rayTrace();
-    void save();
+    void saveBmp();
+    void saveJpg();
+    void savePng();
 };
 
 

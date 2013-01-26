@@ -27,7 +27,7 @@ int main() {
 
   Screen screen = Screen();
   screen.rayTrace();
-  screen.save();
+  screen.saveBmp();
 
   return 0;
 }

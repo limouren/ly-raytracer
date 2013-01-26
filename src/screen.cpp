@@ -99,7 +99,7 @@ void Screen::rayTrace() {
 }
 
 
-void Screen::save() {
+void Screen::saveBmp() {
   bitmap_image bmp_image(image_width, image_height);
   for (int i = 0;i < image_width;i++) {
     for (int j = 0;j < image_height;j++) {
