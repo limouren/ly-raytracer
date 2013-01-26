@@ -1,7 +1,7 @@
 # Compiler
 CXX = g++
 CFLAGS = $(MISC_FLAGS) $(includes)
-MISC_FLAGS = -lpthread -std=c++0x
+MISC_FLAGS = -pthread -std=c++0x
 DEBUG_FLAGS = -ggdb
 VPATH = $(SRC_DIR):$(TEST_DIR)
 
