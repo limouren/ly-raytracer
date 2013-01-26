@@ -51,10 +51,15 @@ const int Sphere::intersect(Ray &ray, Intercept intercepts[]) {
 
   half_chord = sqrt(half_chord_squared);
 
-  intercepts[0] = Intercept(ray_closest_approach - half_chord, true);
-  intercepts[1] = Intercept(ray_closest_approach + half_chord, false);
-
-  return 2;
+  if (ray_closest_approach > half_chord) {
+    intercepts[0] = Intercept(ray_closest_approach - half_chord, true);
+    intercepts[1] = Intercept(ray_closest_approach + half_chord, false);
+    return 2;
+  }
+  else {
+    intercepts[0] = Intercept(ray_closest_approach + half_chord, false);
+    return 1;
+  }
 }
 
 const Vector Sphere::normalAt(Point &point) {
