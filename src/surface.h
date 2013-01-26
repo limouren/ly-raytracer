@@ -14,8 +14,8 @@ BEGIN_RAYTRACER
 
 class Surface {
   public:
-    virtual const int intersect(Ray &ray, Intercept intercepts[]) {}
-    virtual const Vector normalAt(Point &point) {}
+    virtual const int intersect(const Ray &ray, Intercept intercepts[]) {}
+    virtual const Vector normalAt(const Point &point) {}
 };
 
 
@@ -35,8 +35,8 @@ class Plane: Surface {
       d = - dotProduct(point, vector);
     }
 
-    virtual const int intersect(Ray &ray, Intercept intercepts[]);
-    virtual const Vector normalAt(Point &point) {
+    virtual const int intersect(const Ray &ray, Intercept intercepts[]);
+    virtual const Vector normalAt(const Point &point) {
       return norm;
     }
 };
@@ -68,7 +68,7 @@ class Polygon: Plane {
       delete vertex;
     }
 
-    virtual const int intersect(Ray &ray, Intercept intercepts[]);
+    virtual const int intersect(const Ray &ray, Intercept intercepts[]);
 };
 
 
@@ -84,8 +84,8 @@ class Sphere: Surface {
     }
     Sphere(Point center, P_FLT radius): center(center), radius(radius) {}
 
-    const int intersect(Ray &ray, Intercept intercepts[]);
-    const Vector normalAt(Point &point);
+    const int intersect(const Ray &ray, Intercept intercepts[]);
+    const Vector normalAt(const Point &point);
 };
 
 

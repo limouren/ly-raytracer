@@ -9,7 +9,7 @@
 BEGIN_RAYTRACER
 
 
-const int Plane::intersect(Ray &ray, Intercept intercepts[]) {
+const int Plane::intersect(const Ray &ray, Intercept intercepts[]) {
   P_FLT v_d, v_o, t;
 
   v_d = dotProduct(norm, ray.dir);
@@ -30,9 +30,9 @@ const int Plane::intersect(Ray &ray, Intercept intercepts[]) {
 }
 
 
-const int Sphere::intersect(Ray &ray, Intercept intercepts[]) {
+const int Sphere::intersect(const Ray &ray, Intercept intercepts[]) {
   Vector origin_to_center;
-  P_FLT oc_sqr, ray_closest_approach, half_chord_squared, half_chord;
+  P_FLT oc_sqr, ray_closest_approach, half_chord_squared, half_chord, t;
 
   origin_to_center = center - ray.orig;
   ray_closest_approach = dotProduct(origin_to_center, ray.dir);
@@ -42,6 +42,7 @@ const int Sphere::intersect(Ray &ray, Intercept intercepts[]) {
   }
 
   oc_sqr = origin_to_center.lengthSqr();
+
   half_chord_squared = (radius * radius) - oc_sqr +
     (ray_closest_approach * ray_closest_approach);
 
@@ -51,7 +52,7 @@ const int Sphere::intersect(Ray &ray, Intercept intercepts[]) {
 
   half_chord = sqrt(half_chord_squared);
 
-  if (ray_closest_approach > half_chord) {
+  if (fGreaterThan(ray_closest_approach, half_chord)) {
     intercepts[0] = Intercept(ray_closest_approach - half_chord, true);
     intercepts[1] = Intercept(ray_closest_approach + half_chord, false);
     return 2;
@@ -62,7 +63,7 @@ const int Sphere::intersect(Ray &ray, Intercept intercepts[]) {
   }
 }
 
-const Vector Sphere::normalAt(Point &point) {
+const Vector Sphere::normalAt(const Point &point) {
   Vector center_to_point = point - center;
   center_to_point.normalize();
 

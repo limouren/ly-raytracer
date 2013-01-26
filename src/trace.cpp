@@ -15,7 +15,8 @@
 BEGIN_RAYTRACER
 
 
-int intersect(Ray &ray, MODEL_CLS * model, Intercept intercepts[]) {
+int intersect(const Ray &ray, const MODEL_CLS * model, Intercept intercepts[],
+              Material * entryMaterial) {
   if (model->composite_flag) {
     Composite * composite = (Composite *) model;
 
@@ -23,12 +24,14 @@ int intersect(Ray &ray, MODEL_CLS * model, Intercept intercepts[]) {
     Intercept intercepts_left[MAX_INTERSECTIONS],
                  intercepts_right[MAX_INTERSECTIONS];
 
-    hits_left = intersect(ray, composite->left, intercepts_left);
+    hits_left = intersect(ray, composite->left, intercepts_left,
+                          entryMaterial);
     if (hits_left == 0 && composite->op != '|') {
       return 0;
     }
     else {
-      hits_right = intersect(ray, composite->right, intercepts_right);
+      hits_right = intersect(ray, composite->right, intercepts_right,
+                             entryMaterial);
 
       int hits = intersectMerge(composite->op, hits_left, intercepts_left,
                                 hits_right, intercepts_right, intercepts);
@@ -40,9 +43,13 @@ int intersect(Ray &ray, MODEL_CLS * model, Intercept intercepts[]) {
 
     // TODO: Handle non spheres...
     int hits = (prim->surface->intersect)(ray, intercepts);
-
-    for (int i = 0;i < hits;i++) {
-      intercepts[i].primitive = prim;
+    if (hits) {
+      intercepts[0].material = entryMaterial;
+      intercepts[0].primitive = prim;
+      for (int i = 1;i < hits;i++) {
+        intercepts[i].material = prim->material;
+        intercepts[i].primitive = prim;
+      }
     }
     return hits;
   }
@@ -91,11 +98,11 @@ int intersectMerge(int op, int hit_left, Intercept intercepts_left[],
 }
 
 
-C_FLT shadow(Ray &ray, P_FLT t) {
+C_FLT shadow(const Ray &ray, P_FLT t) {
   Intercept intercepts[MAX_INTERSECTIONS];
 
-  int hits = intersect(ray, scene.modelRoot, intercepts);
-  if (hits == 0 || intercepts[0].t > t - P_FLT_EPSILON) {
+  int hits = intersect(ray, scene.modelRoot, intercepts, NULL);
+  if (hits == 0 || fGreaterThan(intercepts[0].t, t)) {
     return 1.0;
   }
 
@@ -103,10 +110,10 @@ C_FLT shadow(Ray &ray, P_FLT t) {
 }
 
 
-int trace(int level, C_FLT weight, Ray &ray, Color * color) {
+int trace(int level, C_FLT weight, const Ray &ray, Color * color) {
   Intercept intercepts[MAX_INTERSECTIONS];
 
-  int hits = intersect(ray, scene.modelRoot, intercepts);
+  int hits = intersect(ray, scene.modelRoot, intercepts, NULL);
   if (hits != 0) {
     Point first_intercept = ray.rayPoint(intercepts[0].t);
     Primitive * hit_prim = intercepts[0].primitive;
@@ -118,11 +125,10 @@ int trace(int level, C_FLT weight, Ray &ray, Color * color) {
     shade(level, weight, first_intercept, normal, ray.dir, intercepts, color);
     return 1;
   }
-
-  if (level > MAX_LEVEL || weight < MIN_WEIGHT) {
+  else {
+    shadeBackground(ray, color);
     return 0;
   }
-  return 0;
 }
 
 
