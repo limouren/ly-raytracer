@@ -1,6 +1,10 @@
 #ifndef COLOR_H
 #define COLOR_H
 
+
+#include <math.h>
+
+
 #include "config.h"
 
 
@@ -18,6 +22,13 @@ class Coeff {
 
     C_FLT magnitude() {
       return (r * 0.299)  + (g * 0.587) + (b * 0.114);
+    }
+
+    const Coeff exp(P_FLT exponent) {
+      Coeff result(pow(r, exponent),
+                   pow(g, exponent),
+                   pow(b, exponent));
+      return result;
     }
 };
 
