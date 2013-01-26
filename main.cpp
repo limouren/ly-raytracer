@@ -26,6 +26,7 @@ int main() {
   ReadScene();
 
   Screen screen = Screen();
+  screen.rayTrace();
   screen.save();
 
   return 0;

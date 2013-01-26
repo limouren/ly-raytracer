@@ -4,6 +4,8 @@
 
 #define DEBUG 1
 
+#define THREAD_NUM 4
+
 
 #define RAYTRACER_NAMESPACE raytracer
 #define BEGIN_RAYTRACER namespace RAYTRACER_NAMESPACE {
@@ -20,7 +22,7 @@
 #define MAX_INTERSECTIONS 4
 
 // Max raytrace recurse depth
-#define MAX_LEVEL 2
+#define MAX_LEVEL 4
 
 // Float comparison epsilon
 #define P_FLT_EPSILON 1.0e-8
@@ -28,7 +30,7 @@
 
 #define MODEL_CLS model
 // Internal resolution factor for sampling
-#define INT_RES_FACTOR 3
+#define INT_RES_FACTOR 1
 
 
 BEGIN_RAYTRACER
