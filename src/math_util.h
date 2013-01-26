@@ -11,21 +11,36 @@
 BEGIN_RAYTRACER
 
 
-const bool fEqual(P_FLT float_a, P_FLT float_b, P_FLT epsilon) {
-  P_FLT margin = 0.5 * epsilon * (float_a + float_b);
-  return fabs(float_a - float_b) < margin;
+const bool fEqual(P_FLT &pFltA, P_FLT &pFltB, P_FLT epsilon) {
+  return fabs(pFltA - pFltB) < epsilon * pFltA;
 }
 
-const bool fEqual(P_FLT float_a, P_FLT float_b) {
-  return fEqual(float_a, float_b, P_FLT_EPSILON);
+const bool fEqual(P_FLT pFltA, P_FLT pFltB) {
+  return fEqual(pFltA, pFltB, P_FLT_EPSILON);
 }
 
-const bool fIsZero(P_FLT p_flt, P_FLT epsilon) {
-  return fabs(p_flt) < (p_flt * epsilon);
+const bool fIsZero(P_FLT &pFlt, P_FLT epsilon) {
+  return fabs(pFlt) < (pFlt * epsilon);
 }
 
-const bool fIsZero(P_FLT p_flt) {
-  return fIsZero(p_flt, P_FLT_EPSILON);
+const bool fIsZero(P_FLT pFlt) {
+  return fIsZero(pFlt, P_FLT_EPSILON);
+}
+
+const bool fGreaterThan(P_FLT &pFltA, P_FLT &pFltB, P_FLT epsilon) {
+  return pFltA - pFltB > fabs(pFltA * P_FLT_EPSILON);
+}
+
+const bool fGreaterThan(P_FLT pFltA, P_FLT pFltB) {
+  return fGreaterThan(pFltA, pFltB, P_FLT_EPSILON);
+}
+
+const bool fLessThan(P_FLT &pFltA, P_FLT &pFltB, P_FLT epsilon) {
+  return pFltA - pFltB < fabs(pFltA * P_FLT_EPSILON);
+}
+
+const bool fLessThan(P_FLT pFltA, P_FLT pFltB) {
+  return fLessThan(pFltA, pFltB, P_FLT_EPSILON);
 }
 
 
