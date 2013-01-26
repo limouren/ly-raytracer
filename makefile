@@ -1,6 +1,6 @@
 # Compiler
 CXX = g++
-CFLAGS = $(MISC_FLAGS) $(includes)
+CFLAGS = $(MISC_FLAGS) $(INCLUDES) $(DEBUG_FLAGS)
 MISC_FLAGS = -pthread -std=c++0x
 DEBUG_FLAGS = -ggdb
 VPATH = $(SRC_DIR):$(TEST_DIR)
@@ -11,8 +11,8 @@ CONFIG_DIR = config
 SRC_DIR = src
 TEST_DIR = tests
 
-includes = $(include_config) $(include_libs) $(include_dirs)
-include_config = -I$(CONFIG_DIR)
+INCLUDES = $(INCLUDE_CONFIG) $(INCLUDE_DIRS) $(INCLUDE_LIBS)
+INCLUDE_CONFIG = -I$(CONFIG_DIR)
 
 
 OBJS := $(patsubst %.h,%.o,$(wildcard $(SRC_DIR)/*.h))
@@ -21,8 +21,8 @@ tests = $(wildcard $(TEST_DIR)/*_test.cpp)
 
 THIRD_PARTY_DIRS = $(wildcard 3rdparty/*/latest/)
 
-include_libs = $(foreach includedir,$(THIRD_PARTY_DIRS), -I$(includedir))
-include_dirs = -I$(SRC_DIR)
+INCLUDE_LIBS = $(foreach INCLUDEDIR,$(THIRD_PARTY_DIRS), -I$(INCLUDEDIR))
+INCLUDE_DIRS = -I$(SRC_DIR)
 
 .PHONY : tests
 tests: $(O_DIR)/run_tests
