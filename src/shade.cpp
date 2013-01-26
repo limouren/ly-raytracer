@@ -55,8 +55,9 @@ void shade(int &level, C_FLT &weight, Point &point, Vector &normal,
     }
   }
 
-  if (level < MAX_LEVEL && weight > MIN_WEIGHT) {
-    P_FLT specWeight = material->specular.luminance() * weight;
+  if (level < MAX_LEVEL) {
+    // Reflected specular
+    C_FLT specWeight = material->specular.magnitude() * weight;
     if (specWeight > MIN_WEIGHT) {
       Ray specRay(point, refDir(incident, normal));
       Color specColor(0.0, 0.0, 0.0);
@@ -67,6 +68,7 @@ void shade(int &level, C_FLT &weight, Point &point, Vector &normal,
     }
   }
 }
+
 
 END_RAYTRACER
 
