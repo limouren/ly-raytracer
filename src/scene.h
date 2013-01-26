@@ -32,8 +32,8 @@ class Scene {
       Light * light2 = new Light(Point(1.5, 3.5, 0.0), Color(1.0, 1.0, 1.0));
       Light * light3 = new Light(Point(0.0, 5.0, 0.0), Color(1.0, 1.0, 1.0));
 
-      //lights.push_back(light1);
-      //lights.push_back(light2);
+      lights.push_back(light1);
+      lights.push_back(light2);
       lights.push_back(light3);
     }
 

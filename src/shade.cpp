@@ -26,8 +26,8 @@ const Vector refDir(Vector incident, Vector normal) {
 }
 
 
-void shade(int level, C_FLT weight, Point point, Vector normal,
-           Vector incident, Intercept * intercepts, Color * color) {
+void shade(int &level, C_FLT &weight, Point &point, Vector &normal,
+           Vector &incident, Intercept * intercepts, Color * color) {
   Material * material = intercepts[0].primitive->material;
 
   *color += scene.ambience * material->ambience;

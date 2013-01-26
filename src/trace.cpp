@@ -15,7 +15,7 @@
 BEGIN_RAYTRACER
 
 
-int intersect(Ray ray, MODEL_CLS * model, Intercept intercepts[]) {
+int intersect(Ray &ray, MODEL_CLS * model, Intercept intercepts[]) {
   if (model->composite_flag) {
     Composite * composite = (Composite *) model;
 
@@ -91,7 +91,7 @@ int intersectMerge(int op, int hit_left, Intercept intercepts_left[],
 }
 
 
-C_FLT shadow(Ray ray, P_FLT t) {
+C_FLT shadow(Ray &ray, P_FLT t) {
   Intercept intercepts[MAX_INTERSECTIONS];
 
   int hits = intersect(ray, scene.modelRoot, intercepts);
@@ -103,7 +103,7 @@ C_FLT shadow(Ray ray, P_FLT t) {
 }
 
 
-int trace(int level, C_FLT weight, Ray ray, Color * color) {
+int trace(int level, C_FLT weight, Ray &ray, Color * color) {
   Intercept intercepts[MAX_INTERSECTIONS];
 
   int hits = intersect(ray, scene.modelRoot, intercepts);
