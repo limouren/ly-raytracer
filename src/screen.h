@@ -23,7 +23,7 @@ class PixelTask {
     Ray ray;
 
     PixelTask() {}
-    PixelTask(Color * color, Ray &ray): color(color), ray(ray) {}
+    PixelTask(Color &color, Ray &ray): color(&color), ray(ray) {}
 
     int run() {
       return trace(0, 1.0, ray, color);
@@ -85,16 +85,17 @@ PixelTasks * pixelTasks;
 
 class Screen {
   public:
-    Color *** pixels;
+    Color * pixels;
     int height, width;
 
     Screen() {
       height = image_height * INT_RES_FACTOR;
       width = image_width * INT_RES_FACTOR;
-      pixels = new Color ** [width];
-      for (int i = 0;i < width;i++) {
-        pixels[i] = new Color * [height];
-      }
+      pixels = new Color [height * width];
+    }
+
+    ~Screen() {
+      delete pixels;
     }
 
     void calibrate();

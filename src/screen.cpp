@@ -17,14 +17,14 @@ void Screen::calibrate() {
   C_FLT factor = 0.0;
   for (int i = 0;i < width;i++) {
     for (int j = 0;j < height;j++) {
-      if (pixels[i][j]->r > factor) {
-        factor = pixels[i][j]->r;
+      if (pixels[j*width + i].r > factor) {
+        factor = pixels[j*width + i].r;
       }
-      if (pixels[i][j]->g > factor) {
-        factor = pixels[i][j]->g;
+      if (pixels[j*width + i].g > factor) {
+        factor = pixels[j*width + i].g;
       }
-      if (pixels[i][j]->b > factor) {
-        factor = pixels[i][j]->b;
+      if (pixels[j*width + i].b > factor) {
+        factor = pixels[j*width + i].b;
       }
     }
   }
@@ -33,7 +33,7 @@ void Screen::calibrate() {
     factor = 1.0 / factor;
     for (int i = 0;i < width;i++) {
       for (int j = 0;j < height;j++) {
-        (*pixels[i][j]) *= factor;
+        pixels[j*width + i] *= factor;
       }
     }
     printf("Calbiration complete.\n");
@@ -78,8 +78,7 @@ void Screen::rayTrace() {
                        (i_step * (P_FLT)i) + (j_step * (P_FLT)j);
       ray_dir.normalize();
       Ray ray(camera.viewpoint, ray_dir);
-      pixels[i][j] = new Color();
-      PixelTask task(pixels[i][j], ray);
+      PixelTask task(pixels[j*width + i], ray);
 
       pixelTasks->insertTask(task);
     }
@@ -101,13 +100,18 @@ void Screen::rayTrace() {
 
 void Screen::saveBmp() {
   bitmap_image bmp_image(image_width, image_height);
+
+  int new_i, new_j;
   for (int i = 0;i < image_width;i++) {
     for (int j = 0;j < image_height;j++) {
       Color color(0.0, 0.0, 0.0);
 
       for (int m = 0;m < INT_RES_FACTOR;m++) {
         for (int n = 0;n < INT_RES_FACTOR;n++) {
-          color += *(pixels[i * INT_RES_FACTOR + m][j * INT_RES_FACTOR + n]);
+          new_i = i * INT_RES_FACTOR + m;
+          new_j = j * INT_RES_FACTOR + n;
+
+          color += pixels[new_j*width + new_i];
         }
       }
       color *= 1.0 / (float)(INT_RES_FACTOR * INT_RES_FACTOR);
