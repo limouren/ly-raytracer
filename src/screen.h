@@ -61,7 +61,7 @@ class PixelTasks {
 
       pthread_mutex_lock(&tasks_mutex);
       while (task_index > 0) {
-        current_task = task_index;
+        current_task = task_index - 1;
         task_index--;
         pthread_mutex_unlock(&tasks_mutex);
 
