@@ -14,7 +14,7 @@ class Light {
     Color color;
     Point orig;
 
-    Light(Point orig, Color color):
+    Light(const Point &orig, const Color &color):
       color(color), orig(orig) {}
 };
 
