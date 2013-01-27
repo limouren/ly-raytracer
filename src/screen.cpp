@@ -99,31 +99,39 @@ void Screen::rayTrace() {
 
 
 void Screen::saveBmp() {
-  bitmap_image bmp_image(image_width, image_height);
+  int new_i, new_j,
+      pixel_count = height * width;
 
-  int new_i, new_j;
+  P_FLT factor = 1.0 / (float)(INT_RES_FACTOR * INT_RES_FACTOR);
+  C_FLT * red_channel = new C_FLT[pixel_count];
+  C_FLT * green_channel = new C_FLT[pixel_count];
+  C_FLT * blue_channel = new C_FLT[pixel_count];
+
   for (int i = 0;i < image_width;i++) {
     for (int j = 0;j < image_height;j++) {
-      Color color(0.0, 0.0, 0.0);
-
       for (int m = 0;m < INT_RES_FACTOR;m++) {
         for (int n = 0;n < INT_RES_FACTOR;n++) {
           new_i = i * INT_RES_FACTOR + m;
           new_j = j * INT_RES_FACTOR + n;
 
-          color += pixels[new_j*width + new_i];
+          red_channel[j*image_width + i] += pixels[new_j*width + new_i].r;
+          green_channel[j*image_width + i] += pixels[new_j*width + new_i].g;
+          blue_channel[j*image_width + i] += pixels[new_j*width + new_i].b;
         }
       }
-      color *= 1.0 / (float)(INT_RES_FACTOR * INT_RES_FACTOR);
-
-      int r = int(color.r * 255 + 0.5),
-          g = int(color.g * 255 + 0.5),
-          b = int(color.b * 255 + 0.5);
-
-      bmp_image.set_pixel(i, j, r, g, b);
+      red_channel[j*image_width + i] *= factor;
+      green_channel[j*image_width + i] *= factor;
+      blue_channel[j*image_width + i] *= factor;
     }
   }
+
+  bitmap_image bmp_image(image_width, image_height);
+  bmp_image.import_rgb(red_channel, green_channel, blue_channel);
   bmp_image.save_image("out/output.bmp");
+
+  delete [] red_channel;
+  delete [] green_channel;
+  delete [] blue_channel;
 }
 
 
