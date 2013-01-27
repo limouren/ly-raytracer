@@ -88,7 +88,7 @@ void shade(int level, C_FLT weight, const Point &point, const Vector &normal,
       *color += light->color * material->diffuse * rayDotNormal;
 
       Vector specDir;
-      specularDirection(-pointToLight, normal, specDir);
+      specularDirection(incident, normal, specDir);
       P_FLT specDot = -dotProduct(specDir, incident);
 
       // Light source specular reflection
