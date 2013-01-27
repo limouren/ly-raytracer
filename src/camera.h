@@ -2,6 +2,8 @@
 #define CAMERA_H
 
 
+#include <math.h>
+
 #include "config.h"
 
 #include "point.h"
@@ -12,19 +14,39 @@ BEGIN_RAYTRACER
 
 
 class Camera {
+  private:
+    void computeForward() {
+      Vector dir = target - viewpoint;
+      dir.normalize();
+      P_FLT dirDotUp = dotProduct(dir, up);
+
+      P_FLT root = 1 / sqrt(1 - dirDotUp * dirDotUp);
+      forward = up * dirDotUp * root + dir * root;
+    }
+
   public:
     P_FLT angle; // Width of view angle
     P_FLT aspect_ratio;
     Point target;
     Point viewpoint;
-    Vector up;
+    Vector forward, up;
+
+#if DEBUG
+    Camera() {
+      angle = 1.570796;
+      aspect_ratio = 1.333;
+      target = Point(0.0, 0.0, 1.0);
+      viewpoint = Point(0.0, 0.0, 0.0);
+      up = Vector(0.0, 1.0, 0.0);
+    }
+#endif
 
     Camera(Point viewpoint, Point target, P_FLT angle):
       angle(angle),
       aspect_ratio(DEFAULT_ASPECT_RATIO),
       target(target),
       viewpoint(viewpoint),
-      up(Vector(0.0, 0.0, 1.0))
+      up(Vector(0.0, 1.0, 0.0))
       {}
     Camera(Point viewpoint, Point target, P_FLT &angle, P_FLT aspect_ratio,
            Vector up):
@@ -36,16 +58,6 @@ class Camera {
       {
       up.normalize();
     }
-
-#if DEBUG
-    Camera() {
-      angle = 1.570796;
-      aspect_ratio = 1.333;
-      target = Point(0.0, 0.0, 1.0);
-      viewpoint = Point(0.0, 0.0, 0.0);
-      up = Vector(0.0, 1.0, 0.0);
-    }
-#endif
 } camera;
 
 

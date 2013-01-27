@@ -12,6 +12,8 @@
 #define END_RAYTRACER }
 
 
+#define PI (3.141592653589793)
+
 // Camera Settings
 #define DEFAULT_ASPECT_RATIO 1.33
 
