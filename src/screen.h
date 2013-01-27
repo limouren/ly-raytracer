@@ -26,7 +26,7 @@ class PixelTask {
     PixelTask(Color &color, Ray &ray): color(&color), ray(ray) {}
 
     int run() {
-      return trace(0, 1.0, ray, color);
+      return trace(0, 1.0, ray, color, NULL);
     }
 };
 

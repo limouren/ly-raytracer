@@ -33,10 +33,11 @@ class Camera {
 
 #if DEBUG
     Camera() {
-      angle = 1.570796;
+      // TODO: Don't hardcode camera
+      angle = PI * 0.25;
       aspect_ratio = 1.333;
-      target = Point(0.0, 0.0, 1.0);
-      viewpoint = Point(0.0, 0.0, 0.0);
+      target = Point(0.0, 0.0, 4.0);
+      viewpoint = Point(0.0, 1.0, 0.0);
       up = Vector(0.0, 1.0, 0.0);
     }
 #endif

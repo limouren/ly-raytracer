@@ -98,10 +98,11 @@ int intersectMerge(int op, int hit_left, Intercept intercepts_left[],
 }
 
 
-int trace(int level, C_FLT weight, const Ray &ray, Color * color) {
+int trace(int level, C_FLT weight, const Ray &ray, Color * color,
+          Material * entryMaterial) {
   Intercept intercepts[MAX_INTERSECTIONS];
 
-  int hits = intersect(ray, scene.modelRoot, intercepts, NULL);
+  int hits = intersect(ray, scene.modelRoot, intercepts, entryMaterial);
   if (hits != 0) {
     Point first_intercept = ray.rayPoint(intercepts[0].t);
     Primitive * hit_prim = intercepts[0].primitive;

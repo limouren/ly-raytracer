@@ -32,14 +32,14 @@ C_FLT shadow(const Ray &ray, P_FLT t, Material * material) {
 }
 
 
-int specularDirection(const Vector &incident, const Vector &normal,
+bool specularDirection(const Vector &incident, const Vector &normal,
                       Vector &result) {
   result = incident - (normal * dotProduct(normal, incident) * 2);
-  return 0;
+  return false;
 }
 
 
-int transmissionDirection(Material * entryMaterial, Material * exitMaterial,
+bool transmissionDirection(Material * entryMaterial, Material * exitMaterial,
                           const Vector &incident, const Vector &normal,
                           Vector &result) {
   P_FLT refrEntry,
@@ -56,17 +56,17 @@ int transmissionDirection(Material * entryMaterial, Material * exitMaterial,
   cosEntry = -dotProduct(incident, normal);
   cosExitSqr = 1.0 - refrRatio * refrRatio * (1.0 - (cosEntry * cosEntry));
   if (cosExitSqr < 0.0) {
-    return 0; // Total internal reflection
+    return false; // Total internal reflection
   }
   else {
     result = incident * refrRatio +
              normal * (refrRatio * cosEntry - sqrt(cosExitSqr));
-    return 1;
+    return true;
   }
 }
 
 
-void shade(int &level, C_FLT weight, const Point &point, const Vector &normal,
+void shade(int level, C_FLT weight, const Point &point, const Vector &normal,
            const Vector &incident, Intercept * intercepts, Color * color) {
   Material * material = intercepts[0].primitive->material;
 
@@ -100,6 +100,8 @@ void shade(int &level, C_FLT weight, const Point &point, const Vector &normal,
   }
 
   if (level < MAX_LEVEL) {
+    Material * entryMaterial = intercepts[0].material;
+
     // Other body specular reflection
     C_FLT specWeight = material->specular.magnitude() * weight;
     if (specWeight > MIN_WEIGHT) {
@@ -108,7 +110,7 @@ void shade(int &level, C_FLT weight, const Point &point, const Vector &normal,
       Ray specRay(point, specDir);
       Color specColor;
 
-      if (trace(level + 1, specWeight, specRay, &specColor)) {
+      if (trace(level + 1, specWeight, specRay, &specColor, entryMaterial)) {
         *color += specColor * material->specular;
       }
     }
@@ -117,16 +119,16 @@ void shade(int &level, C_FLT weight, const Point &point, const Vector &normal,
     C_FLT transWeight = material->transmission.magnitude() * weight;
     if (transWeight > MIN_WEIGHT) {
       Vector transDir;
-      if (transmissionDirection(intercepts[0].material,
-                                intercepts[1].material,
+      Material * exitMaterial = intercepts[0].enter? material: NULL;
+
+      if (transmissionDirection(intercepts[0].material, exitMaterial,
                                 incident, normal, transDir)) {
+        Point new_point = point + transDir * P_FLT_EPSILON * 100;
         Ray transRay(point, transDir);
         Color transColor;
-
-        if (trace(level + 1, transWeight, transRay, &transColor)) {
-          transColor *= material->transmission;
-          *color += transColor;
-        }
+        trace(level + 1, transWeight, transRay, &transColor, exitMaterial);
+        transColor *= material->transmission;
+        *color += transColor;
       }
     }
   }

@@ -105,8 +105,9 @@ class Scene {
     std::vector<Light * > lights;
     MODEL_CLS * modelRoot;
 
+    // TODO: Change these to parsing instead of hardcoded tests
     void init_ambience() {
-      ambience = Color(0.5, 0.5, 0.5);
+      ambience = Color(0.2, 0.2, 0.2);
     }
 
     void init_background() {
@@ -115,51 +116,51 @@ class Scene {
     }
 
     void init_lights() {
-      Light * light1 = new Light(Point(-1.5, 3.5, 0.0), Color(1.0, 1.0, 1.0));
-      Light * light2 = new Light(Point(1.5, 3.5, 0.0), Color(1.0, 1.0, 1.0));
+      Light * light1 = new Light(Point(-3.5, 5.5, 0.0), Color(1.0, 1.0, 1.0));
+      Light * light2 = new Light(Point(3.5, 5.5, 0.0), Color(1.0, 1.0, 1.0));
       Light * light3 = new Light(Point(0.0, 5.0, 0.0), Color(0.5, 0.5, 0.5));
       Light * light4 = new Light(Point(3.0, 3.0, 0.0), Color(1.0, 1.0, 1.0));
 
-      //lights.push_back(light1);
+      lights.push_back(light1);
       //lights.push_back(light2);
       //lights.push_back(light3);
-      lights.push_back(light4);
+      //lights.push_back(light4);
     }
 
     void init_models_and_materials() {
       Material * red = new Material(std::string("Red Plastic"),
-                                    Coeff(0.2, 0.2, 0.2),
-                                    Coeff(0.8, 0.2, 0.2),
+                                    Coeff(0.1, 0.1, 0.1),
+                                    Coeff(0.4, 0.2, 0.2),
                                     Coeff(0.8, 0.2, 0.2),
                                     Coeff(0.0, 0.0, 0.0),
                                     1.0,
-                                    3.0);
+                                    2.5);
       Material * blue = new Material(std::string("Blue Plastic"),
-                                     Coeff(0.2, 0.2, 0.2),
-                                     Coeff(0.2, 0.2, 0.8),
+                                     Coeff(0.1, 0.1, 0.1),
+                                     Coeff(0.2, 0.2, 0.4),
                                      Coeff(0.2, 0.2, 0.8),
                                      Coeff(0.0, 0.0, 0.0),
                                      1.0,
-                                     3.0);
+                                     2.5);
       Material * white = new Material(std::string("White Plastic"),
                                       Coeff(0.2, 0.2, 0.2),
                                       Coeff(0.8, 0.8, 0.8),
                                       Coeff(0.8, 0.8, 0.8),
                                       Coeff(0.0, 0.0, 0.0),
                                       1.0,
-                                      3.0);
+                                      2.5);
       Material * glass = new Material(std::string("Glass"),
-                                      Coeff(0.1, 0.1, 0.1),
+                                      Coeff(0.0, 0.0, 0.0),
                                       Coeff(0.0, 0.0, 0.0),
                                       Coeff(0.0, 0.0, 0.0),
                                       Coeff(1.0, 1.0, 1.0),
-                                      1.5,
-                                      3.0);
+                                      2.0,
+                                      2.5);
 
-      Surface * sphere1 = (Surface *) new Sphere(-1.5, 0.0, 3.0, 1.0);
-      Surface * sphere2 = (Surface *) new Sphere(1.5, 0.0, 3.0, 1.0);
-      Surface * sphere3 = (Surface *) new Sphere(0.0, 0.0, 6.0, 1.0);
-      Surface * sphere4 = (Surface *) new Sphere(0.0, 0.0, 2.0, 0.5);
+      Surface * sphere1 = (Surface *) new Sphere(-1.5, 0.0, 7.0, 1.0);
+      Surface * sphere2 = (Surface *) new Sphere(1.5, 0.0, 7.0, 1.0);
+      Surface * sphere3 = (Surface *) new Sphere(0.0, 0.0, 0.0, 1.0);
+      Surface * sphere4 = (Surface *) new Sphere(0.0, 0.0, 3.0, 0.5);
 
       MODEL_CLS * ball1 = (MODEL_CLS *) new Primitive(red, sphere1);
       MODEL_CLS * ball2 = (MODEL_CLS *) new Primitive(blue, sphere2);
