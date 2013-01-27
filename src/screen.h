@@ -48,7 +48,7 @@ class PixelTasks {
     }
 
     ~PixelTasks() {
-      delete tasks;
+      delete [] tasks;
     }
 
     void insertTask(PixelTask &pixelTask) {
@@ -95,7 +95,7 @@ class Screen {
     }
 
     ~Screen() {
-      delete pixels;
+      delete [] pixels;
     }
 
     void calibrate();

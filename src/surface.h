@@ -65,7 +65,7 @@ class Polygon: Plane {
     };
 
     ~Polygon() {
-      delete vertex;
+      delete [] vertex;
     }
 
     virtual const int intersect(const Ray &ray, Intercept intercepts[]);
