@@ -60,9 +60,9 @@ class Background {
             x_floor = floor(x),
             y_floor = floor(y);
 
-      int l = <int> x_floor,
+      int l = static_cast<int>(x_floor),
           r = l + 1,
-          t = <int> y_floor,
+          t = static_cast<int>(y_floor),
           b = t + 1;
 
       ratio_x = x - x_floor;
@@ -157,18 +157,18 @@ class Scene {
                                       2.0,
                                       2.5);
 
-      Surface * sphere1 = <Surface *> new Sphere(-1.5, 0.0, 7.0, 1.0);
-      Surface * sphere2 = <Surface *> new Sphere(1.5, 0.0, 7.0, 1.0);
-      Surface * sphere3 = <Surface *> new Sphere(0.0, 0.0, 0.0, 1.0);
-      Surface * sphere4 = <Surface *> new Sphere(0.0, 0.0, 3.0, 0.5);
+      Surface * sp1 = static_cast<Surface *>(new Sphere(-1.5, 0.0, 7.0, 1.0));
+      Surface * sp2 = static_cast<Surface *>(new Sphere(1.5, 0.0, 7.0, 1.0));
+      Surface * sp3 = static_cast<Surface *>(new Sphere(0.0, 0.0, 0.0, 1.0));
+      Surface * sp4 = static_cast<Surface *>(new Sphere(0.0, 0.0, 3.0, 0.5));
 
-      MODEL_CLS * ball1 = <MODEL_CLS *> new Primitive(red, sphere1);
-      MODEL_CLS * ball2 = <MODEL_CLS *> new Primitive(blue, sphere2);
-      MODEL_CLS * ball3 = <MODEL_CLS *> new Primitive(white, sphere3);
-      MODEL_CLS * ball4 = <MODEL_CLS *> new Primitive(glass, sphere4);
+      MODEL_CLS * b1 = static_cast<MODEL_CLS *>(new Primitive(red, sp1));
+      MODEL_CLS * b2 = static_cast<MODEL_CLS *>(new Primitive(blue, sp2));
+      MODEL_CLS * b3 = static_cast<MODEL_CLS *>(new Primitive(white, sp3));
+      MODEL_CLS * b4 = static_cast<MODEL_CLS *>(new Primitive(glass, sp4));
 
-      MODEL_CLS * b12 = <MODEL_CLS *> new Composite(ball1, ball2);
-      MODEL_CLS * root = <MODEL_CLS *> new Composite(b12, ball4);
+      MODEL_CLS * b12 = static_cast<MODEL_CLS *>(new Composite(b1, b2));
+      MODEL_CLS * root = static_cast<MODEL_CLS *>(new Composite(b12, b4));
 
       modelRoot = root;
     }

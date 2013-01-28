@@ -14,7 +14,7 @@
 BEGIN_RAYTRACER
 
 
-int intersect(const Ray &ray, const MODEL_CLS * model, Intercept intercepts[],
+int intersect(const Ray &ray, MODEL_CLS * model, Intercept intercepts[],
               Material * entryMaterial);
 
 int intersectMerge(int op, int hit_left, Intercept intercept_left[],

@@ -15,10 +15,10 @@
 BEGIN_RAYTRACER
 
 
-int intersect(const Ray &ray, const MODEL_CLS * model, Intercept intercepts[],
+int intersect(const Ray &ray, MODEL_CLS * model, Intercept intercepts[],
               Material * entryMaterial) {
   if (model->composite_flag) {
-    Composite * composite = <Composite *> model;
+    Composite * composite = static_cast<Composite *>(model);
 
     int hits_left, hits_right;
     Intercept intercepts_left[MAX_INTERSECTIONS],
@@ -37,7 +37,7 @@ int intersect(const Ray &ray, const MODEL_CLS * model, Intercept intercepts[],
       return hits;
     }
   } else {
-    Primitive * prim = <Primitive *> model;
+    Primitive * prim = static_cast<Primitive *>(model);
 
     // TODO(kent): Handle non spheres...
     int hits = (prim->surface->intersect)(ray, intercepts);

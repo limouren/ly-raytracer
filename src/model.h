@@ -20,7 +20,7 @@ class MODEL_CLS {
 };
 
 
-class Composite: MODEL_CLS {
+class Composite: public MODEL_CLS {
   public:
     char op;
     MODEL_CLS * left;
@@ -34,7 +34,7 @@ class Composite: MODEL_CLS {
 };
 
 
-class Primitive: MODEL_CLS {
+class Primitive: public MODEL_CLS {
   public:
     Material * material;
     Surface * surface;

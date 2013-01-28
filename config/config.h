@@ -30,7 +30,7 @@
 #define P_FLT_EPSILON 1.0e-8
 
 
-#define MODEL_CLS model
+#define MODEL_CLS Model
 // Internal resolution factor for sampling
 #define INT_RES_FACTOR 3
 

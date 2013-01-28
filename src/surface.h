@@ -22,7 +22,7 @@ class Surface {
 
 
 // Plane surfaces
-class Plane: Surface {
+class Plane: public Surface {
   public:
     // A plane is denoted by Ax+By+Cz+D = 0
     P_FLT d;  // D
@@ -45,7 +45,7 @@ class Plane: Surface {
 
 
 // TODO(kent): Add test cases for polygons
-class Polygon: Plane {
+class Polygon: public Plane {
   public:
     int vertex_num;
     Point * vertex;
@@ -75,7 +75,7 @@ class Polygon: Plane {
 
 
 // Quadric surfaces
-class Sphere: Surface {
+class Sphere: public Surface {
   public:
     P_FLT radius;
     Point center;

@@ -23,7 +23,7 @@ class PixelTask {
     Ray ray;
 
     PixelTask() {}
-    PixelTask(const Color &color, Ray &ray): color(&color), ray(ray) {}
+    PixelTask(Color * color, const Ray &ray): color(color), ray(ray) {}
 
     int run() {
       return trace(0, 1.0, ray, color, NULL);

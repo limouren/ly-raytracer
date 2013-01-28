@@ -63,8 +63,8 @@ void Screen::rayTrace() {
   Point center = camera.viewpoint + dir;
   Point top_left = center + top - right;
 
-  Vector i_step = right / <P_FLT>(width / 2);
-  Vector j_step = (top / <P_FLT>(height / 2));
+  Vector i_step = right / static_cast<P_FLT>(width / 2);
+  Vector j_step = (top / static_cast<P_FLT>(height / 2));
   j_step.negate();
 
   Vector top_left_pixel = top_left - camera.viewpoint +
@@ -77,7 +77,7 @@ void Screen::rayTrace() {
                        (i_step * (P_FLT)i) + (j_step * (P_FLT)j);
       ray_dir.normalize();
       Ray ray(camera.viewpoint, ray_dir);
-      PixelTask task(pixels[j*width + i], ray);
+      PixelTask task(&pixels[j*width + i], ray);
 
       pixelTasks->insertTask(task);
     }
@@ -101,7 +101,7 @@ void Screen::saveBmp() {
   int new_i, new_j,
       pixel_count = height * width;
 
-  P_FLT factor = 1.0 / <P_FLT>(INT_RES_FACTOR * INT_RES_FACTOR);
+  P_FLT factor = 1.0 / static_cast<P_FLT>(INT_RES_FACTOR * INT_RES_FACTOR);
   C_FLT * red_channel = new C_FLT[pixel_count];
   C_FLT * green_channel = new C_FLT[pixel_count];
   C_FLT * blue_channel = new C_FLT[pixel_count];
