@@ -15,14 +15,14 @@ class Point {
 
     Point(P_FLT x, P_FLT y, P_FLT z): x(x), y(y), z(z) {}
 
-    Point(Vector vector): x(vector.x), y(vector.y), z(vector.z) {}
+    explicit Point(Vector vector): x(vector.x), y(vector.y), z(vector.z) {}
 
     const P_FLT operator[](const unsigned int index) const {
-      return (&x)[index]; // Referenced from yafaray
+      return (&x)[index];  // Referenced from yafaray
     }
 
     P_FLT& operator[](const unsigned int index) {
-      return (&x)[index]; // Referenced from yafaray
+      return (&x)[index];  // Referenced from yafaray
     }
 
     Point& operator =(const Point &point);

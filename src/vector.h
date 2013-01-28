@@ -16,11 +16,11 @@ class Vector {
     Vector(const P_FLT x, const P_FLT y, const P_FLT z): x(x), y(y), z(z) {}
 
     const P_FLT operator[](const unsigned int index) const {
-      return (&x)[index]; // Referenced from yafaray
+      return (&x)[index];  // Referenced from yafaray
     }
 
     P_FLT& operator[](const unsigned int index) {
-      return (&x)[index]; // Referenced from yafaray
+      return (&x)[index];  // Referenced from yafaray
     }
 
     Vector& operator =(const Vector &vector);

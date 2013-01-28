@@ -56,9 +56,8 @@ bool transmissionDirection(Material * entryMaterial, Material * exitMaterial,
   cosEntry = -dotProduct(incident, normal);
   cosExitSqr = 1.0 - refrRatio * refrRatio * (1.0 - (cosEntry * cosEntry));
   if (cosExitSqr < 0.0) {
-    return false; // Total internal reflection
-  }
-  else {
+    return false;  // Total internal reflection
+  } else {
     result = incident * refrRatio +
              normal * (refrRatio * cosEntry - sqrt(cosExitSqr));
     return true;
@@ -83,7 +82,6 @@ void shade(int level, C_FLT weight, const Point &point, const Vector &normal,
     P_FLT rayDotNormal = dotProduct(pointToLight, normal);
     if (rayDotNormal > 0.0 &&
         shadow(rayToLight, distanceToLight, material) > 0.0) {
-
       // Light source diffuse reflection
       *color += light->color * material->diffuse * rayDotNormal;
 

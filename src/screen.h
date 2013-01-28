@@ -23,7 +23,7 @@ class PixelTask {
     Ray ray;
 
     PixelTask() {}
-    PixelTask(Color &color, Ray &ray): color(&color), ray(ray) {}
+    PixelTask(const Color &color, Ray &ray): color(&color), ray(ray) {}
 
     int run() {
       return trace(0, 1.0, ray, color, NULL);
@@ -38,7 +38,7 @@ class PixelTasks {
     PixelTask * tasks;
 
   public:
-    PixelTasks(int total_tasks) {
+    explicit PixelTasks(int total_tasks) {
       hits = 0;
       task_index = 0;
       tasks = new PixelTask[total_tasks];
@@ -51,7 +51,7 @@ class PixelTasks {
       delete [] tasks;
     }
 
-    void insertTask(PixelTask &pixelTask) {
+    void insertTask(const PixelTask &pixelTask) {
       tasks[task_index] = pixelTask;
       task_index++;
     }
@@ -91,7 +91,7 @@ class Screen {
     Screen() {
       height = image_height * INT_RES_FACTOR;
       width = image_width * INT_RES_FACTOR;
-      pixels = new Color [height * width];
+      pixels = new Color[height * width];
     }
 
     ~Screen() {

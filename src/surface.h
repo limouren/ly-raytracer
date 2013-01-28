@@ -16,6 +16,8 @@ class Surface {
   public:
     virtual const int intersect(const Ray &ray, Intercept intercepts[]) {}
     virtual const Vector normalAt(const Point &point) {}
+
+    virtual ~Surface() {}
 };
 
 
@@ -23,8 +25,8 @@ class Surface {
 class Plane: Surface {
   public:
     // A plane is denoted by Ax+By+Cz+D = 0
-    P_FLT d; // D
-    Vector norm; // {A, B, C}
+    P_FLT d;  // D
+    Vector norm;  // {A, B, C}
 
     Plane() {}
 
@@ -42,7 +44,7 @@ class Plane: Surface {
 };
 
 
-// TODO: Add test cases for polygons
+// TODO(kent): Add test cases for polygons
 class Polygon: Plane {
   public:
     int vertex_num;
@@ -79,7 +81,7 @@ class Sphere: Surface {
     Point center;
 
     Sphere(P_FLT x, P_FLT y, P_FLT z, P_FLT radius): radius(radius) {
-      // TODO: Clean up this new point in destructor
+      // TODO(kent): Clean up this new point in destructor
       center = Point(x, y, z);
     }
     Sphere(Point center, P_FLT radius): center(center), radius(radius) {}

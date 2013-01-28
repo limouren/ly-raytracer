@@ -16,7 +16,7 @@ class MODEL_CLS {
   public:
     int composite_flag;
 
-    MODEL_CLS(int composite_flag): composite_flag(composite_flag) {}
+    explicit MODEL_CLS(int composite_flag): composite_flag(composite_flag) {}
 };
 
 

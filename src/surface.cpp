@@ -56,8 +56,7 @@ const int Sphere::intersect(const Ray &ray, Intercept intercepts[]) {
     intercepts[0] = Intercept(ray_closest_approach - half_chord, true);
     intercepts[1] = Intercept(ray_closest_approach + half_chord, false);
     return 2;
-  }
-  else {
+  } else {
     intercepts[0] = Intercept(ray_closest_approach + half_chord, false);
     return 1;
   }

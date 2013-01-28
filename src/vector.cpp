@@ -62,7 +62,7 @@ const Vector Vector::operator *(const P_FLT scalar) const {
 
 
 const Vector Vector::operator /(const P_FLT scalar) const {
-  // TODO: Divison by zero?
+  // TODO(kent): Divison by zero?
   Vector result = *this;
   result /= scalar;
 
@@ -80,7 +80,7 @@ Vector& Vector::operator *=(const P_FLT scalar) {
 
 
 Vector& Vector::operator /=(const P_FLT scalar) {
-  // TODO: Divison by zero?
+  // TODO(kent): Divison by zero?
   x /= scalar;
   y /= scalar;
   z /= scalar;
@@ -100,7 +100,7 @@ const P_FLT Vector::lengthSqr() const {
 
 
 const P_FLT Vector::normalize() {
-  // TODO: See if we can use inv. sqrt hack
+  // TODO(kent): See if we can use inv. sqrt hack
   P_FLT len = length();
   if (len != 0.0) {
     *this *= (1.0 / len);

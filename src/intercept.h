@@ -8,7 +8,7 @@
 BEGIN_RAYTRACER
 
 
-// TODO: Refactor and remove forward declaration
+// TODO(kent): Refactor and remove forward declaration
 class Material;
 class Primitive;
 

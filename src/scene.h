@@ -60,9 +60,9 @@ class Background {
             x_floor = floor(x),
             y_floor = floor(y);
 
-      int l = (int) x_floor,
+      int l = <int> x_floor,
           r = l + 1,
-          t = (int) y_floor,
+          t = <int> y_floor,
           b = t + 1;
 
       ratio_x = x - x_floor;
@@ -105,7 +105,7 @@ class Scene {
     std::vector<Light * > lights;
     MODEL_CLS * modelRoot;
 
-    // TODO: Change these to parsing instead of hardcoded tests
+    // TODO(kent): Change these to parsing instead of hardcoded tests
     void init_ambience() {
       ambience = Color(0.2, 0.2, 0.2);
     }
@@ -123,8 +123,8 @@ class Scene {
 
       lights.push_back(light1);
       lights.push_back(light2);
-      //lights.push_back(light3);
-      //lights.push_back(light4);
+      // lights.push_back(light3);
+      // lights.push_back(light4);
     }
 
     void init_models_and_materials() {
@@ -157,18 +157,18 @@ class Scene {
                                       2.0,
                                       2.5);
 
-      Surface * sphere1 = (Surface *) new Sphere(-1.5, 0.0, 7.0, 1.0);
-      Surface * sphere2 = (Surface *) new Sphere(1.5, 0.0, 7.0, 1.0);
-      Surface * sphere3 = (Surface *) new Sphere(0.0, 0.0, 0.0, 1.0);
-      Surface * sphere4 = (Surface *) new Sphere(0.0, 0.0, 3.0, 0.5);
+      Surface * sphere1 = <Surface *> new Sphere(-1.5, 0.0, 7.0, 1.0);
+      Surface * sphere2 = <Surface *> new Sphere(1.5, 0.0, 7.0, 1.0);
+      Surface * sphere3 = <Surface *> new Sphere(0.0, 0.0, 0.0, 1.0);
+      Surface * sphere4 = <Surface *> new Sphere(0.0, 0.0, 3.0, 0.5);
 
-      MODEL_CLS * ball1 = (MODEL_CLS *) new Primitive(red, sphere1);
-      MODEL_CLS * ball2 = (MODEL_CLS *) new Primitive(blue, sphere2);
-      MODEL_CLS * ball3 = (MODEL_CLS *) new Primitive(white, sphere3);
-      MODEL_CLS * ball4 = (MODEL_CLS *) new Primitive(glass, sphere4);
+      MODEL_CLS * ball1 = <MODEL_CLS *> new Primitive(red, sphere1);
+      MODEL_CLS * ball2 = <MODEL_CLS *> new Primitive(blue, sphere2);
+      MODEL_CLS * ball3 = <MODEL_CLS *> new Primitive(white, sphere3);
+      MODEL_CLS * ball4 = <MODEL_CLS *> new Primitive(glass, sphere4);
 
-      MODEL_CLS * b12 = (MODEL_CLS *) new Composite(ball1, ball2);
-      MODEL_CLS * root = (MODEL_CLS *) new Composite(b12, ball4);
+      MODEL_CLS * b12 = <MODEL_CLS *> new Composite(ball1, ball2);
+      MODEL_CLS * root = <MODEL_CLS *> new Composite(b12, ball4);
 
       modelRoot = root;
     }

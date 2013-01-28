@@ -18,7 +18,7 @@ BEGIN_RAYTRACER
 int intersect(const Ray &ray, const MODEL_CLS * model, Intercept intercepts[],
               Material * entryMaterial) {
   if (model->composite_flag) {
-    Composite * composite = (Composite *) model;
+    Composite * composite = <Composite *> model;
 
     int hits_left, hits_right;
     Intercept intercepts_left[MAX_INTERSECTIONS],
@@ -28,8 +28,7 @@ int intersect(const Ray &ray, const MODEL_CLS * model, Intercept intercepts[],
                           entryMaterial);
     if (hits_left == 0 && composite->op != '|') {
       return 0;
-    }
-    else {
+    } else {
       hits_right = intersect(ray, composite->right, intercepts_right,
                              entryMaterial);
 
@@ -37,11 +36,10 @@ int intersect(const Ray &ray, const MODEL_CLS * model, Intercept intercepts[],
                                 hits_right, intercepts_right, intercepts);
       return hits;
     }
-  }
-  else {
-    Primitive * prim = (Primitive *) model;
+  } else {
+    Primitive * prim = <Primitive *> model;
 
-    // TODO: Handle non spheres...
+    // TODO(kent): Handle non spheres...
     int hits = (prim->surface->intersect)(ray, intercepts);
     if (hits) {
       intercepts[0].material = entryMaterial;
@@ -59,7 +57,7 @@ int intersectMerge(int op, int hit_left, Intercept intercepts_left[],
                    int hit_right, Intercept intercepts_right[],
                    Intercept merged[]) {
   // Assume union only for now
-  // TODO: Handle non unions
+  // TODO(kent): Handle non unions
 
   int left_index = 0, right_index = 0, index = 0;
   while (left_index != hit_left &&
@@ -85,8 +83,7 @@ int intersectMerge(int op, int hit_left, Intercept intercepts_left[],
       left_index++;
       index++;
     }
-  }
-  else {
+  } else {
     while (right_index != hit_right) {
       merged[index] = intercepts_right[right_index];
       right_index++;
@@ -113,8 +110,7 @@ int trace(int level, C_FLT weight, const Ray &ray, Color * color,
 
     shade(level, weight, first_intercept, normal, ray.dir, intercepts, color);
     return 1;
-  }
-  else {
+  } else {
     shadeBackground(ray, color);
     return 0;
   }
