@@ -46,7 +46,7 @@ int intersect(const Ray &ray, const MODEL_CLS * model, Intercept intercepts[],
     if (hits) {
       intercepts[0].material = entryMaterial;
       intercepts[0].primitive = prim;
-      for (int i = 1;i < hits;i++) {
+      for (int i = 1; i < hits; i++) {
         intercepts[i].material = prim->material;
         intercepts[i].primitive = prim;
       }

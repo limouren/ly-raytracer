@@ -72,7 +72,7 @@ void shade(int level, C_FLT weight, const Point &point, const Vector &normal,
 
   *color += scene.ambience * material->ambience;
 
-  for (int i = 0;i < scene.lights.size();i++) {
+  for (int i = 0; i < scene.lights.size(); i++) {
     Light * light = scene.lights[i];
 
     Vector pointToLight = light->orig - point;

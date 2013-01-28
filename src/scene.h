@@ -45,7 +45,7 @@ class Background {
       C_FLT * blue_channel = new C_FLT[pixel_count];
 
       image.export_rgb(red_channel, green_channel, blue_channel);
-      for (int i = 0;i < pixel_count;i++) {
+      for (int i = 0; i < pixel_count; i++) {
         pixels[i] = Color(red_channel[i], green_channel[i], blue_channel[i]);
       }
 

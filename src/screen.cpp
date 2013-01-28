@@ -15,8 +15,8 @@ BEGIN_RAYTRACER
 
 void Screen::calibrate() {
   C_FLT factor = 0.0;
-  for (int i = 0;i < width;i++) {
-    for (int j = 0;j < height;j++) {
+  for (int i = 0; i < width; i++) {
+    for (int j = 0; j < height; j++) {
       if (pixels[j*width + i].r > factor) {
         factor = pixels[j*width + i].r;
       }
@@ -31,8 +31,8 @@ void Screen::calibrate() {
 
   if (factor > 1.0) {
     factor = 1.0 / factor;
-    for (int i = 0;i < width;i++) {
-      for (int j = 0;j < height;j++) {
+    for (int i = 0; i < width; i++) {
+      for (int j = 0; j < height; j++) {
         pixels[j*width + i] *= factor;
       }
     }
@@ -72,8 +72,8 @@ void Screen::rayTrace() {
                           (i_step * 0.5) + (j_step * 0.5);
 
   pixelTasks = new PixelTasks(width * height);
-  for (int i = 0;i < width;i++) {
-    for (int j = 0;j < height;j++) {
+  for (int i = 0; i < width; i++) {
+    for (int j = 0; j < height; j++) {
       Vector ray_dir = top_left_pixel +
                        (i_step * (P_FLT)i) + (j_step * (P_FLT)j);
       ray_dir.normalize();
@@ -85,10 +85,10 @@ void Screen::rayTrace() {
   }
 
   pthread_t threads[THREAD_NUM];
-  for (int i = 0;i < THREAD_NUM;i++) {
+  for (int i = 0; i < THREAD_NUM; i++) {
     pthread_create(&threads[i], NULL, &runPixelTasks, NULL);
   }
-  for (int i = 0;i < THREAD_NUM;i++) {
+  for (int i = 0; i < THREAD_NUM; i++) {
     pthread_join(threads[i], NULL);
   }
 
@@ -107,10 +107,10 @@ void Screen::saveBmp() {
   C_FLT * green_channel = new C_FLT[pixel_count];
   C_FLT * blue_channel = new C_FLT[pixel_count];
 
-  for (int i = 0;i < image_width;i++) {
-    for (int j = 0;j < image_height;j++) {
-      for (int m = 0;m < INT_RES_FACTOR;m++) {
-        for (int n = 0;n < INT_RES_FACTOR;n++) {
+  for (int i = 0; i < image_width; i++) {
+    for (int j = 0; j < image_height; j++) {
+      for (int m = 0; m < INT_RES_FACTOR; m++) {
+        for (int n = 0; n < INT_RES_FACTOR; n++) {
           new_i = i * INT_RES_FACTOR + m;
           new_j = j * INT_RES_FACTOR + n;
 

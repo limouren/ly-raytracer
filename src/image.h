@@ -23,7 +23,7 @@ class Image {
       int total_pixels = height * width;
 
       pixels = new Color[total_pixels];
-      for(int i = 0;i < total_pixels;i++) {
+      for (int i = 0; i < total_pixels; i++) {
         pixels[i] = pixels_[i];
       }
     }

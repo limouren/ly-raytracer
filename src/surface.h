@@ -59,7 +59,7 @@ class Polygon: Plane {
                           points[2] - points[0]);
 
       vertex = new Point[vertex_num];
-      for(int i = 0;i < vertex_num;i++) {
+      for (int i = 0; i < vertex_num; i++) {
         vertex[i] = points[i];
       }
     };
