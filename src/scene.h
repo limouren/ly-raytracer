@@ -40,8 +40,8 @@ class Scene {
     }
 
     void init_lights() {
-      Light * light1 = new Light(Point(-5.5, 1.5, 0.0), Color(1.0, 1.0, 1.0));
-      Light * light2 = new Light(Point(5.5, 1.5, 0.0), Color(1.0, 1.0, 1.0));
+      Light * light1 = new Light(Point(-4.5, 2.5, 0.0), Color(1.0, 1.0, 1.0));
+      Light * light2 = new Light(Point(4.5, 2.5, 0.0), Color(1.0, 1.0, 1.0));
       Light * light3 = new Light(Point(0.0, 5.0, 0.0), Color(0.5, 0.5, 0.5));
       Light * light4 = new Light(Point(3.0, 3.0, 0.0), Color(1.0, 1.0, 1.0));
 
@@ -57,28 +57,28 @@ class Scene {
                                     Coeff(0.8, 0.2, 0.2),
                                     Coeff(0.8, 0.2, 0.2),
                                     Coeff(0.0, 0.0, 0.0),
-                                    1.0,
-                                    20);
+                                    1.5,
+                                    100);
       Material * blue = new Material(std::string("Blue Plastic"),
                                      Coeff(0.2, 0.2, 0.2),
                                      Coeff(0.2, 0.2, 0.8),
                                      Coeff(0.2, 0.2, 0.8),
                                      Coeff(0.0, 0.0, 0.0),
-                                     1.0,
-                                     20);
+                                     1.5,
+                                     100);
       Material * white = new Material(std::string("White Plastic"),
                                       Coeff(0.2, 0.2, 0.2),
                                       Coeff(0.8, 0.8, 0.8),
                                       Coeff(0.8, 0.8, 0.8),
                                       Coeff(0.0, 0.0, 0.0),
-                                      1.0,
-                                      20);
+                                      1.5,
+                                      100);
       Material * glass = new Material(std::string("Glass"),
                                       Coeff(0.0, 0.0, 0.0),
                                       Coeff(0.0, 0.0, 0.0),
                                       Coeff(0.0, 0.0, 0.0),
                                       Coeff(1.0, 1.0, 1.0),
-                                      2.0,
+                                      1.5,
                                       2.5);
 
       Surface * sp1 = static_cast<Surface *>(new Sphere(-1.5, 0.0, 7.0, 1.0));
@@ -97,7 +97,7 @@ class Scene {
       modelRoot = root;
     }
 
-    Scene() {
+    Scene(): background(NULL) {
       init_ambience();
       init_background();
       init_lights();

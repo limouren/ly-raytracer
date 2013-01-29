@@ -35,7 +35,7 @@ C_FLT shadow(const Ray &ray, P_FLT t) {
 bool specularDirection(const Vector &incident, const Vector &normal,
                       Vector &result) {
   result = incident - (normal * dotProduct(normal, incident) * 2);
-  return false;
+  return true;
 }
 
 
@@ -88,7 +88,9 @@ void shade(int level, C_FLT weight, const Point &point, const Vector &normal,
       // Light source specular reflection
       Vector specDir;
       specularDirection(incident, normal, specDir);
-      P_FLT specDot = -dotProduct(specDir, incident);
+      Vector h = pointToLight - incident;
+      h.normalize();
+      P_FLT specDot = dotProduct(normal, h);
       if (specDot > 0.0) {
         *color += light->color * material->specular *
                   pow(specDot, material->roughness);
@@ -133,7 +135,9 @@ void shade(int level, C_FLT weight, const Point &point, const Vector &normal,
 
 
 void shadeBackground(const Ray &ray, Color * color) {
-  *color += scene.background->colorInDirection(ray.dir);
+  if (scene.background) {
+    *color += scene.background->colorInDirection(ray.dir);
+  }
 }
 
 
