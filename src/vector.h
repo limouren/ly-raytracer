@@ -42,6 +42,17 @@ class Vector2D {
 };
 
 
+const Vector2D operator -(const Vector2D &vector) {
+  return Vector2D(vector.x, vector.y);
+}
+
+
+const P_FLT dotProduct(const Vector2D &u, const Vector2D &v) {
+  return (u.x * v.x) +
+         (u.y * v.y);
+}
+
+
 class Vector3D {
   public:
     P_FLT x, y, z;

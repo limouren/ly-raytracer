@@ -10,23 +10,11 @@
 BEGIN_RAYTRACER
 
 
-class Point2D {
+class Point2D: public Vector2D {
   public:
-    P_FLT x, y, z;
+    Point2D(): Vector2D() {}
 
-    Point2D(): x(0.0), y(0.0) {}
-
-    Point2D(P_FLT x, P_FLT y): x(x), y(y) {}
-
-    explicit Point2D(Vector2D vector): x(vector.x), y(vector.y) {}
-
-    const P_FLT operator[](const unsigned int index) const {
-      return (&x)[index];  // Referenced from yafaray
-    }
-
-    P_FLT& operator[](const unsigned int index) {
-      return (&x)[index];  // Referenced from yafaray
-    }
+    Point2D(P_FLT x, P_FLT y): Vector2D(x, y) {}
 
     Point2D& operator =(const Point2D &point);
 
@@ -40,36 +28,21 @@ class Point2D {
 
 
 const P_FLT dotProduct(const Point2D &a, const Point2D &b) {
-  return (a.x * b.x) +
-         (a.y * b.y);
+  return dotProduct(static_cast<Vector2D>(a), static_cast<Vector2D>(b));
 }
-const P_FLT dotProduct(const Point2D &a, const Vector2D &v) {
-  return (a.x * v.x) +
-         (a.y * v.y);
+const P_FLT dotProduct(const Point2D &a, const Vector2D &b) {
+  return dotProduct(static_cast<Vector2D>(a), b);
 }
-const P_FLT dotProduct(const Vector2D &u, const Point2D &b) {
-  return (u.x * b.x) +
-         (u.y * b.y);
+const P_FLT dotProduct(const Vector2D &a, const Point2D &b) {
+  return dotProduct(a, static_cast<Vector2D>(b));
 }
 
 
-class Point3D {
+class Point3D: public Vector3D {
   public:
-    P_FLT x, y, z;
+    Point3D(): Vector3D() {}
 
-    Point3D(): x(0.0), y(0.0), z(0.0) {}
-
-    Point3D(P_FLT x, P_FLT y, P_FLT z): x(x), y(y), z(z) {}
-
-    explicit Point3D(Vector3D vector): x(vector.x), y(vector.y), z(vector.z) {}
-
-    const P_FLT operator[](const unsigned int index) const {
-      return (&x)[index];  // Referenced from yafaray
-    }
-
-    P_FLT& operator[](const unsigned int index) {
-      return (&x)[index];  // Referenced from yafaray
-    }
+    Point3D(P_FLT x, P_FLT y, P_FLT z): Vector3D(x, y, z) {}
 
     Point3D& operator =(const Point3D &point);
 
@@ -83,19 +56,13 @@ class Point3D {
 
 
 const P_FLT dotProduct(const Point3D &a, const Point3D &b) {
-  return (a.x * b.x) +
-         (a.y * b.y) +
-         (a.z * b.z);
+  return dotProduct(static_cast<Vector3D>(a), static_cast<Vector3D>(b));
 }
-const P_FLT dotProduct(const Point3D &a, const Vector3D &v) {
-  return (a.x * v.x) +
-         (a.y * v.y) +
-         (a.z * v.z);
+const P_FLT dotProduct(const Point3D &a, const Vector3D &b) {
+  return dotProduct(static_cast<Vector3D>(a), b);
 }
-const P_FLT dotProduct(const Vector3D &u, const Point3D &b) {
-  return (u.x * b.x) +
-         (u.y * b.y) +
-         (u.z * b.z);
+const P_FLT dotProduct(const Vector3D &a, const Point3D &b) {
+  return dotProduct(a, static_cast<Vector3D>(b));
 }
 
 
