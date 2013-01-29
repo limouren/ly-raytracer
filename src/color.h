@@ -3,6 +3,7 @@
 
 
 #include <math.h>
+#include <stdio.h>
 
 
 #include "config.h"
@@ -29,6 +30,10 @@ class Coeff {
                    pow(g, exponent),
                    pow(b, exponent));
       return result;
+    }
+
+    void print() {
+      printf("%f, %f, %f\n", r, g, b);
     }
 };
 
