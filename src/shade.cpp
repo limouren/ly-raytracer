@@ -32,34 +32,29 @@ C_FLT shadow(const Ray &ray, P_FLT t) {
 }
 
 
-bool specularDirection(const Vector &incident, const Vector &normal,
+void specularDirection(const Vector &incident, const Vector &normal,
                       Vector &result) {
   result = incident - (normal * dotProduct(normal, incident) * 2);
-  return true;
 }
 
 
 bool transmissionDirection(Material * entryMaterial, Material * exitMaterial,
                           const Vector &incident, const Vector &normal,
                           Vector &result) {
-  P_FLT refrEntry,
-        refrExit,
-        refrRatio,
+  P_FLT refrRatio,
         cosEntry,
         cosExitSqr;
 
   // Compute refr direction, return 0 if total internal reflection
-  refrEntry = entryMaterial? entryMaterial->refraction: 1.0;
-  refrExit = exitMaterial? exitMaterial->refraction: 1.0;
-  refrRatio = refrEntry / refrExit;
+  refrRatio = entryMaterial->refraction / exitMaterial->refraction;
 
   cosEntry = -dotProduct(incident, normal);
   cosExitSqr = 1.0 - refrRatio * refrRatio * (1.0 - (cosEntry * cosEntry));
   if (cosExitSqr < 0.0) {
     return false;  // Total internal reflection
   } else {
-    result = incident * refrRatio +
-             normal * (refrRatio * cosEntry - sqrt(cosExitSqr));
+    result = incident * refrRatio + normal *
+             (refrRatio * cosEntry - sqrt(cosExitSqr));
     return true;
   }
 }
@@ -67,15 +62,25 @@ bool transmissionDirection(Material * entryMaterial, Material * exitMaterial,
 
 void shade(int level, C_FLT weight, const Point &point, const Vector &normal,
            const Vector &incident, Intercept * intercepts, Color * color) {
-  Material * material = intercepts[0].primitive->material;
+  Material * entryMaterial = intercepts[0].material,
+           * exitMaterial = intercepts[0].enter?
+                            intercepts[0].primitive->material: scene.medium;
 
-  *color += scene.ambience * material->ambience;
+  *color += scene.ambience * exitMaterial->ambience;
+
+  C_FLT specWeight = exitMaterial->specular.magnitude() * weight;
+  Vector specDir;
+  specularDirection(incident, normal, specDir);
+
+  Vector transDir;
+  bool transmission = transmissionDirection(entryMaterial, exitMaterial,
+                                            incident, normal, transDir);
+  C_FLT transWeight = exitMaterial->transmission.magnitude() * weight;
 
   for (int i = 0; i < scene.lights.size(); i++) {
     Light * light = scene.lights[i];
 
     Vector pointToLight = light->orig - point;
-
     P_FLT distanceToLight = pointToLight.normalize();
     Ray rayToLight(point, pointToLight);
 
@@ -83,50 +88,49 @@ void shade(int level, C_FLT weight, const Point &point, const Vector &normal,
     if (rayDotNormal > 0.0 &&
         shadow(rayToLight, distanceToLight) > 0.0) {
       // Light source diffuse reflection
-      *color += light->color * material->diffuse * rayDotNormal;
+      *color += light->color * exitMaterial->diffuse * rayDotNormal;
 
       // Light source specular reflection
-      Vector specDir;
-      specularDirection(incident, normal, specDir);
       Vector h = pointToLight - incident;
       h.normalize();
       P_FLT specDot = dotProduct(normal, h);
       if (specDot > 0.0) {
-        *color += light->color * material->specular *
-                  pow(specDot, material->roughness);
+        *color += light->color * exitMaterial->specular *
+                  pow(specDot, exitMaterial->roughness);
       }
+    } else if (rayDotNormal < 0.0 && transmission &&
+               shadow(rayToLight, distanceToLight) > 0.0) {
+      // Light source specular transmission
+      C_FLT refrRatio = exitMaterial->refraction / entryMaterial->refraction;
+      Vector h_j = (-incident - pointToLight * refrRatio) / (refrRatio - 1);
+      h_j.normalize();
+
+      Color specTrans = light->color * exitMaterial->transmission *
+                pow(dotProduct(-normal, h_j), distanceToLight);
+      *color += specTrans;
     }
   }
 
   if (level < MAX_LEVEL) {
-    Material * entryMaterial = intercepts[0].material;
-
     // Other body specular reflection
-    C_FLT specWeight = material->specular.magnitude() * weight;
     if (specWeight > MIN_WEIGHT) {
-      Vector specDir;
-      specularDirection(incident, normal, specDir);
       Ray specRay(point, specDir);
       Color specColor;
 
       if (trace(level + 1, specWeight, specRay, &specColor, entryMaterial)) {
-        *color += specColor * material->specular;
+        *color += specColor * exitMaterial->specular;
       }
     }
 
     // Other body specular transmission
-    C_FLT transWeight = material->transmission.magnitude() * weight;
     if (transWeight > MIN_WEIGHT) {
       Vector transDir;
-      Material * exitMaterial = intercepts[0].enter? material: NULL;
-
-      if (transmissionDirection(intercepts[0].material, exitMaterial,
+      if (transmissionDirection(entryMaterial, exitMaterial,
                                 incident, normal, transDir)) {
-        Point new_point = point + transDir * P_FLT_EPSILON * 100;
         Ray transRay(point, transDir);
         Color transColor;
         trace(level + 1, transWeight, transRay, &transColor, exitMaterial);
-        transColor *= material->transmission;
+        transColor *= exitMaterial->transmission;
         *color += transColor;
       }
     }
