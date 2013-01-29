@@ -1,5 +1,7 @@
 #include <math.h>
 
+#include "config.h"
+
 #include "vector.h"
 
 
@@ -86,6 +88,26 @@ Vector& Vector::operator /=(const P_FLT scalar) {
   z /= scalar;
 
   return *this;
+}
+
+
+const int Vector::dominantIndex() const {
+  P_FLT abs_x = fabs(x),
+        abs_y = fabs(y),
+        abs_z = fabs(z);
+  if (abs_x > abs_y) {
+    if (abs_x > abs_z) {
+      return 0;
+    } else {
+      return 2;
+    }
+  } else {
+    if (abs_y > abs_z) {
+      return 1;
+    } else {
+      return 2;
+    }
+  }
 }
 
 

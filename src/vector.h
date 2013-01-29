@@ -35,6 +35,7 @@ class Vector {
     Vector& operator *=(const P_FLT scalar);
     Vector& operator /=(const P_FLT scalar);
 
+    const int dominantIndex() const;
     const P_FLT length() const;
     const P_FLT lengthSqr() const;
     const P_FLT normalize();
