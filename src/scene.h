@@ -26,6 +26,7 @@ class Scene {
   public:
     Color ambience;
     Background * background;
+    Material * medium;
     std::vector<Light * > lights;
     MODEL_CLS * modelRoot;
 
@@ -51,25 +52,42 @@ class Scene {
       // lights.push_back(light4);
     }
 
+    void init_medium() {
+      medium = new Material(std::string("Vacuum"),
+                            Coeff(0.0, 0.0, 0.0),
+                            Coeff(0.0, 0.0, 0.0),
+                            Coeff(0.0, 0.0, 0.0),
+                            Coeff(1.0, 1.0, 1.0),
+                            1.0,
+                            0.0);
+    }
+
     void init_models_and_materials() {
-      Material * red = new Material(std::string("Red Plastic"),
+      Material * red = new Material(std::string("Red"),
                                     Coeff(0.2, 0.2, 0.2),
                                     Coeff(0.8, 0.2, 0.2),
                                     Coeff(0.8, 0.2, 0.2),
                                     Coeff(0.0, 0.0, 0.0),
                                     1.5,
                                     100);
-      Material * blue = new Material(std::string("Blue Plastic"),
+      Material * blue = new Material(std::string("Blue"),
                                      Coeff(0.2, 0.2, 0.2),
                                      Coeff(0.2, 0.2, 0.8),
                                      Coeff(0.2, 0.2, 0.8),
                                      Coeff(0.0, 0.0, 0.0),
                                      1.5,
                                      100);
-      Material * white = new Material(std::string("White Plastic"),
+      Material * white = new Material(std::string("White"),
                                       Coeff(0.2, 0.2, 0.2),
                                       Coeff(0.8, 0.8, 0.8),
                                       Coeff(0.8, 0.8, 0.8),
+                                      Coeff(0.0, 0.0, 0.0),
+                                      1.5,
+                                      100);
+      Material * black = new Material(std::string("Black"),
+                                      Coeff(0.1, 0.1, 0.1),
+                                      Coeff(0.1, 0.1, 0.1),
+                                      Coeff(0.1, 0.1, 0.1),
                                       Coeff(0.0, 0.0, 0.0),
                                       1.5,
                                       100);
@@ -81,13 +99,13 @@ class Scene {
                                       1.5,
                                       2.5);
 
-      Surface * sp1 = static_cast<Surface *>(new Sphere(-1.5, 0.0, 7.0, 1.0));
+      Surface * sp1 = static_cast<Surface *>(new Sphere(-1.5, 0.0, 5.0, 1.0));
       Surface * sp2 = static_cast<Surface *>(new Sphere(1.5, 0.0, 7.0, 1.0));
       Surface * sp3 = static_cast<Surface *>(new Sphere(0.0, 0.0, 0.0, 1.0));
       Surface * sp4 = static_cast<Surface *>(new Sphere(0.0, 0.0, 3.0, 0.5));
 
-      MODEL_CLS * b1 = static_cast<MODEL_CLS *>(new Primitive(red, sp1));
-      MODEL_CLS * b2 = static_cast<MODEL_CLS *>(new Primitive(blue, sp2));
+      MODEL_CLS * b1 = static_cast<MODEL_CLS *>(new Primitive(black, sp1));
+      MODEL_CLS * b2 = static_cast<MODEL_CLS *>(new Primitive(black, sp2));
       MODEL_CLS * b3 = static_cast<MODEL_CLS *>(new Primitive(white, sp3));
       MODEL_CLS * b4 = static_cast<MODEL_CLS *>(new Primitive(glass, sp4));
 
@@ -101,6 +119,7 @@ class Scene {
       init_ambience();
       init_background();
       init_lights();
+      init_medium();
       init_models_and_materials();
     }
 } scene;

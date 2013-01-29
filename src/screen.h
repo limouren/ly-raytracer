@@ -11,6 +11,7 @@
 #include "point.h"
 #include "ray.h"
 #include "model.h"
+#include "scene.h"
 #include "trace.h"
 
 
@@ -26,7 +27,7 @@ class PixelTask {
     PixelTask(Color * color, const Ray &ray): color(color), ray(ray) {}
 
     int run() {
-      return trace(0, 1.0, ray, color, NULL);
+      return trace(0, 1.0, ray, color, scene.medium);  // Assume we are outside
     }
 };
 
