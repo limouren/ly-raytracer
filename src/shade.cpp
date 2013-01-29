@@ -105,7 +105,8 @@ void shade(int level, C_FLT weight, const Point3D &point,
       // Light source specular transmission
       C_FLT refrRatio = exitMaterial->refraction / entryMaterial->refraction;
       if (!fEqual(refrRatio, 1.0)) {
-        Vector3D h_j = (-incident - pointToLight * refrRatio) / (refrRatio - 1);
+        Vector3D h_j = (-incident - pointToLight * refrRatio) /
+                       (refrRatio - 1);
         h_j.normalize();
 
         // TODO(kent): Define transmission highlight coefficient

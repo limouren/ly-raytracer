@@ -99,20 +99,32 @@ class Scene {
                                       1.5,
                                       2.5);
 
-      Surface * sp1 = static_cast<Surface *>(new Sphere(-1.5, 0.0, 5.0, 1.0));
-      Surface * sp2 = static_cast<Surface *>(new Sphere(1.5, 0.0, 7.0, 1.0));
-      Surface * sp3 = static_cast<Surface *>(new Sphere(0.0, 0.0, 0.0, 1.0));
-      Surface * sp4 = static_cast<Surface *>(new Sphere(0.0, 0.0, 3.0, 0.5));
+      Surface * sp1 = static_cast<Surface *>(new Sphere(-1.5, 0.0, 5.0, 1.0)),
+              * sp2 = static_cast<Surface *>(new Sphere(1.5, 0.0, 7.0, 1.0)),
+              * sp3 = static_cast<Surface *>(new Sphere(0.0, 0.0, 3.5, 1.0)),
+              * sp4 = static_cast<Surface *>(new Sphere(0.0, 0.0, 3.0, 0.5));
+
+      Point3D octagon[8] = {Point3D(-1.0, -0.5, 5.0),
+                            Point3D(-1.0, 0.5, 5.0),
+                            Point3D(-0.5, 1.0, 5.0),
+                            Point3D(0.5, 1.0, 5.0),
+                            Point3D(1.0, 0.5, 5.0),
+                            Point3D(1.0, -0.5, 5.0),
+                            Point3D(0.5, -1.0, 5.0),
+                            Point3D(-0.5, -1.0, 5.0)};
+
+      Surface * p1 = static_cast<Surface *>(new Polygon(8, octagon));
 
       MODEL_CLS * b1 = static_cast<MODEL_CLS *>(new Primitive(black, sp1));
       MODEL_CLS * b2 = static_cast<MODEL_CLS *>(new Primitive(black, sp2));
       MODEL_CLS * b3 = static_cast<MODEL_CLS *>(new Primitive(white, sp3));
       MODEL_CLS * b4 = static_cast<MODEL_CLS *>(new Primitive(glass, sp4));
 
-      MODEL_CLS * b12 = static_cast<MODEL_CLS *>(new Composite(b1, b2));
-      MODEL_CLS * root = static_cast<MODEL_CLS *>(new Composite(b12, b4));
+      MODEL_CLS * w1 = static_cast<MODEL_CLS *>(new Primitive(white, p1));
 
-      modelRoot = root;
+      MODEL_CLS * root = static_cast<MODEL_CLS *>(new Composite(b4, w1));
+
+      modelRoot = w1;
     }
 
     Scene(): background(NULL) {

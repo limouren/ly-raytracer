@@ -31,7 +31,7 @@ class Camera {
     Point3D viewpoint;
     Vector3D forward, up;
 
-#if DEBUG
+    #ifdef DEBUG
     Camera() {
       // TODO(kent): Don't hardcode camera
       angle = PI * 0.25;
@@ -40,7 +40,7 @@ class Camera {
       viewpoint = Point3D(0.0, 1.0, 0.0);
       up = Vector3D(0.0, 1.0, 0.0);
     }
-#endif
+    #endif
 
     Camera(Point3D viewpoint, Point3D target, P_FLT angle):
       angle(angle),

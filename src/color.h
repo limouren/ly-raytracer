@@ -3,7 +3,9 @@
 
 
 #include <math.h>
+#ifdef DEBUG
 #include <stdio.h>
+#endif
 
 
 #include "config.h"
@@ -32,9 +34,11 @@ class Coeff {
       return result;
     }
 
-    void print() {
-      printf("%f, %f, %f\n", r, g, b);
+    #ifdef DEBUG
+    void print(char * id) {
+      printf("Color %s: %f, %f, %f\n", id, r, g, b);
     }
+    #endif
 };
 
 

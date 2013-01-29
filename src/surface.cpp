@@ -23,16 +23,22 @@ const int Plane::intersect(const Ray &ray, Intercept intercepts[]) {
   v_o = -(dotProduct(normal, ray.orig) + d);
   t = v_o / v_d;
 
-  if (fLessThan(t, 0.0)) {
-    return 0;
+  if (fGreaterThan(t, 0.0)) {
+    intercepts[0] = Intercept(t, v_d < 0.0);
+    return 1;
   }
 
-  intercepts[0] = Intercept(t, v_d < 0.0);
-  return 1;
+  return 0;
 }
+
 
 // Ref: Glassner -An Introduction to Ray Tracing - P.53-59
 const int Polygon::intersect(const Ray &ray, Intercept intercepts[]) {
+  int hits = Plane::intersect(ray, intercepts);
+  if (hits == 0) {
+    return 0;
+  }
+
   Point3D intercept3D = ray.rayPoint(intercepts[0].t);
   int dominantIndex = intercept3D.dominantIndex();
 
@@ -44,19 +50,19 @@ const int Polygon::intersect(const Ray &ray, Intercept intercepts[]) {
 
   int windingNumber = 0,
       first = vertex_num - 1;
-  bool firstYPositive = (vertex2D[first].y < 0),
+  bool firstYPositive = (vertex2D[first].y >= 0.0),
        secondYPositive;
 
   for (int second = 0; second < vertex_num; second++) {
-    secondYPositive = (vertex2D[second].y > 0);
+    secondYPositive = (vertex2D[second].y >= 0.0);
 
     if (firstYPositive != secondYPositive) {
-      if (vertex2D[first].x > 0 && vertex2D[second].x > 0) {
+      if (vertex2D[first].x > 0.0 && vertex2D[second].x > 0.0) {
         windingNumber++;
-      } else if ((vertex2D[first].x > 0 || vertex2D[second].x > 0) &&
-                 fGreaterThan(((vertex2D[first].x - vertex2D[first].y) *
-                               (vertex2D[second].x - vertex2D[first].x) /
-                               (vertex2D[second].y - vertex2D[first].y)),
+      } else if ((vertex2D[first].x > 0.0 || vertex2D[second].x > 0.0) &&
+                 fGreaterThan(vertex2D[first].x - vertex2D[first].y *
+                              (vertex2D[second].x - vertex2D[first].x) /
+                              (vertex2D[second].y - vertex2D[first].y),
                               0.0)) {
         windingNumber++;
       }
@@ -67,7 +73,7 @@ const int Polygon::intersect(const Ray &ray, Intercept intercepts[]) {
   }
 
   delete [] vertex2D;
-  return !(windingNumber % 2);
+  return windingNumber % 2;
 }
 
 

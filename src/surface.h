@@ -52,18 +52,22 @@ class Polygon: public Plane {
     Point3D * vertex;
 
     Polygon(int point_num, Point3D * points):
-      vertex_num(point_num), vertex(points),
-      Plane() {
+      vertex_num(point_num), Plane() {
       // if (vertex_num < 3) {
         // Raise exception
       // }
 
+      vertex = new Point3D[point_num];
+      for (int i = 0; i < vertex_num; i++) {
+        vertex[i] = points[i];
+      }
+
       // Compute norm
       normal = crossProduct(points[1] - points[0],
-                          points[2] - points[0]);
+                            points[2] - points[0]);
       normal.normalize();
 
-      d = - dotProduct(vertex[0], normal);
+      d = -dotProduct(vertex[0], normal);
     };
 
     ~Polygon() {
