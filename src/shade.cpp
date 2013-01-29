@@ -10,6 +10,7 @@
 #include "intercept.h"
 #include "light.h"
 #include "material.h"
+#include "math_util.h"
 #include "point.h"
 #include "scene.h"
 #include "shade.h"
@@ -66,16 +67,16 @@ void shade(int level, C_FLT weight, const Point &point, const Vector &normal,
            * exitMaterial = intercepts[0].enter?
                             intercepts[0].primitive->material: scene.medium;
 
-  *color += scene.ambience * exitMaterial->ambience;
+  C_FLT specWeight = exitMaterial->specular.magnitude() * weight,
+        transWeight = exitMaterial->transmission.magnitude() * weight;
 
-  C_FLT specWeight = exitMaterial->specular.magnitude() * weight;
-  Vector specDir;
+  Vector specDir, transDir;
+
   specularDirection(incident, normal, specDir);
-
-  Vector transDir;
   bool transmission = transmissionDirection(entryMaterial, exitMaterial,
                                             incident, normal, transDir);
-  C_FLT transWeight = exitMaterial->transmission.magnitude() * weight;
+
+  *color += scene.ambience * exitMaterial->ambience;
 
   for (int i = 0; i < scene.lights.size(); i++) {
     Light * light = scene.lights[i];
@@ -85,8 +86,8 @@ void shade(int level, C_FLT weight, const Point &point, const Vector &normal,
     Ray rayToLight(point, pointToLight);
 
     P_FLT rayDotNormal = dotProduct(pointToLight, normal);
-    if (rayDotNormal > 0.0 &&
-        shadow(rayToLight, distanceToLight) > 0.0) {
+    if (fGreaterThan(rayDotNormal, 0.0) &&
+        fGreaterThan(shadow(rayToLight, distanceToLight), 0.0)) {
       // Light source diffuse reflection
       *color += light->color * exitMaterial->diffuse * rayDotNormal;
 
@@ -98,17 +99,16 @@ void shade(int level, C_FLT weight, const Point &point, const Vector &normal,
         *color += light->color * exitMaterial->specular *
                   pow(specDot, exitMaterial->roughness);
       }
-    } else if (rayDotNormal < 0.0 && transmission &&
-               shadow(rayToLight, distanceToLight) > 0.0) {
+    } else if (transmission && fLessThan(rayDotNormal, 0.0) &&
+               fLessThan(shadow(rayToLight, distanceToLight), 0.0)) {
       // Light source specular transmission
       C_FLT refrRatio = exitMaterial->refraction / entryMaterial->refraction;
       Vector h_j = (-incident - pointToLight * refrRatio) / (refrRatio - 1);
       h_j.normalize();
 
       // TODO(kent): Define transmission highlight coefficient
-      Color specTrans = light->color * exitMaterial->transmission *
+      *color += light->color * exitMaterial->transmission *
                 pow(dotProduct(-normal, h_j), exitMaterial->roughness);
-      *color += specTrans;
     }
   }
 
@@ -118,21 +118,20 @@ void shade(int level, C_FLT weight, const Point &point, const Vector &normal,
       Ray specRay(point, specDir);
       Color specColor;
 
-      if (trace(level + 1, specWeight, specRay, &specColor, entryMaterial)) {
-        *color += specColor * exitMaterial->specular;
-      }
+      trace(level + 1, specWeight, specRay, &specColor, entryMaterial);
+      *color += specColor * exitMaterial->specular;
     }
 
     // Other body specular transmission
     if (transWeight > MIN_WEIGHT) {
-      Vector transDir;
-      if (transmissionDirection(entryMaterial, exitMaterial,
-                                incident, normal, transDir)) {
+      if (transmission) {
         Ray transRay(point, transDir);
         Color transColor;
+
         trace(level + 1, transWeight, transRay, &transColor, exitMaterial);
-        transColor *= exitMaterial->transmission;
-        *color += transColor;
+        *color += transColor * exitMaterial->transmission;
+      } else {
+        // TODO(kent): Handle total internal reflection
       }
     }
   }
