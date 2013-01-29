@@ -58,6 +58,7 @@ int intersectMerge(int op, int hit_left, Intercept intercepts_left[],
                    Intercept merged[]) {
   // Assume union only for now
   // TODO(kent): Handle non unions
+  // TODO(kent): Change intercept lists to vectors
 
   int left_index = 0, right_index = 0, index = 0;
   while (left_index != hit_left &&
@@ -84,7 +85,7 @@ int intersectMerge(int op, int hit_left, Intercept intercepts_left[],
       index++;
     }
   } else {
-    while (right_index != hit_right) {
+    while (right_index != hit_right && index < MAX_INTERSECTIONS) {
       merged[index] = intercepts_right[right_index];
       right_index++;
       index++;
