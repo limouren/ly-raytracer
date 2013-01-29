@@ -196,6 +196,17 @@ Vector3D& Vector3D::operator /=(const P_FLT scalar) {
 }
 
 
+const Vector2D Vector3D::dropIndex(const int index) const {
+  if (index == 0) {
+    return Vector2D(y, z);
+  } else if (index == 1)  {
+    return Vector2D(x, z);
+  } else {
+    return Vector2D(x, y);
+  }
+}
+
+
 const int Vector3D::dominantIndex() const {
   P_FLT abs_x = fabs(x),
         abs_y = fabs(y),

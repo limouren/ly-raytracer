@@ -82,6 +82,7 @@ class Vector3D {
     Vector3D& operator /=(const P_FLT scalar);
 
     const int dominantIndex() const;
+    const Vector2D dropIndex(const int index) const;
     const P_FLT length() const;
     const P_FLT lengthSqr() const;
     const P_FLT normalize();
