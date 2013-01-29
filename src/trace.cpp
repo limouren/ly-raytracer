@@ -104,7 +104,7 @@ int trace(int level, C_FLT weight, const Ray &ray, Color * color,
   if (hits != 0) {
     Point first_intercept = ray.rayPoint(intercepts[0].t);
     Primitive * hit_prim = intercepts[0].primitive;
-    Vector normal = (hit_prim->surface->normalAt)(first_intercept);
+    Vector3D normal = (hit_prim->surface->normalAt)(first_intercept);
     if (dotProduct(ray.dir, normal) > 0.0) {
       normal.negate();
     }

@@ -31,7 +31,7 @@ const int Plane::intersect(const Ray &ray, Intercept intercepts[]) {
 
 
 const int Sphere::intersect(const Ray &ray, Intercept intercepts[]) {
-  Vector origin_to_center;
+  Vector3D origin_to_center;
   P_FLT oc_sqr, ray_closest_approach, half_chord_squared, half_chord, t;
 
   origin_to_center = center - ray.orig;
@@ -62,8 +62,8 @@ const int Sphere::intersect(const Ray &ray, Intercept intercepts[]) {
   }
 }
 
-const Vector Sphere::normalAt(const Point &point) {
-  Vector center_to_point = point - center;
+const Vector3D Sphere::normalAt(const Point &point) {
+  Vector3D center_to_point = point - center;
   center_to_point.normalize();
 
   return center_to_point;

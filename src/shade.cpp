@@ -33,15 +33,15 @@ C_FLT shadow(const Ray &ray, P_FLT t) {
 }
 
 
-void specularDirection(const Vector &incident, const Vector &normal,
-                      Vector &result) {
+void specularDirection(const Vector3D &incident, const Vector3D &normal,
+                       Vector3D &result) {
   result = incident - (normal * dotProduct(normal, incident) * 2);
 }
 
 
 bool transmissionDirection(Material * entryMaterial, Material * exitMaterial,
-                          const Vector &incident, const Vector &normal,
-                          Vector &result) {
+                           const Vector3D &incident, const Vector3D &normal,
+                           Vector3D &result) {
   P_FLT refrRatio,
         cosEntry,
         cosExitSqr;
@@ -61,8 +61,8 @@ bool transmissionDirection(Material * entryMaterial, Material * exitMaterial,
 }
 
 
-void shade(int level, C_FLT weight, const Point &point, const Vector &normal,
-           const Vector &incident, Intercept * intercepts, Color * color) {
+void shade(int level, C_FLT weight, const Point &point, const Vector3D &normal,
+           const Vector3D &incident, Intercept * intercepts, Color * color) {
   Material * entryMaterial = intercepts[0].material,
            * exitMaterial = intercepts[0].enter?
                             intercepts[0].primitive->material: scene.medium;
@@ -70,7 +70,7 @@ void shade(int level, C_FLT weight, const Point &point, const Vector &normal,
   C_FLT specWeight = exitMaterial->specular.magnitude() * weight,
         transWeight = exitMaterial->transmission.magnitude() * weight;
 
-  Vector specDir, transDir;
+  Vector3D specDir, transDir;
 
   specularDirection(incident, normal, specDir);
   bool transmission = transmissionDirection(entryMaterial, exitMaterial,
@@ -81,7 +81,7 @@ void shade(int level, C_FLT weight, const Point &point, const Vector &normal,
   for (int i = 0; i < scene.lights.size(); i++) {
     Light * light = scene.lights[i];
 
-    Vector pointToLight = light->orig - point;
+    Vector3D pointToLight = light->orig - point;
     P_FLT distanceToLight = pointToLight.normalize();
     Ray rayToLight(point, pointToLight);
 
@@ -92,7 +92,7 @@ void shade(int level, C_FLT weight, const Point &point, const Vector &normal,
       *color += light->color * exitMaterial->diffuse * rayDotNormal;
 
       // Light source specular reflection
-      Vector h = pointToLight - incident;
+      Vector3D h = pointToLight - incident;
       h.normalize();
       P_FLT specDot = dotProduct(normal, h);
       if (specDot > 0.0) {
@@ -104,7 +104,7 @@ void shade(int level, C_FLT weight, const Point &point, const Vector &normal,
       // Light source specular transmission
       C_FLT refrRatio = exitMaterial->refraction / entryMaterial->refraction;
       if (!fEqual(refrRatio, 1.0)) {
-        Vector h_j = (-incident - pointToLight * refrRatio) / (refrRatio - 1);
+        Vector3D h_j = (-incident - pointToLight * refrRatio) / (refrRatio - 1);
         h_j.normalize();
 
         // TODO(kent): Define transmission highlight coefficient

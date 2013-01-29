@@ -12,11 +12,11 @@ BEGIN_RAYTRACER
 class Ray {
   public:
     Point orig;
-    Vector dir;
+    Vector3D dir;
 
-    Ray(): orig(Point()), dir(Vector()) {}
+    Ray(): orig(Point()), dir(Vector3D()) {}
 
-    Ray(Point orig, Vector dir): orig(orig), dir(dir) {}
+    Ray(Point orig, Vector3D dir): orig(orig), dir(dir) {}
 
     Ray& operator =(const Ray &ray) {
       if (this == &ray) {

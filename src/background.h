@@ -76,7 +76,7 @@ class Background {
     }
 
 
-    const Color colorInDirection(const Vector &direction) const {
+    const Color colorInDirection(const Vector3D &direction) const {
       P_FLT latitude, longitude, x, y;
 
       latitude = acos(-dotProduct(camera.up, direction));

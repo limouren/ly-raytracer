@@ -17,12 +17,12 @@ Point& Point::operator =(const Point &point) {
 }
 
 
-const Vector Point::operator -(const Point &point) const {
-  return Vector(x - point.x, y - point.y, z - point.z);
+const Vector3D Point::operator -(const Point &point) const {
+  return Vector3D(x - point.x, y - point.y, z - point.z);
 }
 
 
-const Point Point::operator +(const Vector &vector) const {
+const Point Point::operator +(const Vector3D &vector) const {
   Point result = *this;
   result += vector;
 
@@ -30,7 +30,7 @@ const Point Point::operator +(const Vector &vector) const {
 }
 
 
-const Point Point::operator -(const Vector &vector) const {
+const Point Point::operator -(const Vector3D &vector) const {
   Point result = *this;
   result -= vector;
 
@@ -38,7 +38,7 @@ const Point Point::operator -(const Vector &vector) const {
 }
 
 
-Point& Point::operator +=(const Vector &vector) {
+Point& Point::operator +=(const Vector3D &vector) {
   x += vector.x;
   y += vector.y;
   z += vector.z;
@@ -47,7 +47,7 @@ Point& Point::operator +=(const Vector &vector) {
 }
 
 
-Point& Point::operator -=(const Vector &vector) {
+Point& Point::operator -=(const Vector3D &vector) {
   x -= vector.x;
   y -= vector.y;
   z -= vector.z;

@@ -12,8 +12,8 @@
 BEGIN_RAYTRACER
 
 
-void shade(int level, C_FLT weight, const Point point, const Vector normal,
-           const Vector incident, const Intercept * intercepts, Color * color);
+void shade(int level, C_FLT weight, const Point &point, const Vector3D &normal,
+           const Vector3D &incident, Intercept * intercepts, Color * color);
 
 void shadeBackground(const Ray &ray, Color * color);
 

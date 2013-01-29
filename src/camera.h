@@ -16,7 +16,7 @@ BEGIN_RAYTRACER
 class Camera {
   private:
     void computeForward() {
-      Vector dir = target - viewpoint;
+      Vector3D dir = target - viewpoint;
       dir.normalize();
       P_FLT dirDotUp = dotProduct(dir, up);
 
@@ -29,7 +29,7 @@ class Camera {
     P_FLT aspect_ratio;
     Point target;
     Point viewpoint;
-    Vector forward, up;
+    Vector3D forward, up;
 
 #if DEBUG
     Camera() {
@@ -38,7 +38,7 @@ class Camera {
       aspect_ratio = 1.333;
       target = Point(0.0, 0.0, 4.0);
       viewpoint = Point(0.0, 1.0, 0.0);
-      up = Vector(0.0, 1.0, 0.0);
+      up = Vector3D(0.0, 1.0, 0.0);
     }
 #endif
 
@@ -47,10 +47,10 @@ class Camera {
       aspect_ratio(DEFAULT_ASPECT_RATIO),
       target(target),
       viewpoint(viewpoint),
-      up(Vector(0.0, 1.0, 0.0))
+      up(Vector3D(0.0, 1.0, 0.0))
       {}
     Camera(Point viewpoint, Point target, P_FLT angle, P_FLT aspect_ratio,
-           Vector up):
+           Vector3D up):
       angle(angle),
       aspect_ratio(aspect_ratio),
       target(target),

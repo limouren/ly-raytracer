@@ -15,7 +15,7 @@ class Point {
 
     Point(P_FLT x, P_FLT y, P_FLT z): x(x), y(y), z(z) {}
 
-    explicit Point(Vector vector): x(vector.x), y(vector.y), z(vector.z) {}
+    explicit Point(Vector3D vector): x(vector.x), y(vector.y), z(vector.z) {}
 
     const P_FLT operator[](const unsigned int index) const {
       return (&x)[index];  // Referenced from yafaray
@@ -27,12 +27,12 @@ class Point {
 
     Point& operator =(const Point &point);
 
-    const Vector operator -(const Point &point) const;
+    const Vector3D operator -(const Point &point) const;
 
-    const Point operator +(const Vector &vector) const;
-    const Point operator -(const Vector &vector) const;
-    Point& operator +=(const Vector &vector);
-    Point& operator -=(const Vector &vector);
+    const Point operator +(const Vector3D &vector) const;
+    const Point operator -(const Vector3D &vector) const;
+    Point& operator +=(const Vector3D &vector);
+    Point& operator -=(const Vector3D &vector);
 };
 
 
@@ -41,12 +41,12 @@ const P_FLT dotProduct(const Point &a, const Point &b) {
          (a.y * b.y) +
          (a.z * b.z);
 }
-const P_FLT dotProduct(const Point &a, const Vector &v) {
+const P_FLT dotProduct(const Point &a, const Vector3D &v) {
   return (a.x * v.x) +
          (a.y * v.y) +
          (a.z * v.z);
 }
-const P_FLT dotProduct(const Vector &u, const Point &b) {
+const P_FLT dotProduct(const Vector3D &u, const Point &b) {
   return (u.x * b.x) +
          (u.y * b.y) +
          (u.z * b.z);
