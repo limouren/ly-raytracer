@@ -105,8 +105,9 @@ void shade(int level, C_FLT weight, const Point &point, const Vector &normal,
       Vector h_j = (-incident - pointToLight * refrRatio) / (refrRatio - 1);
       h_j.normalize();
 
+      // TODO(kent): Define transmission highlight coefficient
       Color specTrans = light->color * exitMaterial->transmission *
-                pow(dotProduct(-normal, h_j), distanceToLight);
+                pow(dotProduct(-normal, h_j), exitMaterial->roughness);
       *color += specTrans;
     }
   }
