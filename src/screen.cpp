@@ -60,8 +60,8 @@ void Screen::rayTrace() {
   right.normalize();
   right *= horizontal_mag;
 
-  Point center = camera.viewpoint + dir;
-  Point top_left = center + top - right;
+  Point3D center = camera.viewpoint + dir;
+  Point3D top_left = center + top - right;
 
   Vector3D i_step = right / static_cast<P_FLT>(width / 2);
   Vector3D j_step = (top / static_cast<P_FLT>(height / 2));

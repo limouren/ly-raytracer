@@ -12,9 +12,9 @@ BEGIN_RAYTRACER
 class Light {
   public:
     Color color;
-    Point orig;
+    Point3D orig;
 
-    Light(const Point &orig, const Color &color):
+    Light(const Point3D &orig, const Color &color):
       color(color), orig(orig) {}
 };
 

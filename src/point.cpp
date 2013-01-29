@@ -4,7 +4,7 @@
 BEGIN_RAYTRACER
 
 
-Point& Point::operator =(const Point &point) {
+Point3D& Point3D::operator =(const Point3D &point) {
   if (this == &point) {
     return *this;
   }
@@ -17,28 +17,28 @@ Point& Point::operator =(const Point &point) {
 }
 
 
-const Vector3D Point::operator -(const Point &point) const {
+const Vector3D Point3D::operator -(const Point3D &point) const {
   return Vector3D(x - point.x, y - point.y, z - point.z);
 }
 
 
-const Point Point::operator +(const Vector3D &vector) const {
-  Point result = *this;
+const Point3D Point3D::operator +(const Vector3D &vector) const {
+  Point3D result = *this;
   result += vector;
 
   return result;
 }
 
 
-const Point Point::operator -(const Vector3D &vector) const {
-  Point result = *this;
+const Point3D Point3D::operator -(const Vector3D &vector) const {
+  Point3D result = *this;
   result -= vector;
 
   return result;
 }
 
 
-Point& Point::operator +=(const Vector3D &vector) {
+Point3D& Point3D::operator +=(const Vector3D &vector) {
   x += vector.x;
   y += vector.y;
   z += vector.z;
@@ -47,7 +47,7 @@ Point& Point::operator +=(const Vector3D &vector) {
 }
 
 
-Point& Point::operator -=(const Vector3D &vector) {
+Point3D& Point3D::operator -=(const Vector3D &vector) {
   x -= vector.x;
   y -= vector.y;
   z -= vector.z;

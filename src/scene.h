@@ -41,10 +41,10 @@ class Scene {
     }
 
     void init_lights() {
-      Light * light1 = new Light(Point(-4.5, 2.5, 0.0), Color(1.0, 1.0, 1.0));
-      Light * light2 = new Light(Point(4.5, 2.5, 0.0), Color(1.0, 1.0, 1.0));
-      Light * light3 = new Light(Point(0.0, 5.0, 0.0), Color(0.5, 0.5, 0.5));
-      Light * light4 = new Light(Point(3.0, 3.0, 0.0), Color(1.0, 1.0, 1.0));
+      Light * light1 = new Light(Point3D(-4.5, 2.5, 0.0), Color(1.0, 1.0, 1.0));
+      Light * light2 = new Light(Point3D(4.5, 2.5, 0.0), Color(1.0, 1.0, 1.0));
+      Light * light3 = new Light(Point3D(0.0, 5.0, 0.0), Color(0.5, 0.5, 0.5));
+      Light * light4 = new Light(Point3D(3.0, 3.0, 0.0), Color(1.0, 1.0, 1.0));
 
       lights.push_back(light1);
       lights.push_back(light2);

@@ -62,7 +62,7 @@ const int Sphere::intersect(const Ray &ray, Intercept intercepts[]) {
   }
 }
 
-const Vector3D Sphere::normalAt(const Point &point) {
+const Vector3D Sphere::normalAt(const Point3D &point) {
   Vector3D center_to_point = point - center;
   center_to_point.normalize();
 
