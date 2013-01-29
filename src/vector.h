@@ -7,6 +7,41 @@
 BEGIN_RAYTRACER
 
 
+class Vector2D {
+  public:
+    P_FLT x, y;
+
+    Vector2D(): x(0.0), y(0.0) {}
+
+    Vector2D(const P_FLT x, const P_FLT y): x(x), y(y) {}
+
+    const P_FLT operator[](const unsigned int index) const {
+      return (&x)[index];  // Referenced from yafaray
+    }
+
+    P_FLT& operator[](const unsigned int index) {
+      return (&x)[index];  // Referenced from yafaray
+    }
+
+    Vector2D& operator =(const Vector2D &vector);
+
+    const Vector2D operator +(const Vector2D &vector) const;
+    const Vector2D operator -(const Vector2D &vector) const;
+    Vector2D& operator +=(const Vector2D &vector);
+    Vector2D& operator -=(const Vector2D &vector);
+
+    const Vector2D operator *(const P_FLT scalar) const;
+    const Vector2D operator /(const P_FLT scalar) const;
+    Vector2D& operator *=(const P_FLT scalar);
+    Vector2D& operator /=(const P_FLT scalar);
+
+    const P_FLT length() const;
+    const P_FLT lengthSqr() const;
+    const P_FLT normalize();
+    const Vector2D negate();
+};
+
+
 class Vector3D {
   public:
     P_FLT x, y, z;

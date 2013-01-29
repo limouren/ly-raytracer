@@ -8,6 +8,111 @@
 BEGIN_RAYTRACER
 
 
+Vector2D& Vector2D::operator =(const Vector2D &vector) {
+  if (this == &vector) {
+    return *this;
+  }
+
+  x = vector.x;
+  y = vector.y;
+
+  return *this;
+}
+
+
+const Vector2D Vector2D::operator +(const Vector2D &vector) const {
+  Vector2D result = *this;
+  result += vector;
+
+  return result;
+}
+
+
+const Vector2D Vector2D::operator -(const Vector2D &vector) const {
+  Vector2D result = *this;
+  result -= vector;
+
+  return result;
+}
+
+
+Vector2D& Vector2D::operator +=(const Vector2D &vector) {
+  x += vector.x;
+  y += vector.y;
+
+  return *this;
+}
+
+
+Vector2D& Vector2D::operator -=(const Vector2D &vector) {
+  x -= vector.x;
+  y -= vector.y;
+
+  return *this;
+}
+
+
+const Vector2D Vector2D::operator *(const P_FLT scalar) const {
+  Vector2D result = *this;
+  result *= scalar;
+
+  return result;
+}
+
+
+const Vector2D Vector2D::operator /(const P_FLT scalar) const {
+  // TODO(kent): Divison by zero?
+  Vector2D result = *this;
+  result /= scalar;
+
+  return result;
+}
+
+
+Vector2D& Vector2D::operator *=(const P_FLT scalar) {
+  x *= scalar;
+  y *= scalar;
+
+  return *this;
+}
+
+
+Vector2D& Vector2D::operator /=(const P_FLT scalar) {
+  // TODO(kent): Divison by zero?
+  x /= scalar;
+  y /= scalar;
+
+  return *this;
+}
+
+
+const P_FLT Vector2D::length() const {
+  return sqrt(lengthSqr());
+}
+
+
+const P_FLT Vector2D::lengthSqr() const {
+  return x * x + y * y;
+}
+
+
+const P_FLT Vector2D::normalize() {
+  // TODO(kent): See if we can use inv. sqrt hack
+  P_FLT len = length();
+  if (len != 0.0) {
+    *this *= (1.0 / len);
+  }
+
+  return len;
+}
+
+
+const Vector2D Vector2D::negate() {
+  x = -x;
+  y = -y;
+}
+
+
 Vector3D& Vector3D::operator =(const Vector3D &vector) {
   if (this == &vector) {
     return *this;
