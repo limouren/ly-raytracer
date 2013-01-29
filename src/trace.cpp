@@ -110,7 +110,7 @@ int trace(int level, C_FLT weight, const Ray &ray, Color * color,
     }
 
     shade(level, weight, first_intercept, normal, ray.dir, intercepts, color);
-    return 1;
+    return hits;
   } else {
     shadeBackground(ray, color);
     return 0;

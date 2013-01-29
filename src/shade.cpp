@@ -103,12 +103,14 @@ void shade(int level, C_FLT weight, const Point &point, const Vector &normal,
                fLessThan(shadow(rayToLight, distanceToLight), 0.0)) {
       // Light source specular transmission
       C_FLT refrRatio = exitMaterial->refraction / entryMaterial->refraction;
-      Vector h_j = (-incident - pointToLight * refrRatio) / (refrRatio - 1);
-      h_j.normalize();
+      if (!fEqual(refrRatio, 1.0)) {
+        Vector h_j = (-incident - pointToLight * refrRatio) / (refrRatio - 1);
+        h_j.normalize();
 
-      // TODO(kent): Define transmission highlight coefficient
-      *color += light->color * exitMaterial->transmission *
-                pow(dotProduct(-normal, h_j), exitMaterial->roughness);
+        // TODO(kent): Define transmission highlight coefficient
+        *color += light->color * exitMaterial->transmission *
+                  pow(dotProduct(-normal, h_j), exitMaterial->roughness);
+      }
     }
   }
 
