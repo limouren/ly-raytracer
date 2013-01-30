@@ -18,7 +18,7 @@ class Material {
 
     C_FLT attenuation,
           refraction,
-          roughness;
+          shine;
 
     Coeff ambience,
           diffuse,
@@ -26,10 +26,10 @@ class Material {
           transmission;
 
     Material(std::string name, Coeff ambience, Coeff diffuse, Coeff specular,
-             Coeff transmission, C_FLT refraction, C_FLT roughness):
+             Coeff transmission, C_FLT refraction, C_FLT shine):
              name(name), ambience(ambience), diffuse(diffuse),
              specular(specular), transmission(transmission),
-             refraction(refraction), roughness(roughness) {
+             refraction(refraction), shine(shine) {
     }
 };
 

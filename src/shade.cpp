@@ -98,7 +98,7 @@ void shade(int level, C_FLT weight, const Point3D &point,
       P_FLT specDot = dotProduct(normal, h);
       if (specDot > 0.0) {
         *color += light->color * exitMaterial->specular *
-                  pow(specDot, exitMaterial->roughness);
+                  pow(specDot, exitMaterial->shine);
       }
     } else if (fLessZero(transmission && lightDotNormal) &&
                fLessZero(shadow(rayToLight, distanceToLight))) {
@@ -111,7 +111,7 @@ void shade(int level, C_FLT weight, const Point3D &point,
 
         // TODO(kent): Define transmission highlight coefficient
         *color += light->color * exitMaterial->transmission *
-                  pow(dotProduct(-normal, h_j), exitMaterial->roughness);
+                  pow(dotProduct(-normal, h_j), exitMaterial->shine);
       }
     }
   }
