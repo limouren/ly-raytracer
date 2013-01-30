@@ -2,49 +2,22 @@
 #define MATH_UTIL_H
 
 
-#include <math.h>
-
-
 #include "config.h"
 
 
 BEGIN_RAYTRACER
 
 
-const bool fEqual(const P_FLT &pFltA, const P_FLT &pFltB, P_FLT epsilon) {
-  return fabs(pFltA - pFltB) < epsilon * pFltA;
-}
+inline const bool fGreaterZero(const P_FLT pFlt);
+inline const bool fIsZero(const P_FLT pFlt);
+inline const bool fLessZero(const P_FLT pFlt);
 
-const bool fEqual(P_FLT pFltA, P_FLT pFltB) {
-  return fEqual(pFltA, pFltB, P_FLT_EPSILON);
-}
+// NOTE: Do not use these float comparisons for zero checking
+inline const bool fEqual(const P_FLT pFltA, const P_FLT pFltB);
+inline const bool fGreater(const P_FLT pFltA, const P_FLT pFltB);
+inline const bool fLess(const P_FLT pFltA, const P_FLT pFltB);
 
-// TODO(kent): Implement fGTZero and fLTZero
-const bool fIsZero(const P_FLT &pFlt, const P_FLT epsilon) {
-  return fabs(pFlt) < (pFlt * epsilon);
-}
-
-const bool fIsZero(P_FLT pFlt) {
-  return fIsZero(pFlt, P_FLT_EPSILON);
-}
-
-// TODO(kent): Rename to shorter fGT
-const bool fGreaterThan(const P_FLT &pFltA, const P_FLT &pFltB,
-                        P_FLT epsilon) {
-  return pFltA - pFltB > fabs(pFltA * P_FLT_EPSILON);
-}
-
-const bool fGreaterThan(P_FLT pFltA, P_FLT pFltB) {
-  return fGreaterThan(pFltA, pFltB, P_FLT_EPSILON);
-}
-
-const bool fLessThan(const P_FLT &pFltA, const P_FLT &pFltB, P_FLT epsilon) {
-  return pFltA - pFltB < fabs(pFltA * P_FLT_EPSILON);
-}
-
-const bool fLessThan(P_FLT pFltA, P_FLT pFltB) {
-  return fLessThan(pFltA, pFltB, P_FLT_EPSILON);
-}
+inline const P_FLT fMean(const P_FLT pFltA, const P_FLT pFltB);
 
 
 END_RAYTRACER

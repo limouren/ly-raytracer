@@ -22,7 +22,7 @@ const int Plane::intersect(const Ray &ray, Intercept intercepts[]) {
 
   t = -(dotProduct(normal, ray.orig) + d) / lightDotNorm;
 
-  if (t > P_FLT_EPSILON) {
+  if (fGreaterZero(t)) {
     intercepts[0] = Intercept(t, lightDotNorm < 0.0);
     return 1;
   }
@@ -81,19 +81,19 @@ const int Sphere::intersect(const Ray &ray, Intercept intercepts[]) {
   originToCenter = center - ray.orig;
   rayClosest = dotProduct(originToCenter, ray.dir);
 
-  if (rayClosest < -P_FLT_EPSILON) {
+  if (fLessZero(rayClosest)) {
     return 0;
   }
 
   ocSqr = originToCenter.lengthSqr();
 
   halfChordSqr = (radius * radius) - ocSqr + (rayClosest * rayClosest);
-  if (halfChordSqr < -P_FLT_EPSILON) {
+  if (fLessZero(halfChordSqr)) {
     return 0;
   }
 
   halfChord = sqrt(halfChordSqr);
-  if (fGreaterThan(rayClosest, halfChord)) {
+  if (fGreater(rayClosest, halfChord)) {
     intercepts[0] = Intercept(rayClosest - halfChord, true);
     intercepts[1] = Intercept(rayClosest + halfChord, false);
     return 2;

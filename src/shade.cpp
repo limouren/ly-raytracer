@@ -87,8 +87,8 @@ void shade(int level, C_FLT weight, const Point3D &point,
     Ray rayToLight(point, pointToLight);
 
     P_FLT lightDotNormal = dotProduct(pointToLight, normal);
-    if (lightDotNormal > P_FLT_EPSILON &&
-        shadow(rayToLight, distanceToLight) > P_FLT_EPSILON) {
+    if (fGreaterZero(lightDotNormal) &&
+        fGreaterZero(shadow(rayToLight, distanceToLight))) {
       // Light source diffuse reflection
       *color += light->color * exitMaterial->diffuse * lightDotNormal;
 
@@ -100,8 +100,8 @@ void shade(int level, C_FLT weight, const Point3D &point,
         *color += light->color * exitMaterial->specular *
                   pow(specDot, exitMaterial->roughness);
       }
-    } else if (transmission && lightDotNormal < P_FLT_EPSILON &&
-               shadow(rayToLight, distanceToLight) < P_FLT_EPSILON) {
+    } else if (fLessZero(transmission && lightDotNormal) &&
+               fLessZero(shadow(rayToLight, distanceToLight))) {
       // Light source specular transmission
       C_FLT refrRatio = exitMaterial->refraction / entryMaterial->refraction;
       if (!fEqual(refrRatio, 1.0)) {

@@ -3,6 +3,7 @@
 #include "camera.cpp"
 #include "color.cpp"
 #include "light.cpp"
+#include "math_util.cpp"
 #include "model.cpp"
 #include "point.cpp"
 #include "scene.cpp"
