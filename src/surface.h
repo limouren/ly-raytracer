@@ -35,7 +35,7 @@ class Plane: public Surface {
       normal = vector;
       normal.normalize();
 
-      d = - dotProduct(point, vector);
+      d = - dotProduct(point, normal);
     }
 
     virtual const int intersect(const Ray &ray, Intercept intercepts[]);
@@ -45,24 +45,18 @@ class Plane: public Surface {
 };
 
 
-// TODO(kent): Add test cases for polygons
 class Polygon: public Plane {
   public:
-    int vertex_num;
+    int vertexNum;
     Point3D * vertex;
 
-    Polygon(int point_num, Point3D * points):
-      vertex_num(point_num), Plane() {
-      // if (vertex_num < 3) {
-        // Raise exception
-      // }
-
-      vertex = new Point3D[point_num];
-      for (int i = 0; i < vertex_num; i++) {
+    Polygon(int pointNum, Point3D * points):
+      vertexNum(pointNum), Plane() {
+      vertex = new Point3D[pointNum];
+      for (int i = 0; i < vertexNum; i++) {
         vertex[i] = points[i];
       }
 
-      // Compute norm
       normal = crossProduct(points[1] - points[0],
                             points[2] - points[0]);
       normal.normalize();
@@ -84,10 +78,8 @@ class Sphere: public Surface {
     P_FLT radius;
     Point3D center;
 
-    Sphere(P_FLT x, P_FLT y, P_FLT z, P_FLT radius): radius(radius) {
-      // TODO(kent): Clean up this new point in destructor
-      center = Point3D(x, y, z);
-    }
+    Sphere(P_FLT x, P_FLT y, P_FLT z, P_FLT radius):
+      radius(radius), center(Point3D(x, y, z)) { }
     Sphere(Point3D center, P_FLT radius): center(center), radius(radius) {}
 
     const int intersect(const Ray &ray, Intercept intercepts[]);
