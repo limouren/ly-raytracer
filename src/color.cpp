@@ -6,7 +6,7 @@
 BEGIN_RAYTRACER
 
 
-Color& Color::operator =(const Color &color) {
+inline Color& Color::operator =(const Color &color) {
   if (this == &color) {
     return *this;
   }
@@ -19,7 +19,7 @@ Color& Color::operator =(const Color &color) {
 }
 
 
-const Color Color::operator +(const Color color) const {
+inline const Color Color::operator +(const Color color) const {
   Color result = *this;
   result += color;
 
@@ -27,7 +27,7 @@ const Color Color::operator +(const Color color) const {
 }
 
 
-Color Color::operator +=(const Color color) {
+inline Color Color::operator +=(const Color color) {
   r += color.r;
   g += color.g;
   b += color.b;
@@ -36,7 +36,7 @@ Color Color::operator +=(const Color color) {
 }
 
 
-const Color Color::operator *(const Color color) const {
+inline const Color Color::operator *(const Color color) const {
   Color result = *this;
   result *= color;
 
@@ -44,7 +44,7 @@ const Color Color::operator *(const Color color) const {
 }
 
 
-Color Color::operator *=(const Color color) {
+inline Color Color::operator *=(const Color color) {
   r *= color.r;
   g *= color.g;
   b *= color.b;
@@ -53,7 +53,7 @@ Color Color::operator *=(const Color color) {
 }
 
 
-const Color Color::operator *(const Coeff coeff) const {
+inline const Color Color::operator *(const Coeff coeff) const {
   Color result = *this;
   result *= coeff;
 
@@ -61,7 +61,7 @@ const Color Color::operator *(const Coeff coeff) const {
 }
 
 
-Color Color::operator *=(const Coeff coeff) {
+inline Color Color::operator *=(const Coeff coeff) {
   r *= coeff.r;
   g *= coeff.g;
   b *= coeff.b;
@@ -70,7 +70,7 @@ Color Color::operator *=(const Coeff coeff) {
 }
 
 
-const Color Color::operator *(const C_FLT scalar) const {
+inline const Color Color::operator *(const C_FLT scalar) const {
   Color result = *this;
   result *= scalar;
 
@@ -78,7 +78,7 @@ const Color Color::operator *(const C_FLT scalar) const {
 }
 
 
-Color Color::operator *=(const C_FLT scalar) {
+inline Color Color::operator *=(const C_FLT scalar) {
   r *= scalar;
   g *= scalar;
   b *= scalar;

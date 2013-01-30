@@ -18,7 +18,7 @@ class Ray {
 
     Ray(Point3D orig, Vector3D dir): orig(orig), dir(dir) {}
 
-    Ray& operator =(const Ray &ray) {
+    inline Ray& operator =(const Ray &ray) {
       if (this == &ray) {
         return *this;
       }
@@ -29,7 +29,7 @@ class Ray {
       return *this;
     }
 
-    const Point3D rayPoint(P_FLT t) const {
+    inline const Point3D rayPoint(P_FLT t) const {
       return orig + (dir * t);
     }
 };

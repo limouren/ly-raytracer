@@ -8,7 +8,7 @@
 BEGIN_RAYTRACER
 
 
-Vector2D& Vector2D::operator =(const Vector2D &vector) {
+inline Vector2D& Vector2D::operator =(const Vector2D &vector) {
   if (this == &vector) {
     return *this;
   }
@@ -20,7 +20,7 @@ Vector2D& Vector2D::operator =(const Vector2D &vector) {
 }
 
 
-const Vector2D Vector2D::operator +(const Vector2D &vector) const {
+inline const Vector2D Vector2D::operator +(const Vector2D &vector) const {
   Vector2D result = *this;
   result += vector;
 
@@ -28,7 +28,7 @@ const Vector2D Vector2D::operator +(const Vector2D &vector) const {
 }
 
 
-const Vector2D Vector2D::operator -(const Vector2D &vector) const {
+inline const Vector2D Vector2D::operator -(const Vector2D &vector) const {
   Vector2D result = *this;
   result -= vector;
 
@@ -36,7 +36,7 @@ const Vector2D Vector2D::operator -(const Vector2D &vector) const {
 }
 
 
-Vector2D& Vector2D::operator +=(const Vector2D &vector) {
+inline Vector2D& Vector2D::operator +=(const Vector2D &vector) {
   x += vector.x;
   y += vector.y;
 
@@ -44,7 +44,7 @@ Vector2D& Vector2D::operator +=(const Vector2D &vector) {
 }
 
 
-Vector2D& Vector2D::operator -=(const Vector2D &vector) {
+inline Vector2D& Vector2D::operator -=(const Vector2D &vector) {
   x -= vector.x;
   y -= vector.y;
 
@@ -52,7 +52,7 @@ Vector2D& Vector2D::operator -=(const Vector2D &vector) {
 }
 
 
-const Vector2D Vector2D::operator *(const P_FLT scalar) const {
+inline const Vector2D Vector2D::operator *(const P_FLT scalar) const {
   Vector2D result = *this;
   result *= scalar;
 
@@ -60,7 +60,7 @@ const Vector2D Vector2D::operator *(const P_FLT scalar) const {
 }
 
 
-const Vector2D Vector2D::operator /(const P_FLT scalar) const {
+inline const Vector2D Vector2D::operator /(const P_FLT scalar) const {
   // TODO(kent): Divison by zero?
   Vector2D result = *this;
   result /= scalar;
@@ -69,7 +69,7 @@ const Vector2D Vector2D::operator /(const P_FLT scalar) const {
 }
 
 
-Vector2D& Vector2D::operator *=(const P_FLT scalar) {
+inline Vector2D& Vector2D::operator *=(const P_FLT scalar) {
   x *= scalar;
   y *= scalar;
 
@@ -77,7 +77,7 @@ Vector2D& Vector2D::operator *=(const P_FLT scalar) {
 }
 
 
-Vector2D& Vector2D::operator /=(const P_FLT scalar) {
+inline Vector2D& Vector2D::operator /=(const P_FLT scalar) {
   // TODO(kent): Divison by zero?
   x /= scalar;
   y /= scalar;
@@ -86,17 +86,17 @@ Vector2D& Vector2D::operator /=(const P_FLT scalar) {
 }
 
 
-const P_FLT Vector2D::length() const {
+inline const P_FLT Vector2D::length() const {
   return sqrt(lengthSqr());
 }
 
 
-const P_FLT Vector2D::lengthSqr() const {
+inline const P_FLT Vector2D::lengthSqr() const {
   return x * x + y * y;
 }
 
 
-const P_FLT Vector2D::normalize() {
+inline const P_FLT Vector2D::normalize() {
   // TODO(kent): See if we can use inv. sqrt hack
   P_FLT len = length();
   if (len != 0.0) {
@@ -107,13 +107,13 @@ const P_FLT Vector2D::normalize() {
 }
 
 
-const Vector2D Vector2D::negate() {
+inline const Vector2D Vector2D::negate() {
   x = -x;
   y = -y;
 }
 
 
-Vector3D& Vector3D::operator =(const Vector3D &vector) {
+inline Vector3D& Vector3D::operator =(const Vector3D &vector) {
   if (this == &vector) {
     return *this;
   }
@@ -126,7 +126,7 @@ Vector3D& Vector3D::operator =(const Vector3D &vector) {
 }
 
 
-const Vector3D Vector3D::operator +(const Vector3D &vector) const {
+inline const Vector3D Vector3D::operator +(const Vector3D &vector) const {
   Vector3D result = *this;
   result += vector;
 
@@ -134,7 +134,7 @@ const Vector3D Vector3D::operator +(const Vector3D &vector) const {
 }
 
 
-const Vector3D Vector3D::operator -(const Vector3D &vector) const {
+inline const Vector3D Vector3D::operator -(const Vector3D &vector) const {
   Vector3D result = *this;
   result -= vector;
 
@@ -142,7 +142,7 @@ const Vector3D Vector3D::operator -(const Vector3D &vector) const {
 }
 
 
-Vector3D& Vector3D::operator +=(const Vector3D &vector) {
+inline Vector3D& Vector3D::operator +=(const Vector3D &vector) {
   x += vector.x;
   y += vector.y;
   z += vector.z;
@@ -151,7 +151,7 @@ Vector3D& Vector3D::operator +=(const Vector3D &vector) {
 }
 
 
-Vector3D& Vector3D::operator -=(const Vector3D &vector) {
+inline Vector3D& Vector3D::operator -=(const Vector3D &vector) {
   x -= vector.x;
   y -= vector.y;
   z -= vector.z;
@@ -160,7 +160,7 @@ Vector3D& Vector3D::operator -=(const Vector3D &vector) {
 }
 
 
-const Vector3D Vector3D::operator *(const P_FLT scalar) const {
+inline const Vector3D Vector3D::operator *(const P_FLT scalar) const {
   Vector3D result = *this;
   result *= scalar;
 
@@ -168,7 +168,7 @@ const Vector3D Vector3D::operator *(const P_FLT scalar) const {
 }
 
 
-const Vector3D Vector3D::operator /(const P_FLT scalar) const {
+inline const Vector3D Vector3D::operator /(const P_FLT scalar) const {
   // TODO(kent): Divison by zero?
   Vector3D result = *this;
   result /= scalar;
@@ -177,7 +177,7 @@ const Vector3D Vector3D::operator /(const P_FLT scalar) const {
 }
 
 
-Vector3D& Vector3D::operator *=(const P_FLT scalar) {
+inline Vector3D& Vector3D::operator *=(const P_FLT scalar) {
   x *= scalar;
   y *= scalar;
   z *= scalar;
@@ -186,7 +186,7 @@ Vector3D& Vector3D::operator *=(const P_FLT scalar) {
 }
 
 
-Vector3D& Vector3D::operator /=(const P_FLT scalar) {
+inline Vector3D& Vector3D::operator /=(const P_FLT scalar) {
   // TODO(kent): Divison by zero?
   x /= scalar;
   y /= scalar;
@@ -196,7 +196,7 @@ Vector3D& Vector3D::operator /=(const P_FLT scalar) {
 }
 
 
-const Vector2D Vector3D::dropIndex(const int index) const {
+inline const Vector2D Vector3D::dropIndex(const int index) const {
   if (index == 0) {
     return Vector2D(y, z);
   } else if (index == 1)  {
@@ -207,7 +207,7 @@ const Vector2D Vector3D::dropIndex(const int index) const {
 }
 
 
-const int Vector3D::dominantIndex() const {
+inline const int Vector3D::dominantIndex() const {
   P_FLT abs_x = fabs(x),
         abs_y = fabs(y),
         abs_z = fabs(z);
@@ -227,17 +227,17 @@ const int Vector3D::dominantIndex() const {
 }
 
 
-const P_FLT Vector3D::length() const {
+inline const P_FLT Vector3D::length() const {
   return sqrt(lengthSqr());
 }
 
 
-const P_FLT Vector3D::lengthSqr() const {
+inline const P_FLT Vector3D::lengthSqr() const {
   return x * x + y * y + z * z;
 }
 
 
-const P_FLT Vector3D::normalize() {
+inline const P_FLT Vector3D::normalize() {
   // TODO(kent): See if we can use inv. sqrt hack
   P_FLT len = length();
   if (len != 0.0) {
@@ -248,7 +248,7 @@ const P_FLT Vector3D::normalize() {
 }
 
 
-const Vector3D Vector3D::negate() {
+inline const Vector3D Vector3D::negate() {
   x = -x;
   y = -y;
   z = -z;
