@@ -15,24 +15,27 @@
 #define PI (3.141592653589793)
 
 // Camera Settings
-#define DEFAULT_ASPECT_RATIO 1.33
-
-// Minimum ray weght threshold
-#define MIN_WEIGHT 0.01
+#define DEFAULT_ASPECT_RATIO (1.33)
 
 // Max intersections per ray against solid
-#define MAX_INTERSECTIONS 4
+#define MAX_INTERSECTIONS (4)
 
 // Max raytrace recurse depth
-#define MAX_LEVEL 8
+#define MAX_LEVEL (8)
+
+// Minimum ray weght threshold
+#define MIN_WEIGHT (0.01)
 
 // Float comparison epsilon
-#define P_FLT_EPSILON 1.0e-8
+#define P_FLT_EPSILON (1.0e-8)
+
+// Maximum size for positional values
+#define P_FLT_MAX (1.0e10)
 
 
 #define MODEL_CLS Model
 // Internal resolution factor for sampling
-#define INT_RES_FACTOR 3
+#define INT_RES_FACTOR (3)
 
 
 BEGIN_RAYTRACER
