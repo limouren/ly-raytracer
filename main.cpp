@@ -11,6 +11,7 @@
 #include "surface.cpp"
 #include "trace.cpp"
 #include "vector.cpp"
+#include "volume.cpp"
 
 
 BEGIN_RAYTRACER
