@@ -101,7 +101,7 @@ int trace(int level, C_FLT weight, const Ray &ray, Color * color,
   Intercept intercepts[MAX_INTERSECTIONS];
 
   int hits = intersect(ray, scene.modelRoot, intercepts, entryMaterial);
-  if (hits != 0) {
+  if (hits > 0) {
     Point3D first_intercept = ray.rayPoint(intercepts[0].t);
     Primitive * hit_prim = intercepts[0].primitive;
     Vector3D normal = (hit_prim->surface->normalAt)(first_intercept);

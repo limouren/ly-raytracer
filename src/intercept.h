@@ -22,7 +22,8 @@ class Intercept {
     Primitive * primitive;
 
     Intercept() {}
-    Intercept(P_FLT t, bool enter): t(t), enter(enter), material(NULL) {}
+    Intercept(P_FLT t, bool enter):
+      t(t), enter(enter), material(NULL), primitive(NULL) {}
 };
 
 

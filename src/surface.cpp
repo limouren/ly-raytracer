@@ -12,18 +12,18 @@ BEGIN_RAYTRACER
 
 
 const int Plane::intersect(const Ray &ray, Intercept intercepts[]) {
-  P_FLT v_d, v_o, t;
+  P_FLT lightDotNorm, t;
 
-  v_d = dotProduct(normal, ray.dir);
-  if (fIsZero(v_d)) {
+  lightDotNorm = dotProduct(normal, ray.dir);
+
+  if (fIsZero(lightDotNorm)) {
     return 0;
   }
 
-  v_o = -(dotProduct(normal, ray.orig) + d);
-  t = v_o / v_d;
+  t = -(dotProduct(normal, ray.orig) + d) / lightDotNorm;
 
-  if (fGreaterThan(t, 0.0)) {
-    intercepts[0] = Intercept(t, v_d < 0.0);
+  if (t > P_FLT_EPSILON) {
+    intercepts[0] = Intercept(t, lightDotNorm < 0.0);
     return 1;
   }
 
@@ -33,7 +33,7 @@ const int Plane::intersect(const Ray &ray, Intercept intercepts[]) {
 
 // Ref: Glassner -An Introduction to Ray Tracing - P.53-59
 const int Polygon::intersect(const Ray &ray, Intercept intercepts[]) {
-  if (!Plane::intersect(ray, intercepts)) {
+  if (Plane::intersect(ray, intercepts) == 0) {
     return 0;
   }
 
