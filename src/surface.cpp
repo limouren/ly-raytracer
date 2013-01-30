@@ -15,7 +15,6 @@ const int Plane::intersect(const Ray &ray, Intercept intercepts[]) {
   P_FLT v_d, v_o, t;
 
   v_d = dotProduct(normal, ray.dir);
-
   if (fIsZero(v_d)) {
     return 0;
   }
@@ -34,16 +33,15 @@ const int Plane::intersect(const Ray &ray, Intercept intercepts[]) {
 
 // Ref: Glassner -An Introduction to Ray Tracing - P.53-59
 const int Polygon::intersect(const Ray &ray, Intercept intercepts[]) {
-  int hits = Plane::intersect(ray, intercepts);
-  if (hits == 0) {
+  if (!Plane::intersect(ray, intercepts)) {
     return 0;
   }
 
   Point3D intercept3D = ray.rayPoint(intercepts[0].t);
-  int dominantIndex = intercept3D.dominantIndex();
+  int dominantIndex = normal.dominantIndex();
 
   Vector2D intercept2D = intercept3D.dropIndex(dominantIndex);
-  Vector2D * vertex2D = new Point2D[vertex_num];
+  Vector2D * vertex2D = new Vector2D[vertex_num];
   for (int i = 0; i < vertex_num; i++) {
     vertex2D[i] = vertex[i].dropIndex(dominantIndex) - intercept2D;
   }
@@ -57,13 +55,12 @@ const int Polygon::intersect(const Ray &ray, Intercept intercepts[]) {
     secondYPositive = (vertex2D[second].y >= 0.0);
 
     if (firstYPositive != secondYPositive) {
-      if (vertex2D[first].x > 0.0 && vertex2D[second].x > 0.0) {
+      if (vertex2D[first].x >= 0.0 && vertex2D[second].x >= 0.0) {
         windingNumber++;
-      } else if ((vertex2D[first].x > 0.0 || vertex2D[second].x > 0.0) &&
-                 fGreaterThan(vertex2D[first].x - vertex2D[first].y *
-                              (vertex2D[second].x - vertex2D[first].x) /
-                              (vertex2D[second].y - vertex2D[first].y),
-                              0.0)) {
+      } else if ((vertex2D[first].x >= 0.0 || vertex2D[second].x >= 0.0) &&
+                 vertex2D[first].x - (vertex2D[first].y *
+                 (vertex2D[second].x - vertex2D[first].x) /
+                 (vertex2D[second].y - vertex2D[first].y)) > 0.0) {
         windingNumber++;
       }
     }

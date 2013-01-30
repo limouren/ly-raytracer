@@ -43,12 +43,12 @@ class Scene {
     void init_lights() {
       Light * light1 = new Light(Point3D(-4.5, 2.5, 0.0), Color(1.0, 1.0, 1.0));
       Light * light2 = new Light(Point3D(4.5, 2.5, 0.0), Color(1.0, 1.0, 1.0));
-      Light * light3 = new Light(Point3D(0.0, 5.0, 0.0), Color(0.5, 0.5, 0.5));
+      Light * light3 = new Light(Point3D(0.5, 2.0, 0.0), Color(1.0, 1.0, 1.0));
       Light * light4 = new Light(Point3D(3.0, 3.0, 0.0), Color(1.0, 1.0, 1.0));
 
-      lights.push_back(light1);
-      lights.push_back(light2);
-      // lights.push_back(light3);
+      // lights.push_back(light1);
+      // lights.push_back(light2);
+      lights.push_back(light3);
       // lights.push_back(light4);
     }
 
@@ -98,9 +98,16 @@ class Scene {
                                       Coeff(1.0, 1.0, 1.0),
                                       1.5,
                                       2.5);
+      Material * mirror = new Material(std::string("Mirror"),
+                                       Coeff(0.0, 0.0, 0.0),
+                                       Coeff(0.0, 0.0, 0.0),
+                                       Coeff(1.0, 1.0, 1.0),
+                                       Coeff(0.0, 0.0, 0.0),
+                                       1.5,
+                                       20000.0);
 
       Surface * sp1 = static_cast<Surface *>(new Sphere(-1.5, 0.0, 5.0, 1.0)),
-              * sp2 = static_cast<Surface *>(new Sphere(1.5, 0.0, 7.0, 1.0)),
+              * sp2 = static_cast<Surface *>(new Sphere(1.5, 0.0, 5.0, 1.0)),
               * sp3 = static_cast<Surface *>(new Sphere(0.0, 0.0, 3.5, 1.0)),
               * sp4 = static_cast<Surface *>(new Sphere(0.0, 0.0, 3.0, 0.5));
 
@@ -112,19 +119,30 @@ class Scene {
                             Point3D(1.0, -0.5, 5.0),
                             Point3D(0.5, -1.0, 5.0),
                             Point3D(-0.5, -1.0, 5.0)};
-
       Surface * p1 = static_cast<Surface *>(new Polygon(8, octagon));
 
-      MODEL_CLS * b1 = static_cast<MODEL_CLS *>(new Primitive(black, sp1));
-      MODEL_CLS * b2 = static_cast<MODEL_CLS *>(new Primitive(black, sp2));
+      Point3D leftWall[4] = {Point3D(14.5, 15.0, 30.0),
+                             Point3D(15.0, 15.0, 0.0),
+                             Point3D(15.0, -15.1, 0.0),
+                             Point3D(14.5, -15.1, 30.0)};
+      Point3D rightWall[4] = {Point3D(-14.5, -15.1, 30.0),
+                              Point3D(-15.0, -15.1, 0.0),
+                              Point3D(-15.0, 15.0, 0.0),
+                              Point3D(-14.5, 15.0, 30.0)};
+      Surface * p2 = static_cast<Surface *>(new Polygon(4, leftWall));
+      Surface * p3 = static_cast<Surface *>(new Polygon(4, rightWall));
+
+      MODEL_CLS * b1 = static_cast<MODEL_CLS *>(new Primitive(red, sp1));
+      MODEL_CLS * b2 = static_cast<MODEL_CLS *>(new Primitive(blue, sp2));
       MODEL_CLS * b3 = static_cast<MODEL_CLS *>(new Primitive(white, sp3));
       MODEL_CLS * b4 = static_cast<MODEL_CLS *>(new Primitive(glass, sp4));
 
-      MODEL_CLS * w1 = static_cast<MODEL_CLS *>(new Primitive(white, p1));
+      MODEL_CLS * w1 = static_cast<MODEL_CLS *>(new Primitive(red, p2));
+      MODEL_CLS * w2 = static_cast<MODEL_CLS *>(new Primitive(blue, p3));
 
-      MODEL_CLS * root = static_cast<MODEL_CLS *>(new Composite(b4, w1));
+      MODEL_CLS * root = static_cast<MODEL_CLS *>(new Composite(w1, w2));
 
-      modelRoot = w1;
+      modelRoot = root;
     }
 
     Scene(): background(NULL) {

@@ -36,8 +36,8 @@ class Camera {
       // TODO(kent): Don't hardcode camera
       angle = PI * 0.25;
       aspect_ratio = 1.333;
-      target = Point3D(0.0, 0.0, 4.0);
-      viewpoint = Point3D(0.0, 1.0, 0.0);
+      target = Point3D(0.0, 0.0, 1.0);
+      viewpoint = Point3D(0.0, 0.0, 0.0);
       up = Vector3D(0.0, 1.0, 0.0);
     }
     #endif
