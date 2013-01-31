@@ -20,26 +20,25 @@ int intersect(const Ray &ray, MODEL_CLS * model, Intercept intercepts[],
   if (model->composite_flag) {
     Composite * composite = static_cast<Composite *>(model);
 
-    int hits_left, hits_right;
-    Intercept intercepts_left[MAX_INTERSECTIONS],
-                 intercepts_right[MAX_INTERSECTIONS];
+    int hitsLeft, hitsRight;
+    Intercept interceptsLeft[MAX_INTERSECTIONS],
+                 interceptsRight[MAX_INTERSECTIONS];
 
-    hits_left = intersect(ray, composite->left, intercepts_left,
+    hitsLeft = intersect(ray, composite->left, interceptsLeft,
                           entryMaterial);
-    if (hits_left == 0 && composite->op != '|') {
+    if (hitsLeft == 0 && composite->op != '|') {
       return 0;
     } else {
-      hits_right = intersect(ray, composite->right, intercepts_right,
+      hitsRight = intersect(ray, composite->right, interceptsRight,
                              entryMaterial);
 
-      int hits = intersectMerge(composite->op, hits_left, intercepts_left,
-                                hits_right, intercepts_right, intercepts);
+      int hits = intersectMerge(composite->op, hitsLeft, interceptsLeft,
+                                hitsRight, interceptsRight, intercepts);
       return hits;
     }
   } else {
     Primitive * prim = static_cast<Primitive *>(model);
 
-    // TODO(kent): Handle non spheres...
     int hits = (prim->surface->intersect)(ray, intercepts);
     if (hits) {
       intercepts[0].material = entryMaterial;
@@ -53,23 +52,25 @@ int intersect(const Ray &ray, MODEL_CLS * model, Intercept intercepts[],
   }
 }
 
-int intersectMerge(int op, int hit_left, Intercept intercepts_left[],
-                   int hit_right, Intercept intercepts_right[],
+int intersectMerge(int op, int hitsLeft, Intercept interceptsLeft[],
+                   int hitsRight, Intercept interceptsRight[],
                    Intercept merged[]) {
   // Assume union only for now
   // TODO(kent): Handle non unions
   // TODO(kent): Change intercept lists to vectors
 
-  int left_index = 0, right_index = 0, index = 0;
-  while (left_index != hit_left &&
-         right_index != hit_right) {
-    if (intercepts_left[left_index].t < intercepts_right[right_index].t) {
-      merged[index] = intercepts_left[left_index];
-      left_index++;
+  int index = 0,
+      leftIndex = 0,
+      rightIndex = 0;
+  while (leftIndex != hitsLeft &&
+         rightIndex != hitsRight) {
+    if (interceptsLeft[leftIndex].t < interceptsRight[rightIndex].t) {
+      merged[index] = interceptsLeft[leftIndex];
+      leftIndex++;
       index++;
     } else {
-      merged[index] = intercepts_right[right_index];
-      right_index++;
+      merged[index] = interceptsRight[rightIndex];
+      rightIndex++;
       index++;
     }
 
@@ -78,16 +79,16 @@ int intersectMerge(int op, int hit_left, Intercept intercepts_left[],
     }
   }
 
-  if (left_index != hit_left) {
-    while (left_index != hit_left && index < MAX_INTERSECTIONS) {
-      merged[index] = intercepts_left[left_index];
-      left_index++;
+  if (leftIndex != hitsLeft) {
+    while (leftIndex != hitsLeft && index < MAX_INTERSECTIONS) {
+      merged[index] = interceptsLeft[leftIndex];
+      leftIndex++;
       index++;
     }
   } else {
-    while (right_index != hit_right && index < MAX_INTERSECTIONS) {
-      merged[index] = intercepts_right[right_index];
-      right_index++;
+    while (rightIndex != hitsRight && index < MAX_INTERSECTIONS) {
+      merged[index] = interceptsRight[rightIndex];
+      rightIndex++;
       index++;
     }
   }
@@ -102,14 +103,14 @@ int trace(int level, C_FLT weight, const Ray &ray, Color * color,
 
   int hits = intersect(ray, scene.modelRoot, intercepts, entryMaterial);
   if (hits > 0) {
-    Point3D first_intercept = ray.rayPoint(intercepts[0].t);
-    Primitive * hit_prim = intercepts[0].primitive;
-    Vector3D normal = (hit_prim->surface->normalAt)(first_intercept);
+    Point3D interceptPoint = ray.rayPoint(intercepts[0].t);
+    Primitive * primitive = intercepts[0].primitive;
+    Vector3D normal = (primitive->surface->normalAt)(interceptPoint);
     if (dotProduct(ray.dir, normal) > 0.0) {
       normal.negate();
     }
 
-    shade(level, weight, first_intercept, normal, ray.dir, intercepts, color);
+    shade(level, weight, interceptPoint, normal, ray.dir, intercepts, color);
     return hits;
   } else {
     shadeBackground(ray, color);
