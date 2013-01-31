@@ -45,7 +45,7 @@ class Vector2D {
 
 
 inline const Vector2D operator -(const Vector2D &vector) {
-  return Vector2D(vector.x, vector.y);
+  return Vector2D(-vector.x, -vector.y);
 }
 
 
@@ -96,7 +96,7 @@ class Vector3D {
 
 
 inline const Vector3D operator -(const Vector3D &vector) {
-  return Vector3D(vector.x, vector.y, vector.z);
+  return Vector3D(-vector.x, -vector.y, -vector.z);
 }
 
 
