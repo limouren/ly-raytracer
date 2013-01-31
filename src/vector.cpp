@@ -8,7 +8,7 @@
 BEGIN_RAYTRACER
 
 
-inline Vector2D& Vector2D::operator =(const Vector2D &vector) {
+inline Vector2D Vector2D::operator =(const Vector2D &vector) {
   if (this == &vector) {
     return *this;
   }
@@ -36,7 +36,7 @@ inline const Vector2D Vector2D::operator -(const Vector2D &vector) const {
 }
 
 
-inline Vector2D& Vector2D::operator +=(const Vector2D &vector) {
+inline Vector2D Vector2D::operator +=(const Vector2D &vector) {
   x += vector.x;
   y += vector.y;
 
@@ -44,7 +44,7 @@ inline Vector2D& Vector2D::operator +=(const Vector2D &vector) {
 }
 
 
-inline Vector2D& Vector2D::operator -=(const Vector2D &vector) {
+inline Vector2D Vector2D::operator -=(const Vector2D &vector) {
   x -= vector.x;
   y -= vector.y;
 
@@ -69,7 +69,7 @@ inline const Vector2D Vector2D::operator /(const P_FLT scalar) const {
 }
 
 
-inline Vector2D& Vector2D::operator *=(const P_FLT scalar) {
+inline Vector2D Vector2D::operator *=(const P_FLT scalar) {
   x *= scalar;
   y *= scalar;
 
@@ -77,7 +77,7 @@ inline Vector2D& Vector2D::operator *=(const P_FLT scalar) {
 }
 
 
-inline Vector2D& Vector2D::operator /=(const P_FLT scalar) {
+inline Vector2D Vector2D::operator /=(const P_FLT scalar) {
   // TODO(kent): Divison by zero?
   x /= scalar;
   y /= scalar;
@@ -113,7 +113,7 @@ inline const Vector2D Vector2D::negate() {
 }
 
 
-inline Vector3D& Vector3D::operator =(const Vector3D &vector) {
+inline Vector3D Vector3D::operator =(const Vector3D &vector) {
   if (this == &vector) {
     return *this;
   }
@@ -142,7 +142,7 @@ inline const Vector3D Vector3D::operator -(const Vector3D &vector) const {
 }
 
 
-inline Vector3D& Vector3D::operator +=(const Vector3D &vector) {
+inline Vector3D Vector3D::operator +=(const Vector3D &vector) {
   x += vector.x;
   y += vector.y;
   z += vector.z;
@@ -151,7 +151,7 @@ inline Vector3D& Vector3D::operator +=(const Vector3D &vector) {
 }
 
 
-inline Vector3D& Vector3D::operator -=(const Vector3D &vector) {
+inline Vector3D Vector3D::operator -=(const Vector3D &vector) {
   x -= vector.x;
   y -= vector.y;
   z -= vector.z;
@@ -177,7 +177,7 @@ inline const Vector3D Vector3D::operator /(const P_FLT scalar) const {
 }
 
 
-inline Vector3D& Vector3D::operator *=(const P_FLT scalar) {
+inline Vector3D Vector3D::operator *=(const P_FLT scalar) {
   x *= scalar;
   y *= scalar;
   z *= scalar;
@@ -186,7 +186,7 @@ inline Vector3D& Vector3D::operator *=(const P_FLT scalar) {
 }
 
 
-inline Vector3D& Vector3D::operator /=(const P_FLT scalar) {
+inline Vector3D Vector3D::operator /=(const P_FLT scalar) {
   // TODO(kent): Divison by zero?
   x /= scalar;
   y /= scalar;

@@ -17,29 +17,25 @@ class Vector2D {
   public:
     P_FLT x, y;
 
-    Vector2D(): x(0.0), y(0.0) {}
+    inline Vector2D(): x(0.0), y(0.0) {}
 
-    Vector2D(const P_FLT x, const P_FLT y): x(x), y(y) {}
+    inline Vector2D(const P_FLT x, const P_FLT y): x(x), y(y) {}
 
     inline const P_FLT operator[](const unsigned int index) const {
       return (&x)[index];  // Referenced from yafaray
     }
 
-    inline P_FLT& operator[](const unsigned int index) {
-      return (&x)[index];  // Referenced from yafaray
-    }
-
-    inline Vector2D& operator =(const Vector2D &vector);
+    inline Vector2D operator =(const Vector2D &vector);
 
     inline const Vector2D operator +(const Vector2D &vector) const;
     inline const Vector2D operator -(const Vector2D &vector) const;
-    inline Vector2D& operator +=(const Vector2D &vector);
-    inline Vector2D& operator -=(const Vector2D &vector);
+    inline Vector2D operator +=(const Vector2D &vector);
+    inline Vector2D operator -=(const Vector2D &vector);
 
     inline const Vector2D operator *(const P_FLT scalar) const;
     inline const Vector2D operator /(const P_FLT scalar) const;
-    inline Vector2D& operator *=(const P_FLT scalar);
-    inline Vector2D& operator /=(const P_FLT scalar);
+    inline Vector2D operator *=(const P_FLT scalar);
+    inline Vector2D operator /=(const P_FLT scalar);
 
     inline const P_FLT length() const;
     inline const P_FLT lengthSqr() const;
@@ -63,29 +59,26 @@ class Vector3D {
   public:
     P_FLT x, y, z;
 
-    Vector3D(): x(0.0), y(0.0), z(0.0) {}
+    inline Vector3D(): x(0.0), y(0.0), z(0.0) {}
 
-    Vector3D(const P_FLT x, const P_FLT y, const P_FLT z): x(x), y(y), z(z) {}
+    inline Vector3D(const P_FLT x, const P_FLT y, const P_FLT z):
+      x(x), y(y), z(z) {}
 
     inline const P_FLT operator[](const unsigned int index) const {
       return (&x)[index];  // Referenced from yafaray
     }
 
-    inline P_FLT& operator[](const unsigned int index) {
-      return (&x)[index];  // Referenced from yafaray
-    }
-
-    inline Vector3D& operator =(const Vector3D &vector);
+    inline Vector3D operator =(const Vector3D &vector);
 
     inline const Vector3D operator +(const Vector3D &vector) const;
     inline const Vector3D operator -(const Vector3D &vector) const;
-    inline Vector3D& operator +=(const Vector3D &vector);
-    inline Vector3D& operator -=(const Vector3D &vector);
+    inline Vector3D operator +=(const Vector3D &vector);
+    inline Vector3D operator -=(const Vector3D &vector);
 
     inline const Vector3D operator *(const P_FLT scalar) const;
     inline const Vector3D operator /(const P_FLT scalar) const;
-    inline Vector3D& operator *=(const P_FLT scalar);
-    inline Vector3D& operator /=(const P_FLT scalar);
+    inline Vector3D operator *=(const P_FLT scalar);
+    inline Vector3D operator /=(const P_FLT scalar);
 
     inline const int dominantIndex() const;
     inline const Vector2D dropIndex(const int index) const;
