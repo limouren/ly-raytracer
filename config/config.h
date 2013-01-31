@@ -27,7 +27,7 @@
 #define MIN_WEIGHT (0.01)
 
 // Float comparison epsilon
-#define P_FLT_EPSILON (1.0e-8)
+#define P_FLT_EPSILON (1.0e-6)
 
 // Maximum size for positional values
 #define P_FLT_MAX (1.0e10)
@@ -45,7 +45,7 @@ BEGIN_RAYTRACER
 typedef float C_FLT;
 
 // Double precision position
-typedef double P_FLT;
+typedef float P_FLT;
 
 
 const int image_height = 600;
