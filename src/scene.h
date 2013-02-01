@@ -91,6 +91,13 @@ class Scene {
                                       Coeff(0.0, 0.0, 0.0),
                                       1.5,
                                       10),
+               * roughGray = new Material(std::string("Rough gray"),
+                                      Coeff(0.15, 0.15, 0.15),
+                                      Coeff(0.2, 0.2, 0.2),
+                                      Coeff(0.1, 0.1, 0.1),
+                                      Coeff(0.0, 0.0, 0.0),
+                                      1.5,
+                                      10),
                * black = new Material(std::string("Black"),
                                       Coeff(0.1, 0.1, 0.1),
                                       Coeff(0.1, 0.1, 0.1),
@@ -117,7 +124,8 @@ class Scene {
               * sp2 = static_cast<Surface *>(new Sphere(1.5, 0.0, 5.0, 0.5)),
               * sp3 = static_cast<Surface *>(new Sphere(0.0, 1.0, 5.0, 0.5)),
               * sp4 = static_cast<Surface *>(new Sphere(0.0, 0.0, 6.0, 0.5)),
-              * sp5 = static_cast<Surface *>(new Sphere(0.0, -0.3, 3.5, 0.3));
+              * sp5 = static_cast<Surface *>(new Sphere(0.0, -0.3, 3.5, 0.3)),
+              * sp6 = static_cast<Surface *>(new Sphere(0.0, 0.0, 0.0, -12.0));
 
       Point3D octagon[8] = {Point3D(-1.0, -0.5, 5.0),
                             Point3D(-1.0, 0.5, 5.0),
@@ -129,22 +137,22 @@ class Scene {
                             Point3D(-0.5, -1.0, 5.0)};
       Surface * o1 = static_cast<Surface *>(new Polygon(8, octagon));
 
-      Point3D leftWall[4] = {Point3D(4.0, 1.5, 15.0),
-                             Point3D(4.0, 1.5, 0.0),
-                             Point3D(4.0, -1.5, 0.0),
-                             Point3D(4.0, -1.5, 15.0)},
-              rightWall[4] = {Point3D(-4.0, -1.5, 15.0),
-                              Point3D(-4.0, -1.5, 0.0),
-                              Point3D(-4.0, 1.5, 0.0),
-                              Point3D(-4.0, 1.5, 15.0)},
-              backWall[4] = {Point3D(-4.0, 1.5, 15.0),
-                             Point3D(4.0, 1.5, 15.0),
-                             Point3D(4.0, -1.5, 15.0),
-                             Point3D(-4.0, -1.5, 15.0)},
-              floor[4] = {Point3D(-4.0, -1.5, 0.0),
-                          Point3D(-4.0, -1.5, 15.0),
-                          Point3D(4.0, -1.5, 15.0),
-                          Point3D(4.0, 1.5, 0.0)};
+      Point3D leftWall[4] = {Point3D(2.5, 1.5, 10.0),
+                             Point3D(2.5, 1.5, 0.0),
+                             Point3D(2.5, -1.5, 0.0),
+                             Point3D(2.5, -1.5, 10.0)},
+              rightWall[4] = {Point3D(-2.5, -1.5, 10.0),
+                              Point3D(-2.5, -1.5, 0.0),
+                              Point3D(-2.5, 1.5, 0.0),
+                              Point3D(-2.5, 1.5, 10.0)},
+              backWall[4] = {Point3D(-2.5, 1.5, 10.0),
+                             Point3D(2.5, 1.5, 10.0),
+                             Point3D(2.5, -1.5, 10.0),
+                             Point3D(-2.5, -1.5, 10.0)},
+              floor[4] = {Point3D(-2.5, -1.5, 0.0),
+                          Point3D(-2.5, -1.5, 10.0),
+                          Point3D(2.5, -1.5, 10.0),
+                          Point3D(2.5, 1.5, 0.0)};
       Surface * p1 = static_cast<Surface *>(new Polygon(4, leftWall)),
               * p2 = static_cast<Surface *>(new Polygon(4, rightWall)),
               * p3 = static_cast<Surface *>(new Polygon(4, backWall)),
@@ -155,7 +163,8 @@ class Scene {
                 * b2 = static_cast<MODEL_CLS *>(new Primitive(green, sp2)),
                 * b3 = static_cast<MODEL_CLS *>(new Primitive(blue, sp3)),
                 * b4 = static_cast<MODEL_CLS *>(new Primitive(mirror, sp4)),
-                * b5 = static_cast<MODEL_CLS *>(new Primitive(glass, sp5));
+                * b5 = static_cast<MODEL_CLS *>(new Primitive(glass, sp5)),
+                * b6 = static_cast<MODEL_CLS *>(new Primitive(roughGray, sp6));
 
       // Walls
       MODEL_CLS * w1 = static_cast<MODEL_CLS *>(new Primitive(roughWhite, p1)),
@@ -171,9 +180,11 @@ class Scene {
                                                                  sideWalls)),
                 * balls1 = static_cast<MODEL_CLS *>(new Composite(b1, b2)),
                 * balls2 = static_cast<MODEL_CLS *>(new Composite(b3, b4)),
-                * balls3 = static_cast<MODEL_CLS *>(new Composite(balls1, b5)),
-                * balls = static_cast<MODEL_CLS *>(new Composite(balls3,
-                                                                 balls2)),
+                * balls3 = static_cast<MODEL_CLS *>(new Composite(b5, b6)),
+                * ballsN1 = static_cast<MODEL_CLS *>(new Composite(balls1,
+                                                                   balls2)),
+                * balls =  static_cast<MODEL_CLS *>(new Composite(ballsN1,
+                                                                  balls3)),
                 * root = static_cast<MODEL_CLS *>(new Composite(walls,
                                                                 balls));
 

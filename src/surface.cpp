@@ -75,17 +75,18 @@ const int Polygon::intersect(const Ray &ray, Intercept intercepts[]) {
 
 
 const int Sphere::intersect(const Ray &ray, Intercept intercepts[]) {
+  bool insideOut = (radius < 0.0);
   Vector3D originToCenter;
   P_FLT halfChordSqr, halfChord, ocSqr, rayClosest, t;
 
   originToCenter = center - ray.orig;
+  ocSqr = originToCenter.lengthSqr();
   rayClosest = dotProduct(originToCenter, ray.dir);
 
-  if (fLessZero(rayClosest)) {
+  if (fLessZero(rayClosest) and !fLess(ocSqr, radius * radius)){
     return 0;
   }
 
-  ocSqr = originToCenter.lengthSqr();
 
   halfChordSqr = (radius * radius) - ocSqr + (rayClosest * rayClosest);
   if (fLessZero(halfChordSqr)) {
@@ -94,21 +95,29 @@ const int Sphere::intersect(const Ray &ray, Intercept intercepts[]) {
 
   halfChord = sqrt(halfChordSqr);
   if (fGreater(rayClosest, halfChord)) {
+    if (insideOut) {
+      return 0;
+    }
     intercepts[0] = Intercept(rayClosest - halfChord, true);
     intercepts[1] = Intercept(rayClosest + halfChord, false);
     return 2;
   } else {
-    intercepts[0] = Intercept(rayClosest + halfChord, false);
+    intercepts[0] = Intercept(rayClosest + halfChord, insideOut);
     return 1;
   }
 }
 
 
 const Vector3D Sphere::normalAt(const Point3D &point) {
-  Vector3D centerToPoint = point - center;
-  centerToPoint.normalize();
+  Vector3D normal;
+  if (radius < 0.0) {
+    normal = point - center;
+  } else {
+    normal = center - point;
+  }
 
-  return centerToPoint;
+  normal.normalize();
+  return normal;
 }
 
 
