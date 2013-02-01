@@ -17,6 +17,7 @@
 #include "light.h"
 #include "material.h"
 #include "model.h"
+#include "triangle.h"
 
 
 BEGIN_RAYTRACER
@@ -139,6 +140,20 @@ class Scene {
                             Point3D(-0.5, -1.0, 5.0)};
       Geometry * o1 = static_cast<Geometry *>(new Polygon(8, octagon));
 
+      P_FLT piThird = PI * 0.33333;
+      std::vector<Point3D> trianglePoints;
+      trianglePoints.push_back(Point3D(0.0, 0.0, 5.0));
+      for (int i = 0; i < 6; i++) {
+        P_FLT angle = static_cast<P_FLT>(i) * piThird;
+        trianglePoints.push_back(Point3D(cos(angle), sin(angle), 5.0));
+      }
+      std::vector<Triangle *> triangles;
+      for (int i = 0; i < 6; i++) {
+        triangles.push_back(new Triangle(trianglePoints[0],
+                                         trianglePoints[i%6+1],
+                                         trianglePoints[(i+1)%6+1]));
+      }
+
       Point3D leftWall[4] = {Point3D(2.5, 1.5, 10.0),
                              Point3D(2.5, 1.5, 0.0),
                              Point3D(2.5, -1.5, 0.0),
@@ -169,6 +184,14 @@ class Scene {
       balls.push_back(new Primitive(glass, sp5)),
       balls.push_back(new Primitive(roughGray, sp6));
 
+      std::vector<MODEL_CLS *> pseudoMesh;
+      pseudoMesh.push_back(new Primitive(red, triangles[0]));
+      pseudoMesh.push_back(new Primitive(green, triangles[1]));
+      pseudoMesh.push_back(new Primitive(blue, triangles[2]));
+      pseudoMesh.push_back(new Primitive(red, triangles[3]));
+      pseudoMesh.push_back(new Primitive(green, triangles[4]));
+      pseudoMesh.push_back(new Primitive(blue, triangles[5]));
+
       // Walls
       std::vector<MODEL_CLS *> walls;
       walls.push_back(new Primitive(roughWhite, p1)),
@@ -179,7 +202,8 @@ class Scene {
 
       // Model list
       std::vector<MODEL_CLS *> models;
-      models.push_back(buildModelTree(balls));
+      // models.push_back(buildModelTree(balls));
+      models.push_back(buildModelTree(pseudoMesh));
       models.push_back(buildModelTree(walls));
 
       modelRoot = buildModelTree(models);

@@ -38,6 +38,7 @@ const int Triangle::intersect(const Ray &ray, Intercept intercepts[]) {
         return 0;
       }
 
+      intercepts[0].enter = true;
       return 1;
 
     case 1:
@@ -57,6 +58,7 @@ const int Triangle::intersect(const Ray &ray, Intercept intercepts[]) {
         return 0;
       }
 
+      intercepts[0].enter = true;
       return 1;
 
     case 2:
@@ -76,6 +78,7 @@ const int Triangle::intersect(const Ray &ray, Intercept intercepts[]) {
         return 0;
       }
 
+      intercepts[0].enter = true;
       return 1;
   }
 }
