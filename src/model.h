@@ -2,6 +2,8 @@
 #define MODEL_H
 
 
+#include <vector>
+
 #include "config.h"
 
 #include "geometry.h"
@@ -31,6 +33,11 @@ class Composite: public MODEL_CLS {
       left(left), right(right), MODEL_CLS(1) {
       op = '|';
     }
+
+    ~Composite() {
+      delete left;
+      delete right;
+    }
 };
 
 
@@ -44,6 +51,28 @@ class Primitive: public MODEL_CLS {
       material(material), geometry(geometry), MODEL_CLS(0) {
     }
 };
+
+
+MODEL_CLS * buildModelTree(std::vector<MODEL_CLS *> modelVector) {
+  int size = modelVector.size();
+
+  switch (size) {
+    case 0:
+      return NULL;
+    case 1:
+      return modelVector[0];
+    case 2:
+      return new Composite(modelVector[0], modelVector[1]);
+    default:
+      std::vector<MODEL_CLS *>::iterator midpoint = modelVector.begin() +
+                                                    (size / 2);
+      std::vector<MODEL_CLS *> firstHalf(modelVector.begin(), midpoint),
+                               secondHalf(midpoint, modelVector.end());
+
+      return new Composite(buildModelTree(firstHalf),
+                           buildModelTree(secondHalf));
+  }
+}
 
 
 END_RAYTRACER

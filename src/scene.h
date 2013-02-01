@@ -120,15 +120,12 @@ class Scene {
                                        1.0,
                                        20000.0);
 
-      Geometry * sp1 = static_cast<Geometry *>(new Sphere(-1.5, 0.0, 5.0,
-                                                          0.5)),
-               * sp2 = static_cast<Geometry *>(new Sphere(1.5, 0.0, 5.0, 0.5)),
-               * sp3 = static_cast<Geometry *>(new Sphere(0.0, 1.0, 5.0, 0.5)),
-               * sp4 = static_cast<Geometry *>(new Sphere(0.0, 0.0, 6.0, 0.5)),
-               * sp5 = static_cast<Geometry *>(new Sphere(0.0, -0.3, 3.5,
-                                                          0.3)),
-               * sp6 = static_cast<Geometry *>(new Sphere(0.0, 0.0, 0.0,
-                                                          -12.0));
+      Geometry * sp1 = new Sphere(-1.5, 0.0, 5.0, 0.5),
+               * sp2 = new Sphere(1.5, 0.0, 5.0, 0.5),
+               * sp3 = new Sphere(0.0, 1.0, 5.0, 0.5),
+               * sp4 = new Sphere(0.0, 0.0, 6.0, 0.5),
+               * sp5 = new Sphere(0.0, -0.3, 3.5, 0.3),
+               * sp6 = new Sphere(0.0, 0.0, 0.0, -12.0);
 
       Point3D octagon[8] = {Point3D(-1.0, -0.5, 5.0),
                             Point3D(-1.0, 0.5, 5.0),
@@ -156,42 +153,34 @@ class Scene {
                           Point3D(-2.5, -1.5, 10.0),
                           Point3D(2.5, -1.5, 10.0),
                           Point3D(2.5, 1.5, 0.0)};
-      Geometry * p1 = static_cast<Geometry *>(new Polygon(4, leftWall)),
-               * p2 = static_cast<Geometry *>(new Polygon(4, rightWall)),
-               * p3 = static_cast<Geometry *>(new Polygon(4, backWall)),
-               * p4 = static_cast<Geometry *>(new Polygon(4, floor));
+      Geometry * p1 = new Polygon(4, leftWall),
+               * p2 = new Polygon(4, rightWall),
+               * p3 = new Polygon(4, backWall),
+               * p4 = new Polygon(4, floor);
 
       // Balls
-      MODEL_CLS * b1 = static_cast<MODEL_CLS *>(new Primitive(red, sp1)),
-                * b2 = static_cast<MODEL_CLS *>(new Primitive(green, sp2)),
-                * b3 = static_cast<MODEL_CLS *>(new Primitive(blue, sp3)),
-                * b4 = static_cast<MODEL_CLS *>(new Primitive(mirror, sp4)),
-                * b5 = static_cast<MODEL_CLS *>(new Primitive(glass, sp5)),
-                * b6 = static_cast<MODEL_CLS *>(new Primitive(roughGray, sp6));
+      std::vector<MODEL_CLS *> balls;
+      balls.push_back(new Primitive(red, sp1)),
+      balls.push_back(new Primitive(green, sp2)),
+      balls.push_back(new Primitive(blue, sp3)),
+      balls.push_back(new Primitive(mirror, sp4)),
+      balls.push_back(new Primitive(glass, sp5)),
+      balls.push_back(new Primitive(roughGray, sp6));
 
       // Walls
-      MODEL_CLS * w1 = static_cast<MODEL_CLS *>(new Primitive(roughWhite, p1)),
-                * w2 = static_cast<MODEL_CLS *>(new Primitive(roughWhite, p2)),
-                * w3 = static_cast<MODEL_CLS *>(new Primitive(roughWhite, p3));
-
+      std::vector<MODEL_CLS *> walls;
+      walls.push_back(new Primitive(roughWhite, p1)),
+      walls.push_back(new Primitive(roughWhite, p2)),
+      walls.push_back(new Primitive(roughWhite, p3));
       // Floor
-      MODEL_CLS * f1 = static_cast<MODEL_CLS *>(new Primitive(roughWhite, p4));
+      walls.push_back(new Primitive(roughWhite, p4));
 
-      MODEL_CLS * backNFloor = static_cast<MODEL_CLS *>(new Composite(w3, f1)),
-                * sideWalls = static_cast<MODEL_CLS *>(new Composite(w1, w2)),
-                * walls = static_cast<MODEL_CLS *>(new Composite(backNFloor,
-                                                                 sideWalls)),
-                * balls1 = static_cast<MODEL_CLS *>(new Composite(b1, b2)),
-                * balls2 = static_cast<MODEL_CLS *>(new Composite(b3, b4)),
-                * balls3 = static_cast<MODEL_CLS *>(new Composite(b5, b6)),
-                * ballsN1 = static_cast<MODEL_CLS *>(new Composite(balls1,
-                                                                   balls2)),
-                * balls =  static_cast<MODEL_CLS *>(new Composite(ballsN1,
-                                                                  balls3)),
-                * root = static_cast<MODEL_CLS *>(new Composite(walls,
-                                                                balls));
+      // Model list
+      std::vector<MODEL_CLS *> models;
+      models.push_back(buildModelTree(balls));
+      models.push_back(buildModelTree(walls));
 
-      modelRoot = root;
+      modelRoot = buildModelTree(models);
     }
 
     Scene(): background(NULL) {
