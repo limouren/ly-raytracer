@@ -83,7 +83,7 @@ const int Sphere::intersect(const Ray &ray, Intercept intercepts[]) {
   ocSqr = originToCenter.lengthSqr();
   rayClosest = dotProduct(originToCenter, ray.dir);
 
-  if (fLessZero(rayClosest) and !fLess(ocSqr, radius * radius)){
+  if (fLessZero(rayClosest) and !fLess(ocSqr, radius * radius)) {
     return 0;
   }
 
