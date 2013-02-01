@@ -4,7 +4,7 @@
 
 #define DEBUG 1
 
-#define THREAD_NUM 8
+#define THREAD_NUM (4)
 
 
 #define RAYTRACER_NAMESPACE raytracer
@@ -35,7 +35,7 @@
 
 #define MODEL_CLS Model
 // Internal resolution factor for sampling
-#define INT_RES_FACTOR (3)
+#define INT_RES_FACTOR (1)
 
 
 BEGIN_RAYTRACER
