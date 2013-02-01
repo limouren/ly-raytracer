@@ -13,17 +13,17 @@
 BEGIN_RAYTRACER
 
 
-class Surface {
+class Geometry {
   public:
     virtual const int intersect(const Ray &ray, Intercept intercepts[]) {}
     virtual const Vector3D normalAt(const Point3D &point) {}
 
-    virtual ~Surface() {}
+    virtual ~Geometry() {}
 };
 
 
-// Plane surfaces
-class Plane: public Surface {
+// Planes
+class Plane: public Geometry {
   public:
     // A plane is denoted by Ax+By+Cz+D = 0
     P_FLT d;  // D
@@ -72,8 +72,8 @@ class Polygon: public Plane {
 };
 
 
-// Quadric surfaces
-class Sphere: public Surface {
+// Quadrics
+class Sphere: public Geometry {
   public:
     P_FLT radius;
     Point3D center;

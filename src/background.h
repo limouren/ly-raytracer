@@ -12,10 +12,10 @@
 
 #include "camera.h"
 #include "color.h"
+#include "geometry.h"
 #include "light.h"
 #include "material.h"
 #include "model.h"
-#include "surface.h"
 
 
 BEGIN_RAYTRACER

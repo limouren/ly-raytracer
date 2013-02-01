@@ -4,8 +4,8 @@
 
 #include "config.h"
 
+#include "geometry.h"
 #include "material.h"
-#include "surface.h"
 
 
 BEGIN_RAYTRACER
@@ -37,11 +37,11 @@ class Composite: public MODEL_CLS {
 class Primitive: public MODEL_CLS {
   public:
     Material * material;
-    Surface * surface;
+    Geometry * geometry;
 
     Primitive(): MODEL_CLS(0) {}
-    Primitive(Material * material, Surface * surface):
-      material(material), surface(surface), MODEL_CLS(0) {
+    Primitive(Material * material, Geometry * geometry):
+      material(material), geometry(geometry), MODEL_CLS(0) {
     }
 };
 

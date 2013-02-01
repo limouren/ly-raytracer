@@ -2,6 +2,7 @@
 
 #include "camera.cpp"
 #include "color.cpp"
+#include "geometry.cpp"
 #include "light.cpp"
 #include "math_util.cpp"
 #include "model.cpp"
@@ -9,7 +10,6 @@
 #include "scene.cpp"
 #include "screen.cpp"
 #include "shade.cpp"
-#include "surface.cpp"
 #include "trace.cpp"
 #include "vector.cpp"
 #include "volume.cpp"

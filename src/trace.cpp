@@ -1,13 +1,13 @@
 #include "config.h"
 
 #include "color.h"
+#include "geometry.h"
 #include "intercept.h"
 #include "model.h"
 #include "point.h"
 #include "ray.h"
 #include "scene.h"
 #include "shade.h"
-#include "surface.h"
 #include "trace.h"
 #include "vector.h"
 
@@ -39,7 +39,7 @@ int intersect(const Ray &ray, MODEL_CLS * model, Intercept intercepts[],
   } else {
     Primitive * prim = static_cast<Primitive *>(model);
 
-    int hits = (prim->surface->intersect)(ray, intercepts);
+    int hits = (prim->geometry->intersect)(ray, intercepts);
     if (hits) {
       intercepts[0].material = entryMaterial;
       intercepts[0].primitive = prim;
@@ -105,7 +105,7 @@ int trace(int level, C_FLT weight, const Ray &ray, Color * color,
   if (hits > 0) {
     Point3D interceptPoint = ray.rayPoint(intercepts[0].t);
     Primitive * primitive = intercepts[0].primitive;
-    Vector3D normal = (primitive->surface->normalAt)(interceptPoint);
+    Vector3D normal = (primitive->geometry->normalAt)(interceptPoint);
     if (dotProduct(ray.dir, normal) > 0.0) {
       normal.negate();
     }
