@@ -23,7 +23,7 @@ class Intercept {
 
     Intercept() {}
     Intercept(P_FLT t, bool enter):
-      t(t), enter(enter), material(NULL), primitive(NULL) {}
+      t(t), enter(enter) {}
 };
 
 
