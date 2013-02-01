@@ -1,5 +1,6 @@
 #include "config.h"
 
+#include "bounding_volume.cpp"
 #include "camera.cpp"
 #include "color.cpp"
 #include "geometry.cpp"
@@ -13,7 +14,6 @@
 #include "trace.cpp"
 #include "triangle.cpp"
 #include "vector.cpp"
-#include "volume.cpp"
 
 
 BEGIN_RAYTRACER

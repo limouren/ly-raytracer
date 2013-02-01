@@ -4,6 +4,7 @@
 
 #include "config.h"
 
+#include "intercept.h"
 #include "point.h"
 #include "ray.h"
 #include "vector.h"
@@ -12,16 +13,18 @@
 BEGIN_RAYTRACER
 
 
-class Volume {
+class BoundingVolume {
   public:
     virtual const int intersect(const Ray &ray, Intercept intercepts[]) {}
     virtual const Vector3D normalAt(const Point3D &point) {}
 
-    virtual ~Volume() {}
+    BoundingVolume() {}
+
+    virtual ~BoundingVolume() {}
 };
 
 
-class Box: public Volume {
+class Box: public BoundingVolume {
   public:
     Point3D minExt, maxExt;
 
@@ -31,7 +34,7 @@ class Box: public Volume {
       maxExt(Point3D(max_x, max_y, max_z)) {}
 
     Box(const Point3D &minExt, const Point3D &maxExt):
-      minExt(minExt), maxExt(maxExt) {}
+      minExt(minExt), maxExt(maxExt), BoundingVolume() {}
 
     const int intersect(const Ray &ray, Intercept intercepts[]);
     const Vector3D normalAt(const Point3D &point);
