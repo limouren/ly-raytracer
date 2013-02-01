@@ -24,7 +24,7 @@ BEGIN_RAYTRACER
 
 class Scene {
   public:
-    Color ambience;
+    Color ambience, backgroundColor;
     Background * background;
     Material * medium;
     std::vector<Light * > lights;
@@ -36,8 +36,10 @@ class Scene {
     }
 
     void init_background() {
-      std::string fileName = "img/background.bmp";
-      background = new Background(fileName, 0, 0, 0.0);
+      // std::string fileName = "img/background.bmp";
+      // background = new Background(fileName, 0, 0, 0.0);
+
+      backgroundColor = Color(0.6, 0.95, 0.95);
     }
 
     void init_lights() {
@@ -185,7 +187,7 @@ class Scene {
 
     Scene(): background(NULL) {
       init_ambience();
-      // init_background();
+      init_background();
       init_lights();
       init_medium();
       init_models_and_materials();

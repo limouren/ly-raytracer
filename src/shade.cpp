@@ -145,6 +145,8 @@ void shade(int level, C_FLT weight, const Point3D &point,
 void shadeBackground(const Ray &ray, Color * color) {
   if (scene.background) {
     *color += scene.background->colorInDirection(ray.dir);
+  } else {
+    *color += scene.backgroundColor;
   }
 }
 
