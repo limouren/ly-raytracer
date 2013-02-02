@@ -15,6 +15,7 @@
 #include "color.h"
 #include "light.h"
 #include "material.h"
+#include "mesh.h"
 #include "model.h"
 #include "shapes.h"
 #include "triangle.h"
@@ -122,6 +123,14 @@ class Scene {
                                        Coeff(0.0, 0.0, 0.0),
                                        1.0,
                                        20000.0);
+      std::vector<Material *> materials;
+      materials.push_back(red);
+      materials.push_back(green);
+      materials.push_back(blue);
+      materials.push_back(roughWhite);
+      materials.push_back(roughGray);
+      materials.push_back(glass);
+      materials.push_back(mirror);
 
       MODEL_CLS * sp1 = new Sphere(red, -1.5, 0.0, 5.0, 0.5),
                 * sp2 = new Sphere(green, 1.5, 0.0, 5.0, 0.5),
@@ -130,30 +139,30 @@ class Scene {
                 * sp5 = new Sphere(glass, 0.0, -0.3, 3.5, 0.3),
                 * sp6 = new Sphere(roughGray, 0.0, 0.0, 0.0, -12.0);
 
-      Point3D octagon[8] = {Point3D(-1.0, -0.5, 5.0),
-                            Point3D(-1.0, 0.5, 5.0),
-                            Point3D(-0.5, 1.0, 5.0),
-                            Point3D(0.5, 1.0, 5.0),
-                            Point3D(1.0, 0.5, 5.0),
-                            Point3D(1.0, -0.5, 5.0),
-                            Point3D(0.5, -1.0, 5.0),
-                            Point3D(-0.5, -1.0, 5.0)};
-      MODEL_CLS * o1 = new Polygon(black, 8, octagon);
-
-      P_FLT piThird = PI * 0.33333;
       std::vector<Point3D> trianglePoints;
       trianglePoints.push_back(Point3D(0.0, 0.0, 5.0));
-      for (int i = 0; i < 6; i++) {
-        P_FLT angle = static_cast<P_FLT>(i) * piThird;
-        trianglePoints.push_back(Point3D(cos(angle), sin(angle), 5.0));
+      trianglePoints.push_back(Point3D(-1.0, -0.5, 5.0));
+      trianglePoints.push_back(Point3D(-1.0, 0.5, 5.0));
+      trianglePoints.push_back(Point3D(-0.5, 1.0, 5.0));
+      trianglePoints.push_back(Point3D(0.5, 1.0, 5.0));
+      trianglePoints.push_back(Point3D(1.0, 0.5, 5.0));
+      trianglePoints.push_back(Point3D(1.0, -0.5, 5.0));
+      trianglePoints.push_back(Point3D(0.5, -1.0, 5.0));
+      trianglePoints.push_back(Point3D(-0.5, -1.0, 5.0));
+      std::vector<Vector3D> normals;
+      std::vector<Vector2D> textureCoords;
+      std::vector<int *> triangleDefs;
+      for (int i = 0; i < 8; i++) {
+        int * triangleDef = new int[3];
+        triangleDef[0] = 0;
+        triangleDef[1] = (i)%8+1;
+        triangleDef[2] = (i+1)%8+1;
+        triangleDefs.push_back(triangleDef);
       }
-      std::vector<MODEL_CLS *> mesh;
-      for (int i = 0; i < 6; i++) {
-        mesh.push_back(new Triangle(red,
-                                    trianglePoints[0],
-                                    trianglePoints[i%6+1],
-                                    trianglePoints[(i+1)%6+1]));
-      }
+
+      MODEL_CLS * mesh = new TriangleMesh(red, trianglePoints, normals,
+                                          textureCoords, triangleDefs);
+
 
       Point3D leftWall[4] = {Point3D(2.5, 1.5, 10.0),
                              Point3D(2.5, 1.5, 0.0),
@@ -185,6 +194,9 @@ class Scene {
       balls.push_back(sp5),
       balls.push_back(sp6);
 
+      std::vector<MODEL_CLS *> meshes;
+      meshes.push_back(mesh);
+
       // Walls
       std::vector<MODEL_CLS *> walls;
       walls.push_back(p1),
@@ -196,7 +208,7 @@ class Scene {
       // Model list
       std::vector<MODEL_CLS *> models;
       // models.push_back(buildModelTree(balls));
-      models.push_back(buildModelTree(mesh));
+      models.push_back(buildModelTree(meshes));
       models.push_back(buildModelTree(walls));
 
       modelRoot = buildModelTree(models);

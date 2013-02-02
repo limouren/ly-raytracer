@@ -5,6 +5,7 @@
 #include "color.cpp"
 #include "light.cpp"
 #include "math_util.cpp"
+#include "mesh.cpp"
 #include "model.cpp"
 #include "point.cpp"
 #include "scene.cpp"

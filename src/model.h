@@ -29,9 +29,7 @@ class Composite: public MODEL_CLS {
 
     Composite(): MODEL_CLS(1) {}
     Composite(MODEL_CLS * left, MODEL_CLS * right):
-      left(left), right(right), MODEL_CLS(1) {
-      op = '|';
-    }
+      op('|'), left(left), right(right), MODEL_CLS(1) {}
 
     ~Composite() {
       delete left;
@@ -45,7 +43,8 @@ class Primitive: public MODEL_CLS {
     Material * material;
 
     Primitive(): MODEL_CLS(0) {}
-    explicit Primitive(Material * material): material(material), MODEL_CLS(0) {}
+    explicit Primitive(Material * material):
+      material(material), MODEL_CLS(0) {}
 
     virtual const int intersect(const Ray &ray, Intercept intercepts[],
                                 Material * entryMat) const {}
