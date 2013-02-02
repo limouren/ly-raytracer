@@ -3,6 +3,7 @@
 
 
 #include <pthread.h>
+#include <string>
 
 #include "config.h"
 
@@ -81,29 +82,32 @@ class PixelTasks {
     }
 };
 
-PixelTasks * pixelTasks;
-
 
 class Screen {
-  public:
-    Color * pixels;
+  private:
     int height, width;
+    Color * pixels;
+    std::string outputFilename;
 
-    Screen() {
-      height = image_height * INT_RES_FACTOR;
-      width = image_width * INT_RES_FACTOR;
-      pixels = new Color[height * width];
-    }
+  public:
+    int imageHeight, imageWidth;
+
+    explicit Screen(std::string outputFilename):
+      outputFilename(outputFilename) {}
 
     ~Screen() {
       delete [] pixels;
     }
 
+    void init() {
+      height = imageHeight * INT_RES_FACTOR;
+      width = imageWidth * INT_RES_FACTOR;
+      pixels = new Color[height * width];
+    }
+
     void calibrate();
     void rayTrace();
     void saveBmp();
-    void saveJpg();
-    void savePng();
 };
 
 

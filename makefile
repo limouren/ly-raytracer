@@ -31,10 +31,10 @@ $(O_DIR)/run_tests: run_tests.cpp $(tests)
 	$(CXX) $(CFLAGS) $< -o $@
 
 
-.PHONY : main
-main: $(O_DIR)/main
+.PHONY : raytracer
+raytracer: $(O_DIR)/raytracer
 
-$(O_DIR)/main: main.cpp $(SRC_DIR)/*.cpp $(SRC_DIR)/*.h
+$(O_DIR)/raytracer: main.cpp $(SRC_DIR)/*.cpp $(SRC_DIR)/*.h
 	$(CXX) $(CFLAGS) $< -o $@
 
 .PHONY : clean

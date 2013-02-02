@@ -1,3 +1,6 @@
+#include <stdio.h>
+#include <string>
+
 #include "config.h"
 
 #include "bounding_volume.cpp"
@@ -20,16 +23,12 @@
 BEGIN_RAYTRACER
 
 
-void ReadScene() {
-  // TODO: read Scene and Camera from file
-  char file_name[80] = "models.txt";
-}
+int main(std::string outputFilename) {
+  Screen screen = Screen(outputFilename);
+  screen.imageHeight = 600;
+  screen.imageWidth = 800;
 
-
-int main() {
-  ReadScene();
-
-  Screen screen = Screen();
+  screen.init();
   screen.rayTrace();
   screen.saveBmp();
 
@@ -43,7 +42,14 @@ END_RAYTRACER
 using namespace std;
 
 
-int main() {
-  RAYTRACER_NAMESPACE::main();
+int main(int argc, char * argv[]) {
+  if (argc != 2) {
+    printf("Usage: raytracer <output filename>\n");
+    return 1;
+  }
+
+  string outputFilename(argv[1]);
+
+  RAYTRACER_NAMESPACE::main(outputFilename);
   return 0;
 }

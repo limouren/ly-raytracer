@@ -1,3 +1,4 @@
+#include <math.h>
 #include <stdio.h>
 #include <vector>
 
@@ -11,6 +12,12 @@
 
 
 BEGIN_RAYTRACER
+
+
+void * runPixelTasks(void * context) {
+  PixelTasks * pixelTasks = static_cast<PixelTasks *>(context);
+  pixelTasks->run();
+}
 
 
 void Screen::calibrate() {
@@ -43,11 +50,6 @@ void Screen::calibrate() {
 }
 
 
-void * runPixelTasks(void * context) {
-  pixelTasks->run();
-}
-
-
 void Screen::rayTrace() {
   Vector3D dir = camera.target - camera.viewpoint;
   dir.normalize();
@@ -70,7 +72,7 @@ void Screen::rayTrace() {
   Vector3D top_left_pixel = top_left - camera.viewpoint +
                             (i_step * 0.5) + (j_step * 0.5);
 
-  pixelTasks = new PixelTasks(width * height);
+  PixelTasks * pixelTasks = new PixelTasks(width * height);
   for (int i = 0; i < width; i++) {
     for (int j = 0; j < height; j++) {
       Vector3D ray_dir = top_left_pixel +
@@ -85,7 +87,8 @@ void Screen::rayTrace() {
 
   pthread_t threads[THREAD_NUM];
   for (int i = 0; i < THREAD_NUM; i++) {
-    pthread_create(&threads[i], NULL, &runPixelTasks, NULL);
+    pthread_create(&threads[i], NULL, &runPixelTasks,
+                   static_cast<void *>(pixelTasks));
   }
   for (int i = 0; i < THREAD_NUM; i++) {
     pthread_join(threads[i], NULL);
@@ -93,6 +96,8 @@ void Screen::rayTrace() {
 
   printf("Tracing complete, %d hits out of %d total\n",
          pixelTasks->totalHits(), width * height);
+  delete pixelTasks;
+
   calibrate();
 }
 
@@ -106,27 +111,31 @@ void Screen::saveBmp() {
   C_FLT * green_channel = new C_FLT[pixel_count];
   C_FLT * blue_channel = new C_FLT[pixel_count];
 
-  for (int i = 0; i < image_width; i++) {
-    for (int j = 0; j < image_height; j++) {
+  for (int i = 0; i < imageWidth; i++) {
+    for (int j = 0; j < imageHeight; j++) {
       for (int m = 0; m < INT_RES_FACTOR; m++) {
         for (int n = 0; n < INT_RES_FACTOR; n++) {
           new_i = i * INT_RES_FACTOR + m;
           new_j = j * INT_RES_FACTOR + n;
 
-          red_channel[j*image_width + i] += pixels[new_j*width + new_i].r;
-          green_channel[j*image_width + i] += pixels[new_j*width + new_i].g;
-          blue_channel[j*image_width + i] += pixels[new_j*width + new_i].b;
+          red_channel[j*imageWidth + i] += pixels[new_j*width + new_i].r;
+          green_channel[j*imageWidth + i] += pixels[new_j*width + new_i].g;
+          blue_channel[j*imageWidth + i] += pixels[new_j*width + new_i].b;
         }
       }
-      red_channel[j*image_width + i] *= factor;
-      green_channel[j*image_width + i] *= factor;
-      blue_channel[j*image_width + i] *= factor;
+      red_channel[j*imageWidth + i] *= factor;
+      green_channel[j*imageWidth + i] *= factor;
+      blue_channel[j*imageWidth + i] *= factor;
     }
   }
 
-  bitmap_image bmp_image(image_width, image_height);
+  bitmap_image bmp_image(imageWidth, imageHeight);
   bmp_image.import_rgb(red_channel, green_channel, blue_channel);
-  bmp_image.save_image("out/output.bmp");
+
+  std::string out("out/");
+  out += outputFilename;
+
+  bmp_image.save_image(out);
 
   delete [] red_channel;
   delete [] green_channel;

@@ -48,9 +48,6 @@ typedef float C_FLT;
 typedef float P_FLT;
 
 
-const int image_height = 600;
-const int image_width = 800;
-
 END_RAYTRACER
 
 #endif
