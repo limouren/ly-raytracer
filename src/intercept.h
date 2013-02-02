@@ -19,13 +19,12 @@ class Intercept {
     P_FLT t;
 
     Material * material;
-    Primitive * primitive;
+    const Primitive * primitive;
 
     Intercept() {}
-    Intercept(P_FLT t, bool enter):
-      t(t), enter(enter) {}
-    Intercept(P_FLT t, bool enter, Material * material):
-      t(t), enter(enter), material(material) {}
+    Intercept(const P_FLT t, const bool enter, Material * material,
+              const Primitive * primitive):
+      t(t), enter(enter), material(material), primitive(primitive) {}
 };
 
 

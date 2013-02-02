@@ -4,6 +4,7 @@
 
 #include "intercept.h"
 #include "math_util.h"
+#include "model.h"
 #include "point.h"
 #include "shapes.h"
 
@@ -24,7 +25,7 @@ const int Plane::intersect(const Ray &ray, Intercept intercepts[],
   t = -(dotProduct(normal, ray.orig) + d) / lightDotNorm;
 
   if (fGreaterZero(t)) {
-    intercepts[0] = Intercept(t, lightDotNorm < 0.0, entryMat);
+    intercepts[0] = Intercept(t, lightDotNorm < 0.0, entryMat, this);
     return 1;
   }
 
@@ -79,8 +80,8 @@ const int Polygon::intersect(const Ray &ray, Intercept intercepts[],
 const int Sphere::intersect(const Ray &ray, Intercept intercepts[],
                             Material * entryMat) const {
   bool insideOut = (radius < 0.0);
-  Vector3D originToCenter;
   P_FLT halfChordSqr, halfChord, ocSqr, rayClosest, t;
+  Vector3D originToCenter;
 
   originToCenter = center - ray.orig;
   ocSqr = originToCenter.lengthSqr();
@@ -101,11 +102,13 @@ const int Sphere::intersect(const Ray &ray, Intercept intercepts[],
     if (insideOut) {
       return 0;
     }
-    intercepts[0] = Intercept(rayClosest - halfChord, true, entryMat);
-    intercepts[1] = Intercept(rayClosest + halfChord, false);
+    intercepts[0] = Intercept(rayClosest - halfChord, true, entryMat, this);
+    intercepts[1] = Intercept(rayClosest + halfChord, false, this->material,
+                              this);
     return 2;
   } else {
-    intercepts[0] = Intercept(rayClosest + halfChord, insideOut, entryMat);
+    intercepts[0] = Intercept(rayClosest + halfChord, insideOut, entryMat,
+                              this);
     return 1;
   }
 }

@@ -102,8 +102,7 @@ int trace(int level, C_FLT weight, const Ray &ray, Color * color,
   int hits = intersect(ray, scene.modelRoot, intercepts, entryMat);
   if (hits > 0) {
     Point3D interceptPoint = ray.rayPoint(intercepts[0].t);
-    Primitive * primitive = intercepts[0].primitive;
-    Vector3D normal = (primitive->normalAt)(interceptPoint);
+    Vector3D normal = (intercepts[0].primitive->normalAt)(interceptPoint);
     if (dotProduct(ray.dir, normal) > 0.0) {
       normal.negate();
     }

@@ -149,7 +149,7 @@ class Scene {
       }
       std::vector<MODEL_CLS *> mesh;
       for (int i = 0; i < 6; i++) {
-        mesh.push_back(new Triangle(roughGray,
+        mesh.push_back(new Triangle(red,
                                     trianglePoints[0],
                                     trianglePoints[i%6+1],
                                     trianglePoints[(i+1)%6+1]));
