@@ -24,6 +24,8 @@ class Intercept {
     Intercept() {}
     Intercept(P_FLT t, bool enter):
       t(t), enter(enter) {}
+    Intercept(P_FLT t, bool enter, Material * material):
+      t(t), enter(enter), material(material) {}
 };
 
 

@@ -6,6 +6,7 @@
 
 #include "geometry.h"
 #include "intercept.h"
+#include "material.h"
 #include "point.h"
 #include "ray.h"
 
@@ -30,7 +31,8 @@ class Triangle: public Plane {
       d = -dotProduct(vertex[0], normal);
     };
 
-    const int intersect(const Ray &ray, Intercept intercepts[]);
+    const int intersect(const Ray &ray, Intercept intercepts[],
+                        Material * entryMat) const;
 };
 
 

@@ -16,7 +16,7 @@ BEGIN_RAYTRACER
 
 
 int intersect(const Ray &ray, MODEL_CLS * model, Intercept intercepts[],
-              Material * entryMaterial) {
+              Material * entryMat) {
   if (model->composite_flag) {
     Composite * composite = static_cast<Composite *>(model);
 
@@ -25,12 +25,12 @@ int intersect(const Ray &ray, MODEL_CLS * model, Intercept intercepts[],
                  interceptsRight[MAX_INTERSECTIONS];
 
     hitsLeft = intersect(ray, composite->left, interceptsLeft,
-                          entryMaterial);
+                          entryMat);
     if (hitsLeft == 0 && composite->op != '|') {
       return 0;
     } else {
       hitsRight = intersect(ray, composite->right, interceptsRight,
-                             entryMaterial);
+                             entryMat);
 
       int hits = intersectMerge(composite->op, hitsLeft, interceptsLeft,
                                 hitsRight, interceptsRight, intercepts);
@@ -39,9 +39,8 @@ int intersect(const Ray &ray, MODEL_CLS * model, Intercept intercepts[],
   } else {
     Primitive * prim = static_cast<Primitive *>(model);
 
-    int hits = (prim->geometry->intersect)(ray, intercepts);
+    int hits = (prim->geometry->intersect)(ray, intercepts, entryMat);
     if (hits) {
-      intercepts[0].material = entryMaterial;
       intercepts[0].primitive = prim;
       for (int i = 1; i < hits; i++) {
         intercepts[i].material = prim->material;
@@ -98,10 +97,10 @@ int intersectMerge(int op, int hitsLeft, Intercept interceptsLeft[],
 
 
 int trace(int level, C_FLT weight, const Ray &ray, Color * color,
-          Material * entryMaterial) {
+          Material * entryMat) {
   Intercept intercepts[MAX_INTERSECTIONS];
 
-  int hits = intersect(ray, scene.modelRoot, intercepts, entryMaterial);
+  int hits = intersect(ray, scene.modelRoot, intercepts, entryMat);
   if (hits > 0) {
     Point3D interceptPoint = ray.rayPoint(intercepts[0].t);
     Primitive * primitive = intercepts[0].primitive;

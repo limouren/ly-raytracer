@@ -2,6 +2,8 @@
 #define POINT_H
 
 
+#include <algorithm>
+
 #include "config.h"
 
 #include "vector.h"
@@ -66,11 +68,11 @@ inline const P_FLT dotProduct(const Vector3D &a, const Point3D &b) {
 }
 
 inline const Point3D max(const Point3D &a, const Point3D &b) {
-  return Point3D(max(a.x, b.x), max(a.y, b.y), max(a.z, b.z));
+  return Point3D(std::max(a.x, b.x), std::max(a.y, b.y), std::max(a.z, b.z));
 }
 
 inline const Point3D min(const Point3D &a, const Point3D &b) {
-  return Point3D(min(a.x, b.x), min(a.y, b.y), min(a.z, b.z));
+  return Point3D(std::min(a.x, b.x), std::min(a.y, b.y), std::min(a.z, b.z));
 }
 
 

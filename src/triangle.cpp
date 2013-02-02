@@ -2,6 +2,7 @@
 
 #include "geometry.h"
 #include "intercept.h"
+#include "material.h"
 #include "point.h"
 #include "ray.h"
 #include "triangle.h"
@@ -12,10 +13,11 @@ BEGIN_RAYTRACER
 
 
 // Ref: Glassner -An Introduction to Ray Tracing - P.53-59
-const int Triangle::intersect(const Ray &ray, Intercept intercepts[]) {
+const int Triangle::intersect(const Ray &ray, Intercept intercepts[],
+                              Material * entryMat) const {
   P_FLT u, v;
 
-  if (Plane::intersect(ray, intercepts) == 0) {
+  if (Plane::intersect(ray, intercepts, entryMat) == 0) {
     return 0;
   }
 

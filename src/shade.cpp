@@ -39,7 +39,7 @@ void specularDirection(const Vector3D &incident, const Vector3D &normal,
 }
 
 
-bool transmissionDirection(Material * entryMaterial, Material * exitMaterial,
+bool transmissionDirection(Material * entryMat, Material * exitMaterial,
                            const Vector3D &incident, const Vector3D &normal,
                            Vector3D &result) {
   P_FLT refrRatio,
@@ -47,7 +47,7 @@ bool transmissionDirection(Material * entryMaterial, Material * exitMaterial,
         cosExitSqr;
 
   // Compute refr direction, return 0 if total internal reflection
-  refrRatio = entryMaterial->refraction / exitMaterial->refraction;
+  refrRatio = entryMat->refraction / exitMaterial->refraction;
 
   cosEntry = -dotProduct(incident, normal);
   cosExitSqr = 1.0 - refrRatio * refrRatio * (1.0 - (cosEntry * cosEntry));
@@ -64,7 +64,7 @@ bool transmissionDirection(Material * entryMaterial, Material * exitMaterial,
 void shade(int level, C_FLT weight, const Point3D &point,
            const Vector3D &normal, const Vector3D &incident,
            Intercept * intercepts, Color * color) {
-  Material * entryMaterial = intercepts[0].material,
+  Material * entryMat = intercepts[0].material,
            * exitMaterial = intercepts[0].enter?
                             intercepts[0].primitive->material: scene.medium;
 
@@ -74,7 +74,7 @@ void shade(int level, C_FLT weight, const Point3D &point,
   Vector3D specDir, transDir;
 
   specularDirection(incident, normal, specDir);
-  bool transmission = transmissionDirection(entryMaterial, exitMaterial,
+  bool transmission = transmissionDirection(entryMat, exitMaterial,
                                             incident, normal, transDir);
 
   *color += scene.ambience * exitMaterial->ambience;
@@ -103,7 +103,7 @@ void shade(int level, C_FLT weight, const Point3D &point,
     } else if (fLessZero(transmission && lightDotNormal) &&
                fLessZero(shadow(rayToLight, distanceToLight))) {
       // Light source specular transmission
-      C_FLT refrRatio = exitMaterial->refraction / entryMaterial->refraction;
+      C_FLT refrRatio = exitMaterial->refraction / entryMat->refraction;
       if (!fEqual(refrRatio, 1.0)) {
         Vector3D h_j = (-incident - pointToLight * refrRatio) /
                        (refrRatio - 1);
@@ -122,7 +122,7 @@ void shade(int level, C_FLT weight, const Point3D &point,
       Ray specRay(point, specDir);
       Color specColor;
 
-      trace(level + 1, specWeight, specRay, &specColor, entryMaterial);
+      trace(level + 1, specWeight, specRay, &specColor, entryMat);
       *color += specColor * exitMaterial->specular;
     }
 

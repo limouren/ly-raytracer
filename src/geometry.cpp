@@ -11,7 +11,8 @@
 BEGIN_RAYTRACER
 
 
-const int Plane::intersect(const Ray &ray, Intercept intercepts[]) {
+const int Plane::intersect(const Ray &ray, Intercept intercepts[],
+                           Material * entryMat) const {
   P_FLT lightDotNorm, t;
 
   lightDotNorm = dotProduct(normal, ray.dir);
@@ -23,7 +24,7 @@ const int Plane::intersect(const Ray &ray, Intercept intercepts[]) {
   t = -(dotProduct(normal, ray.orig) + d) / lightDotNorm;
 
   if (fGreaterZero(t)) {
-    intercepts[0] = Intercept(t, lightDotNorm < 0.0);
+    intercepts[0] = Intercept(t, lightDotNorm < 0.0, entryMat);
     return 1;
   }
 
@@ -32,8 +33,9 @@ const int Plane::intersect(const Ray &ray, Intercept intercepts[]) {
 
 
 // Ref: Glassner -An Introduction to Ray Tracing - P.53-59
-const int Polygon::intersect(const Ray &ray, Intercept intercepts[]) {
-  if (Plane::intersect(ray, intercepts) == 0) {
+const int Polygon::intersect(const Ray &ray, Intercept intercepts[],
+                             Material * entryMat) const {
+  if (Plane::intersect(ray, intercepts, entryMat) == 0) {
     return 0;
   }
 
@@ -74,7 +76,8 @@ const int Polygon::intersect(const Ray &ray, Intercept intercepts[]) {
 }
 
 
-const int Sphere::intersect(const Ray &ray, Intercept intercepts[]) {
+const int Sphere::intersect(const Ray &ray, Intercept intercepts[],
+                            Material * entryMat) const {
   bool insideOut = (radius < 0.0);
   Vector3D originToCenter;
   P_FLT halfChordSqr, halfChord, ocSqr, rayClosest, t;
@@ -98,17 +101,17 @@ const int Sphere::intersect(const Ray &ray, Intercept intercepts[]) {
     if (insideOut) {
       return 0;
     }
-    intercepts[0] = Intercept(rayClosest - halfChord, true);
+    intercepts[0] = Intercept(rayClosest - halfChord, true, entryMat);
     intercepts[1] = Intercept(rayClosest + halfChord, false);
     return 2;
   } else {
-    intercepts[0] = Intercept(rayClosest + halfChord, insideOut);
+    intercepts[0] = Intercept(rayClosest + halfChord, insideOut, entryMat);
     return 1;
   }
 }
 
 
-const Vector3D Sphere::normalAt(const Point3D &point) {
+const Vector3D Sphere::normalAt(const Point3D &point) const {
   Vector3D normal;
   if (radius < 0.0) {
     normal = point - center;
