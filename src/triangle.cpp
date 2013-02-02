@@ -3,6 +3,7 @@
 #include "intercept.h"
 #include "material.h"
 #include "ray.h"
+#include "shapes.h"
 #include "triangle.h"
 
 
@@ -37,7 +38,6 @@ const int Triangle::intersect(const Ray &ray, Intercept intercepts[],
         return 0;
       }
 
-      intercepts[0].enter = true;
       return 1;
 
     case 1:
@@ -45,19 +45,18 @@ const int Triangle::intersect(const Ray &ray, Intercept intercepts[],
       v = ray.orig.z + intercepts[0].t * ray.dir.z;
 
       if ((vertex[1].x - u) * (vertex[1].z - vertex[0].z) <
-          (vertex[1].z - v) * (vertex[1].x - vertex[0].y)) {
+          (vertex[1].z - v) * (vertex[1].x - vertex[0].x)) {
         return 0;
       }
       if ((vertex[2].x - u) * (vertex[2].z - vertex[1].z) <
-          (vertex[2].z - v) * (vertex[2].x - vertex[1].y)) {
+          (vertex[2].z - v) * (vertex[2].x - vertex[1].x)) {
         return 0;
       }
       if ((vertex[0].x - u) * (vertex[0].z - vertex[2].z) <
-          (vertex[0].z - v) * (vertex[0].x - vertex[2].y)) {
+          (vertex[0].z - v) * (vertex[0].x - vertex[2].x)) {
         return 0;
       }
 
-      intercepts[0].enter = true;
       return 1;
 
     case 2:
@@ -77,9 +76,10 @@ const int Triangle::intersect(const Ray &ray, Intercept intercepts[],
         return 0;
       }
 
-      intercepts[0].enter = true;
       return 1;
   }
+
+  return 0;
 }
 
 
