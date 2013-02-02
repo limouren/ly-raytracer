@@ -5,6 +5,7 @@
 #include "config.h"
 
 #include "intercept.h"
+#include "model.h"
 #include "point.h"
 #include "ray.h"
 #include "vector.h"
@@ -13,26 +14,17 @@
 BEGIN_RAYTRACER
 
 
-class Geometry {
-  public:
-    virtual const int intersect(const Ray &ray, Intercept intercepts[],
-                                Material * entryMat) const {}
-    virtual const Vector3D normalAt(const Point3D &point) const {}
-
-    virtual ~Geometry() {}
-};
-
-
 // Planes
-class Plane: public Geometry {
+class Plane: public Primitive {
   public:
     // A plane is denoted by Ax+By+Cz+D = 0
     P_FLT d;  // D
     Vector3D normal;  // {A, B, C}
 
-    Plane() {}
+    explicit Plane(Material * material): Primitive(material) {}
 
-    Plane(const Point3D &point, const Vector3D &vector) {
+    Plane(Material * material, const Point3D &point, const Vector3D &vector):
+      Primitive(material) {
       normal = vector;
       normal.normalize();
 
@@ -52,8 +44,8 @@ class Polygon: public Plane {
     int vertexNum;
     Point3D * vertex;
 
-    Polygon(int pointNum, Point3D * points):
-      vertexNum(pointNum), Plane() {
+    Polygon(Material * material, int pointNum, Point3D * points):
+      Plane(material), vertexNum(pointNum) {
       vertex = new Point3D[pointNum];
       for (int i = 0; i < vertexNum; i++) {
         vertex[i] = points[i];
@@ -76,13 +68,13 @@ class Polygon: public Plane {
 
 
 // Quadrics
-class Sphere: public Geometry {
+class Sphere: public Primitive {
   public:
     P_FLT radius;
     Point3D center;
 
-    Sphere(P_FLT x, P_FLT y, P_FLT z, P_FLT radius):
-      radius(radius), center(Point3D(x, y, z)) { }
+    Sphere(Material * material, P_FLT x, P_FLT y, P_FLT z, P_FLT radius):
+      Primitive(material), center(Point3D(x, y, z)), radius(radius) { }
     Sphere(Point3D center, P_FLT radius): center(center), radius(radius) {}
 
     const int intersect(const Ray &ray, Intercept intercepts[],

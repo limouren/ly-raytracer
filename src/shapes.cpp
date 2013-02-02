@@ -2,10 +2,10 @@
 
 #include "config.h"
 
-#include "geometry.h"
 #include "intercept.h"
 #include "math_util.h"
 #include "point.h"
+#include "shapes.h"
 
 
 BEGIN_RAYTRACER

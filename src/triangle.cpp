@@ -1,12 +1,9 @@
 #include "config.h"
 
-#include "geometry.h"
 #include "intercept.h"
 #include "material.h"
-#include "point.h"
 #include "ray.h"
 #include "triangle.h"
-#include "vector.h"
 
 
 BEGIN_RAYTRACER

@@ -13,10 +13,10 @@
 #include "background.h"
 #include "camera.h"
 #include "color.h"
-#include "geometry.h"
 #include "light.h"
 #include "material.h"
 #include "model.h"
+#include "shapes.h"
 #include "triangle.h"
 
 
@@ -123,12 +123,12 @@ class Scene {
                                        1.0,
                                        20000.0);
 
-      Geometry * sp1 = new Sphere(-1.5, 0.0, 5.0, 0.5),
-               * sp2 = new Sphere(1.5, 0.0, 5.0, 0.5),
-               * sp3 = new Sphere(0.0, 1.0, 5.0, 0.5),
-               * sp4 = new Sphere(0.0, 0.0, 6.0, 0.5),
-               * sp5 = new Sphere(0.0, -0.3, 3.5, 0.3),
-               * sp6 = new Sphere(0.0, 0.0, 0.0, -12.0);
+      MODEL_CLS * sp1 = new Sphere(red, -1.5, 0.0, 5.0, 0.5),
+                * sp2 = new Sphere(green, 1.5, 0.0, 5.0, 0.5),
+                * sp3 = new Sphere(blue, 0.0, 1.0, 5.0, 0.5),
+                * sp4 = new Sphere(mirror, 0.0, 0.0, 6.0, 0.5),
+                * sp5 = new Sphere(glass, 0.0, -0.3, 3.5, 0.3),
+                * sp6 = new Sphere(roughGray, 0.0, 0.0, 0.0, -12.0);
 
       Point3D octagon[8] = {Point3D(-1.0, -0.5, 5.0),
                             Point3D(-1.0, 0.5, 5.0),
@@ -138,7 +138,7 @@ class Scene {
                             Point3D(1.0, -0.5, 5.0),
                             Point3D(0.5, -1.0, 5.0),
                             Point3D(-0.5, -1.0, 5.0)};
-      Geometry * o1 = static_cast<Geometry *>(new Polygon(8, octagon));
+      MODEL_CLS * o1 = new Polygon(black, 8, octagon);
 
       P_FLT piThird = PI * 0.33333;
       std::vector<Point3D> trianglePoints;
@@ -147,11 +147,12 @@ class Scene {
         P_FLT angle = static_cast<P_FLT>(i) * piThird;
         trianglePoints.push_back(Point3D(cos(angle), sin(angle), 5.0));
       }
-      std::vector<Triangle *> triangles;
+      std::vector<MODEL_CLS *> mesh;
       for (int i = 0; i < 6; i++) {
-        triangles.push_back(new Triangle(trianglePoints[0],
-                                         trianglePoints[i%6+1],
-                                         trianglePoints[(i+1)%6+1]));
+        mesh.push_back(new Triangle(roughGray,
+                                    trianglePoints[0],
+                                    trianglePoints[i%6+1],
+                                    trianglePoints[(i+1)%6+1]));
       }
 
       Point3D leftWall[4] = {Point3D(2.5, 1.5, 10.0),
@@ -170,40 +171,32 @@ class Scene {
                           Point3D(-2.5, -1.5, 10.0),
                           Point3D(2.5, -1.5, 10.0),
                           Point3D(2.5, 1.5, 0.0)};
-      Geometry * p1 = new Polygon(4, leftWall),
-               * p2 = new Polygon(4, rightWall),
-               * p3 = new Polygon(4, backWall),
-               * p4 = new Polygon(4, floor);
+      MODEL_CLS * p1 = new Polygon(roughWhite, 4, leftWall),
+                * p2 = new Polygon(roughWhite, 4, rightWall),
+                * p3 = new Polygon(roughWhite, 4, backWall),
+                * p4 = new Polygon(roughWhite, 4, floor);
 
       // Balls
       std::vector<MODEL_CLS *> balls;
-      balls.push_back(new Primitive(red, sp1)),
-      balls.push_back(new Primitive(green, sp2)),
-      balls.push_back(new Primitive(blue, sp3)),
-      balls.push_back(new Primitive(mirror, sp4)),
-      balls.push_back(new Primitive(glass, sp5)),
-      balls.push_back(new Primitive(roughGray, sp6));
-
-      std::vector<MODEL_CLS *> pseudoMesh;
-      pseudoMesh.push_back(new Primitive(red, triangles[0]));
-      pseudoMesh.push_back(new Primitive(green, triangles[1]));
-      pseudoMesh.push_back(new Primitive(blue, triangles[2]));
-      pseudoMesh.push_back(new Primitive(red, triangles[3]));
-      pseudoMesh.push_back(new Primitive(green, triangles[4]));
-      pseudoMesh.push_back(new Primitive(blue, triangles[5]));
+      balls.push_back(sp1),
+      balls.push_back(sp2),
+      balls.push_back(sp3),
+      balls.push_back(sp4),
+      balls.push_back(sp5),
+      balls.push_back(sp6);
 
       // Walls
       std::vector<MODEL_CLS *> walls;
-      walls.push_back(new Primitive(roughWhite, p1)),
-      walls.push_back(new Primitive(roughWhite, p2)),
-      walls.push_back(new Primitive(roughWhite, p3));
+      walls.push_back(p1),
+      walls.push_back(p2),
+      walls.push_back(p3);
       // Floor
-      walls.push_back(new Primitive(roughWhite, p4));
+      walls.push_back(p4);
 
       // Model list
       std::vector<MODEL_CLS *> models;
       // models.push_back(buildModelTree(balls));
-      models.push_back(buildModelTree(pseudoMesh));
+      models.push_back(buildModelTree(mesh));
       models.push_back(buildModelTree(walls));
 
       modelRoot = buildModelTree(models);

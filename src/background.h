@@ -3,8 +3,6 @@
 
 
 #include <math.h>
-#include <string>
-#include <vector>
 
 #include "bitmap_image.hpp"
 
@@ -12,10 +10,6 @@
 
 #include "camera.h"
 #include "color.h"
-#include "geometry.h"
-#include "light.h"
-#include "material.h"
-#include "model.h"
 
 
 BEGIN_RAYTRACER
