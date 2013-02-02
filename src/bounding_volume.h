@@ -15,10 +15,9 @@ BEGIN_RAYTRACER
 
 class BoundingVolume {
   public:
-    virtual const int intersect(const Ray &ray, Intercept intercepts[]) {}
-    virtual const Vector3D normalAt(const Point3D &point) {}
-
     BoundingVolume() {}
+
+    virtual const bool intersect(const Ray &ray) const {}
 
     virtual ~BoundingVolume() {}
 };
@@ -36,8 +35,7 @@ class Box: public BoundingVolume {
     Box(const Point3D &minExt, const Point3D &maxExt):
       minExt(minExt), maxExt(maxExt), BoundingVolume() {}
 
-    const int intersect(const Ray &ray, Intercept intercepts[]);
-    const Vector3D normalAt(const Point3D &point);
+    const bool intersect(const Ray &ray) const;
 };
 
 
