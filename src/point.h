@@ -65,6 +65,14 @@ inline const P_FLT dotProduct(const Vector3D &a, const Point3D &b) {
   return dotProduct(a, static_cast<Vector3D>(b));
 }
 
+inline const Point3D max(const Point3D &a, const Point3D &b) {
+  return Point3D(max(a.x, b.x), max(a.y, b.y), max(a.z, b.z));
+}
+
+inline const Point3D min(const Point3D &a, const Point3D &b) {
+  return Point3D(min(a.x, b.x), min(a.y, b.y), min(a.z, b.z));
+}
+
 
 END_RAYTRACER
 
