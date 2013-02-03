@@ -51,15 +51,17 @@ void Screen::calibrate() {
 
 void Screen::saveBmp(const std::string outputFilename) const {
   int new_i, new_j,
-      pixel_count = height * width;
+      imageHeight = height / INT_RES_FACTOR,
+      imageWidth = width / INT_RES_FACTOR,
+      pixel_count = imageHeight * imageWidth;
 
   P_FLT factor = 1.0 / static_cast<P_FLT>(INT_RES_FACTOR * INT_RES_FACTOR);
   C_FLT * red_channel = new C_FLT[pixel_count];
   C_FLT * green_channel = new C_FLT[pixel_count];
   C_FLT * blue_channel = new C_FLT[pixel_count];
 
-  for (int i = 0; i < imageWidth; i++) {
-    for (int j = 0; j < imageHeight; j++) {
+  for (int i = 0; i < width; i++) {
+    for (int j = 0; j < height; j++) {
       for (int m = 0; m < INT_RES_FACTOR; m++) {
         for (int n = 0; n < INT_RES_FACTOR; n++) {
           new_i = i * INT_RES_FACTOR + m;

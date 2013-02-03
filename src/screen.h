@@ -86,7 +86,6 @@ class PixelTasks {
 class Screen {
   public:
     int height, width;
-    int imageHeight, imageWidth;
 
     Color * pixels;
 
@@ -96,9 +95,9 @@ class Screen {
       delete [] pixels;
     }
 
-    void init() {
-      height = imageHeight * INT_RES_FACTOR;
-      width = imageWidth * INT_RES_FACTOR;
+    void init(const Camera &camera) {
+      height = camera.imageHeight * INT_RES_FACTOR;
+      width = camera.imageWidth * INT_RES_FACTOR;
       pixels = new Color[height * width];
     }
 

@@ -23,7 +23,7 @@
 BEGIN_RAYTRACER
 
 
-int main(std::string outputFilename) {
+int main(std::string inputFilename, std::string outputFilename) {
   Camera camera;
   camera.init(Point3D(0.0, 0.0, 0.0),
               Point3D(0.0, 0.0, 1.0),
@@ -34,11 +34,12 @@ int main(std::string outputFilename) {
               600);
 
   Screen screen;
-  screen.imageHeight = 600;
-  screen.imageWidth = 800;
-  screen.init();
+  screen.init(camera);
+
+  // parseFile(inputFilename, &scene, &camera, &screen);
 
   rayTrace(scene, camera, screen);
+
   screen.saveBmp(outputFilename);
 
   return 0;
@@ -52,13 +53,14 @@ using namespace std;
 
 
 int main(int argc, char * argv[]) {
-  if (argc != 2) {
-    printf("Usage: raytracer <output filename>\n");
+  if (argc != 3) {
+    printf("Usage: raytracer <input filename> <output filename>\n");
     return 1;
   }
 
-  string outputFilename(argv[1]);
+  string inputFilename(argv[1]);
+  string outputFilename(argv[2]);
 
-  RAYTRACER_NAMESPACE::main(outputFilename);
+  RAYTRACER_NAMESPACE::main(inputFilename, outputFilename);
   return 0;
 }

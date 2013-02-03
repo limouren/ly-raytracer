@@ -25,18 +25,21 @@ class Camera {
     }
 
   public:
+    int imageHeight,
+        imageWidth;
     P_FLT angle,  // y-direction view angle
           aspectRatio,
           hither;
     Point3D target,
             viewpoint;
-    Vector3D forward, up;
+    Vector3D forward,
+             up;
 
     Camera() {}
 
     void init(const Point3D &_viewpoint, const Point3D &_target,
               const Vector3D &_up, const P_FLT &_angle, const P_FLT &_hither,
-              const int resolutionWidth, const int resolutionHeight);
+              const int imageWidth, const int resolutionHeight);
 };
 
 
