@@ -53,23 +53,6 @@ inline Color Color::operator *=(const Color color) {
 }
 
 
-inline const Color Color::operator *(const Coeff coeff) const {
-  Color result = *this;
-  result *= coeff;
-
-  return result;
-}
-
-
-inline Color Color::operator *=(const Coeff coeff) {
-  r *= coeff.r;
-  g *= coeff.g;
-  b *= coeff.b;
-
-  return *this;
-}
-
-
 inline const Color Color::operator *(const C_FLT scalar) const {
   Color result = *this;
   result *= scalar;

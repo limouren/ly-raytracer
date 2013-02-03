@@ -14,40 +14,17 @@
 BEGIN_RAYTRACER
 
 
-class Coeff {
+class Color {
   public:
     C_FLT r;
     C_FLT g;
     C_FLT b;
 
-    inline Coeff(): r(0.0), g(0.0), b(0.0) {}
-
-    inline Coeff(C_FLT r, C_FLT g, C_FLT b): r(r), g(g), b(b) {}
-
-    inline C_FLT magnitude() {
-      return (r * 0.299)  + (g * 0.587) + (b * 0.114);
-    }
-
-    inline const Coeff exp(P_FLT exponent) {
-      Coeff result(pow(r, exponent),
-                   pow(g, exponent),
-                   pow(b, exponent));
-      return result;
-    }
-
-    #ifdef DEBUG
-    void print(char * id) {
-      printf("Color %s: %f, %f, %f\n", id, r, g, b);
-    }
-    #endif
-};
-
-
-class Color: public Coeff {
-  public:
-    inline Color(): Coeff() {}
-
-    inline Color(C_FLT r, C_FLT g, C_FLT b): Coeff(r, g, b) {}
+    inline Color(): r(0.0), g(0.0), b(0.0) {}
+    inline explicit Color(const C_FLT intensity):
+      r(intensity), g(intensity), b(intensity) {}
+    inline Color(const C_FLT r, const C_FLT g, const C_FLT b):
+      r(r), g(g), b(b) {}
 
     inline Color& operator =(const Color &color);
 
@@ -60,8 +37,22 @@ class Color: public Coeff {
     inline const Color operator *(const C_FLT scalar) const;
     inline Color operator *=(const C_FLT scalar);
 
-    inline const Color operator *(const Coeff coeff) const;
-    inline Color operator *=(const Coeff coeff);
+    inline const Color exp(P_FLT exponent) {
+      Color result(pow(r, exponent),
+                   pow(g, exponent),
+                   pow(b, exponent));
+      return result;
+    }
+
+    inline C_FLT magnitude() {
+      return (r * 0.299)  + (g * 0.587) + (b * 0.114);
+    }
+
+    #ifdef DEBUG
+    void print(char * id) {
+      printf("Color %s: %f, %f, %f\n", id, r, g, b);
+    }
+    #endif
 };
 
 
