@@ -75,7 +75,8 @@ class Sphere: public Primitive {
 
     Sphere(Material * material, P_FLT x, P_FLT y, P_FLT z, P_FLT radius):
       Primitive(material), center(Point3D(x, y, z)), radius(radius) { }
-    Sphere(Point3D center, P_FLT radius): center(center), radius(radius) {}
+    Sphere(Material * material, Point3D center, P_FLT radius):
+      Primitive(material), center(center), radius(radius) {}
 
     const int intersect(const Ray &ray, Intercept intercepts[],
                         Material * entryMat) const;
