@@ -31,7 +31,7 @@ class Scene {
     std::vector<Material *> materials;
     MODEL_CLS * modelRoot;
 
-    // TODO(kent): Change these to parsing instead of hardcoded tests
+    // NOTE: For testing only
     void init_ambience() {
       ambience = Color(0.4, 0.4, 0.4);
     }
@@ -50,16 +50,6 @@ class Scene {
       // lights.push_back(l2);
       lights.push_back(l3);
       // lights.push_back(l4);
-    }
-
-    void init_medium() {
-      medium = new Material("Vacuum",
-                            Color(0.0, 0.0, 0.0),
-                            Color(0.0, 0.0, 0.0),
-                            Color(0.0, 0.0, 0.0),
-                            Color(1.0, 1.0, 1.0),
-                            1.0,
-                            0.0);
     }
 
     void init_models_and_materials() {
@@ -210,10 +200,16 @@ class Scene {
     }
 
     Scene() {
+      medium = new Material("Vacuum",
+                            Color(0.0, 0.0, 0.0),
+                            Color(0.0, 0.0, 0.0),
+                            Color(0.0, 0.0, 0.0),
+                            Color(1.0, 1.0, 1.0),
+                            1.0,
+                            0.0);
       // init_ambience();
       // init_background();
       // init_lights();
-      init_medium();
       // init_models_and_materials();
     }
 } scene;
