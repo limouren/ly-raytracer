@@ -209,12 +209,12 @@ class Scene {
       modelRoot = buildModelTree(models);
     }
 
-    Scene(): background(NULL) {
-      init_ambience();
-      init_background();
-      init_lights();
+    Scene() {
+      // init_ambience();
+      // init_background();
+      // init_lights();
       init_medium();
-      init_models_and_materials();
+      // init_models_and_materials();
     }
 } scene;
 

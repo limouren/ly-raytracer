@@ -4,7 +4,7 @@
 
 #define DEBUG 1
 
-#define THREAD_NUM (4)
+#define THREAD_NUM (8)
 
 
 #define RAYTRACER_NAMESPACE raytracer

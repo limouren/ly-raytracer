@@ -10,6 +10,7 @@
 #include "math_util.cpp"
 #include "mesh.cpp"
 #include "model.cpp"
+#include "parser.cpp"
 #include "point.cpp"
 #include "scene.cpp"
 #include "screen.cpp"
@@ -25,18 +26,9 @@ BEGIN_RAYTRACER
 
 int main(char * inputFilename, char * outputFilename) {
   Camera camera;
-  camera.init(Point3D(0.0, 0.0, 0.0),
-              Point3D(0.0, 0.0, 1.0),
-              Vector3D(0.0, 1.0, 0.0),
-              PI * 0.25,
-              0.0,
-              800,
-              600);
-
   Screen screen;
-  screen.init(camera);
 
-  // parseFile(inputFilename, &scene, &camera, &screen);
+  parseFile(inputFilename, &scene, &camera, &screen, NULL);
 
   rayTrace(scene, camera, screen);
 
