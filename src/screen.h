@@ -94,12 +94,6 @@ class Screen {
       delete [] pixels;
     }
 
-    void initSize(const Camera &camera) {
-      height = camera.imageHeight * INT_RES_FACTOR;
-      width = camera.imageWidth * INT_RES_FACTOR;
-      pixels = new Color[height * width];
-    }
-
     void calibrate();
     void saveBmp(char * outputFilename) const;
 };

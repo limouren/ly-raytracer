@@ -42,14 +42,16 @@ void Screen::calibrate() {
         pixels[j*width + i] *= factor;
       }
     }
-    printf("Calbiration complete.\n");
-  } else {
-    printf("Calbiration not required.\n");
   }
 }
 
 
 void Screen::saveBmp(char * outputFilename) const {
+  if (pixels == NULL) {
+    printf("Error: Saving image to file before traced\n");
+    exit(1);
+  }
+
   int new_i, new_j,
       imageHeight = height / INT_RES_FACTOR,
       imageWidth = width / INT_RES_FACTOR,
@@ -106,6 +108,10 @@ void * runPixelTasks(void * context) {
 void rayTrace(const Scene &scene, const Camera &camera, Screen &screen) {
   Vector3D dir = camera.target - camera.viewpoint;
   dir.normalize();
+
+  screen.height = camera.imageHeight * INT_RES_FACTOR;
+  screen.width = camera.imageWidth * INT_RES_FACTOR;
+  screen.pixels = new Color[screen.width * screen.height];
 
   P_FLT horizontalMag = sin(camera.angle * 0.5);
   P_FLT verticalMag = horizontalMag / camera.aspectRatio;

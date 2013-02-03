@@ -852,7 +852,6 @@ int parseFile(char * filename, Scene * scene, Camera * camera,
     }
   }
 
-  screen->initSize(*camera);
   scene->modelRoot = buildModelTree(models);
   return 0;
 }

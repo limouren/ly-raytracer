@@ -28,11 +28,20 @@ int main(char * inputFilename, char * outputFilename) {
   Camera camera;
   Screen screen;
 
+  printf("Parsing file \"%s\"...", inputFilename);
+  fflush(stdout);
   parseFile(inputFilename, &scene, &camera, &screen, NULL);
+  printf("completed.\n");
 
+  printf("Tracing...");
+  fflush(stdout);
   rayTrace(scene, camera, screen);
+  printf("completed.\n");
 
+  printf("Saving file to \"%s\"...", outputFilename);
+  fflush(stdout);
   screen.saveBmp(outputFilename);
+  printf("completed.\n");
 
   return 0;
 }
