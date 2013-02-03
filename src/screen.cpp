@@ -14,10 +14,9 @@
 BEGIN_RAYTRACER
 
 
-void * runPixelTasks(void * context) {
-  PixelTasks * pixelTasks = static_cast<PixelTasks *>(context);
-  pixelTasks->run();
-}
+class Camera;
+class Scene;
+class Vector3D;
 
 
 void Screen::calibrate() {
@@ -50,59 +49,7 @@ void Screen::calibrate() {
 }
 
 
-void Screen::rayTrace() {
-  Vector3D dir = camera.target - camera.viewpoint;
-  dir.normalize();
-
-  P_FLT horizontal_mag = sin(camera.angle * 0.5);
-  P_FLT vertical_mag = horizontal_mag / camera.aspect_ratio;
-  Vector3D top = camera.up * vertical_mag;
-
-  Vector3D right = crossProduct(dir, camera.up);
-  right.normalize();
-  right *= horizontal_mag;
-
-  Point3D center = camera.viewpoint + dir;
-  Point3D top_left = center + top - right;
-
-  Vector3D i_step = right / static_cast<P_FLT>(width / 2);
-  Vector3D j_step = (top / static_cast<P_FLT>(height / 2));
-  j_step.negate();
-
-  Vector3D top_left_pixel = top_left - camera.viewpoint +
-                            (i_step * 0.5) + (j_step * 0.5);
-
-  PixelTasks * pixelTasks = new PixelTasks(width * height);
-  for (int i = 0; i < width; i++) {
-    for (int j = 0; j < height; j++) {
-      Vector3D ray_dir = top_left_pixel +
-                         (i_step * (P_FLT)i) + (j_step * (P_FLT)j);
-      ray_dir.normalize();
-      Ray ray(camera.viewpoint, ray_dir);
-      PixelTask task(&pixels[j*width + i], ray);
-
-      pixelTasks->insertTask(task);
-    }
-  }
-
-  pthread_t threads[THREAD_NUM];
-  for (int i = 0; i < THREAD_NUM; i++) {
-    pthread_create(&threads[i], NULL, &runPixelTasks,
-                   static_cast<void *>(pixelTasks));
-  }
-  for (int i = 0; i < THREAD_NUM; i++) {
-    pthread_join(threads[i], NULL);
-  }
-
-  printf("Tracing complete, %d hits out of %d total\n",
-         pixelTasks->totalHits(), width * height);
-  delete pixelTasks;
-
-  calibrate();
-}
-
-
-void Screen::saveBmp() {
+void Screen::saveBmp(const std::string outputFilename) const {
   int new_i, new_j,
       pixel_count = height * width;
 
@@ -140,6 +87,65 @@ void Screen::saveBmp() {
   delete [] red_channel;
   delete [] green_channel;
   delete [] blue_channel;
+}
+
+
+void * runPixelTasks(void * context) {
+  PixelTasks * pixelTasks = static_cast<PixelTasks *>(context);
+  pixelTasks->run();
+}
+
+
+void rayTrace(const Scene &scene, const Camera &camera, Screen &screen) {
+  Vector3D dir = camera.target - camera.viewpoint;
+  dir.normalize();
+
+  P_FLT horizontalMag = sin(camera.angle * 0.5);
+  P_FLT verticalMag = horizontalMag / camera.aspectRatio;
+  Vector3D top = camera.up * verticalMag;
+
+  Vector3D right = crossProduct(dir, camera.up);
+  right.normalize();
+  right *= horizontalMag;
+
+  Point3D center = camera.viewpoint + dir;
+  Point3D top_left = center + top - right;
+
+  Vector3D i_step = right / static_cast<P_FLT>(screen.width / 2);
+  Vector3D j_step = (top / static_cast<P_FLT>(screen.height / 2));
+  j_step.negate();
+
+  Vector3D top_left_pixel = top_left - camera.viewpoint +
+                            (i_step * 0.5) + (j_step * 0.5);
+
+  PixelTasks * pixelTasks = new PixelTasks(screen.width * screen.height);
+  for (int i = 0; i < screen.width; i++) {
+    for (int j = 0; j < screen.height; j++) {
+      Vector3D ray_dir = top_left_pixel +
+                         i_step * static_cast<P_FLT>(i) +
+                         j_step * static_cast<P_FLT>(j);
+      ray_dir.normalize();
+      Ray ray(camera.viewpoint, ray_dir);
+      PixelTask task(&(screen.pixels[j*screen.width + i]), ray);
+
+      pixelTasks->insertTask(task);
+    }
+  }
+
+  pthread_t threads[THREAD_NUM];
+  for (int i = 0; i < THREAD_NUM; i++) {
+    pthread_create(&threads[i], NULL, &runPixelTasks,
+                   static_cast<void *>(pixelTasks));
+  }
+  for (int i = 0; i < THREAD_NUM; i++) {
+    pthread_join(threads[i], NULL);
+  }
+
+  printf("Tracing complete, %d hits out of %d total\n",
+         pixelTasks->totalHits(), screen.width * screen.height);
+  delete pixelTasks;
+
+  screen.calibrate();
 }
 
 

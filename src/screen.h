@@ -28,25 +28,25 @@ class PixelTask {
     PixelTask(Color * color, const Ray &ray): color(color), ray(ray) {}
 
     int run() {
-      return trace(0, 1.0, ray, color, scene.medium);  // Assume we are outside
+      return trace(0, 1.0, ray, color, scene.medium);  // Assume outside
     }
 };
 
 
 class PixelTasks {
   private:
-    int hits, task_index;
-    pthread_mutex_t hits_mutex, tasks_mutex;
+    int hits, taskIndex;
+    pthread_mutex_t hitsMutex, tasksMutex;
     PixelTask * tasks;
 
   public:
     explicit PixelTasks(int total_tasks) {
       hits = 0;
-      task_index = 0;
+      taskIndex = 0;
       tasks = new PixelTask[total_tasks];
 
-      hits_mutex = PTHREAD_MUTEX_INITIALIZER;
-      tasks_mutex = PTHREAD_MUTEX_INITIALIZER;
+      hitsMutex = PTHREAD_MUTEX_INITIALIZER;
+      tasksMutex = PTHREAD_MUTEX_INITIALIZER;
     }
 
     ~PixelTasks() {
@@ -54,27 +54,27 @@ class PixelTasks {
     }
 
     void insertTask(const PixelTask &pixelTask) {
-      tasks[task_index] = pixelTask;
-      task_index++;
+      tasks[taskIndex] = pixelTask;
+      taskIndex++;
     }
 
     void run() {
-      int new_hits, current_task;
+      int newHits, currentTask;
 
-      pthread_mutex_lock(&tasks_mutex);
-      while (task_index > 0) {
-        current_task = task_index - 1;
-        task_index--;
-        pthread_mutex_unlock(&tasks_mutex);
+      pthread_mutex_lock(&tasksMutex);
+      while (taskIndex > 0) {
+        currentTask = taskIndex - 1;
+        taskIndex--;
+        pthread_mutex_unlock(&tasksMutex);
 
-        new_hits = tasks[current_task].run();
-        pthread_mutex_lock(&hits_mutex);
-        hits += new_hits;
-        pthread_mutex_unlock(&hits_mutex);
+        newHits = tasks[currentTask].run();
+        pthread_mutex_lock(&hitsMutex);
+        hits += newHits;
+        pthread_mutex_unlock(&hitsMutex);
 
-        pthread_mutex_lock(&tasks_mutex);
+        pthread_mutex_lock(&tasksMutex);
       }
-      pthread_mutex_unlock(&tasks_mutex);
+      pthread_mutex_unlock(&tasksMutex);
     }
 
     int totalHits() {
@@ -84,16 +84,13 @@ class PixelTasks {
 
 
 class Screen {
-  private:
-    int height, width;
-    Color * pixels;
-    std::string outputFilename;
-
   public:
+    int height, width;
     int imageHeight, imageWidth;
 
-    explicit Screen(std::string outputFilename):
-      outputFilename(outputFilename) {}
+    Color * pixels;
+
+    Screen() {}
 
     ~Screen() {
       delete [] pixels;
@@ -106,9 +103,11 @@ class Screen {
     }
 
     void calibrate();
-    void rayTrace();
-    void saveBmp();
+    void saveBmp(const std::string outputFilename) const;
 };
+
+
+void rayTrace(const Scene &scene, const Camera &camera, Screen &screen);
 
 
 END_RAYTRACER

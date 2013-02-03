@@ -15,7 +15,7 @@ BEGIN_RAYTRACER
 
 class Camera {
   private:
-    void computeForward() {
+    void initForward() {
       Vector3D dir = target - viewpoint;
       dir.normalize();
       P_FLT dirDotUp = dotProduct(dir, up);
@@ -25,40 +25,19 @@ class Camera {
     }
 
   public:
-    P_FLT angle;  // Width of view angle
-    P_FLT aspect_ratio;
-    Point3D target;
-    Point3D viewpoint;
+    P_FLT angle,  // y-direction view angle
+          aspectRatio,
+          hither;
+    Point3D target,
+            viewpoint;
     Vector3D forward, up;
 
-    #ifdef DEBUG
-    Camera() {
-      // TODO(kent): Don't hardcode camera
-      angle = PI * 0.25;
-      aspect_ratio = 1.333;
-      target = Point3D(0.0, 0.0, 1.0);
-      viewpoint = Point3D(0.0, 0.0, 0.0);
-      up = Vector3D(0.0, 1.0, 0.0);
-    }
-    #endif
+    Camera() {}
 
-    Camera(Point3D viewpoint, Point3D target, P_FLT angle):
-      angle(angle),
-      aspect_ratio(DEFAULT_ASPECT_RATIO),
-      target(target),
-      viewpoint(viewpoint),
-      up(Vector3D(0.0, 1.0, 0.0))
-      {}
-    Camera(Point3D viewpoint, Point3D target, P_FLT angle, P_FLT aspect_ratio,
-           Vector3D up):
-      angle(angle),
-      aspect_ratio(aspect_ratio),
-      target(target),
-      viewpoint(viewpoint),
-      up(up) {
-      up.normalize();
-    }
-} camera;
+    void init(const Point3D &_viewpoint, const Point3D &_target,
+              const Vector3D &_up, const P_FLT &_angle, const P_FLT &_hither,
+              const int resolutionWidth, const int resolutionHeight);
+};
 
 
 END_RAYTRACER

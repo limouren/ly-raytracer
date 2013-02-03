@@ -24,13 +24,22 @@ BEGIN_RAYTRACER
 
 
 int main(std::string outputFilename) {
-  Screen screen = Screen(outputFilename);
+  Camera camera;
+  camera.init(Point3D(0.0, 0.0, 0.0),
+              Point3D(0.0, 0.0, 1.0),
+              Vector3D(0.0, 1.0, 0.0),
+              PI * 0.25,
+              0.0,
+              800,
+              600);
+
+  Screen screen;
   screen.imageHeight = 600;
   screen.imageWidth = 800;
-
   screen.init();
-  screen.rayTrace();
-  screen.saveBmp();
+
+  rayTrace(scene, camera, screen);
+  screen.saveBmp(outputFilename);
 
   return 0;
 }

@@ -11,7 +11,6 @@
 #include "config.h"
 
 #include "background.h"
-#include "camera.h"
 #include "color.h"
 #include "light.h"
 #include "material.h"
