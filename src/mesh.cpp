@@ -2,6 +2,7 @@
 
 #include "mesh.h"
 #include "trace.h"
+#include "vector.h"
 
 
 BEGIN_RAYTRACER
@@ -22,6 +23,13 @@ void TriangleMesh::buildBoundingVollume(std::vector<Point3D> points) {
     minExt = min(minExt, *itr);
     itr++;
   }
+
+  Vector3D safetyMargin = Vector3D(P_FLT_EPSILON * 2.0,
+                                   P_FLT_EPSILON * 2.0,
+                                   P_FLT_EPSILON * 2.0);
+
+  maxExt += safetyMargin;
+  minExt -= safetyMargin;
 
   boundingVolume = new Box(minExt, maxExt);
 }
