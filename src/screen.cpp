@@ -49,7 +49,7 @@ void Screen::calibrate() {
 }
 
 
-void Screen::saveBmp(const std::string outputFilename) const {
+void Screen::saveBmp(char * outputFilename) const {
   int new_i, new_j,
       imageHeight = height / INT_RES_FACTOR,
       imageWidth = width / INT_RES_FACTOR,
@@ -81,10 +81,15 @@ void Screen::saveBmp(const std::string outputFilename) const {
   bitmap_image bmp_image(imageWidth, imageHeight);
   bmp_image.import_rgb(red_channel, green_channel, blue_channel);
 
-  std::string out("out/");
-  out += outputFilename;
+  char outputPathname[1024];
+  int size = snprintf(outputPathname, sizeof(outputFilename) + 6, "out/%s",
+                      outputFilename);
+  if (size > 1024) {
+    printf("Output filename too long!\n");
+    exit(1);
+  }
 
-  bmp_image.save_image(out);
+  bmp_image.save_image(outputPathname);
 
   delete [] red_channel;
   delete [] green_channel;

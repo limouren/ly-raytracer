@@ -3,7 +3,6 @@
 
 
 #include <pthread.h>
-#include <string>
 
 #include "config.h"
 
@@ -102,7 +101,7 @@ class Screen {
     }
 
     void calibrate();
-    void saveBmp(const std::string outputFilename) const;
+    void saveBmp(char * outputFilename) const;
 };
 
 

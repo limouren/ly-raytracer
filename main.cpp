@@ -23,7 +23,7 @@
 BEGIN_RAYTRACER
 
 
-int main(std::string inputFilename, std::string outputFilename) {
+int main(char * inputFilename, char * outputFilename) {
   Camera camera;
   camera.init(Point3D(0.0, 0.0, 0.0),
               Point3D(0.0, 0.0, 1.0),
@@ -58,9 +58,6 @@ int main(int argc, char * argv[]) {
     return 1;
   }
 
-  string inputFilename(argv[1]);
-  string outputFilename(argv[2]);
-
-  RAYTRACER_NAMESPACE::main(inputFilename, outputFilename);
+  RAYTRACER_NAMESPACE::main(argv[1], argv[2]);
   return 0;
 }

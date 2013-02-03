@@ -3,7 +3,6 @@
 
 
 #include <math.h>
-#include <string>
 #include <vector>
 
 #include "bitmap_image.hpp"
@@ -38,9 +37,6 @@ class Scene {
     }
 
     void init_background() {
-      // std::string fileName = "img/background.bmp";
-      // background = new Background(fileName, 0, 0, 0.0);
-
       backgroundColor = Color(0.6, 0.95, 0.95);
     }
 
@@ -57,7 +53,7 @@ class Scene {
     }
 
     void init_medium() {
-      medium = new Material(std::string("Vacuum"),
+      medium = new Material("Vacuum",
                             Color(0.0, 0.0, 0.0),
                             Color(0.0, 0.0, 0.0),
                             Color(0.0, 0.0, 0.0),
@@ -67,56 +63,56 @@ class Scene {
     }
 
     void init_models_and_materials() {
-      Material * red = new Material(std::string("Red"),
+      Material * red = new Material("Red",
                                     Color(0.1, 0.1, 0.1),
                                     Color(0.6, 0.1, 0.1),
                                     Color(0.6, 0.1, 0.1),
                                     Color(0.0, 0.0, 0.0),
                                     1.5,
                                     25),
-               * green = new Material(std::string("Green"),
+               * green = new Material("Green",
                                       Color(0.1, 0.1, 0.1),
                                       Color(0.1, 0.6, 0.1),
                                       Color(0.1, 0.6, 0.1),
                                       Color(0.0, 0.0, 0.0),
                                       1.5,
                                       25),
-               * blue = new Material(std::string("Blue"),
+               * blue = new Material("Blue",
                                      Color(0.1, 0.1, 0.1),
                                      Color(0.1, 0.1, 0.6),
                                      Color(0.1, 0.1, 0.6),
                                      Color(0.0, 0.0, 0.0),
                                      1.5,
                                      25),
-               * roughWhite = new Material(std::string("Rough white"),
+               * roughWhite = new Material("Rough white",
                                       Color(0.3, 0.3, 0.3),
                                       Color(0.4, 0.4, 0.4),
                                       Color(0.1, 0.1, 0.1),
                                       Color(0.0, 0.0, 0.0),
                                       1.5,
                                       10),
-               * roughGray = new Material(std::string("Rough gray"),
+               * roughGray = new Material("Rough gray",
                                       Color(0.15, 0.15, 0.15),
                                       Color(0.2, 0.2, 0.2),
                                       Color(0.1, 0.1, 0.1),
                                       Color(0.0, 0.0, 0.0),
                                       1.5,
                                       10),
-               * black = new Material(std::string("Black"),
+               * black = new Material("Black",
                                       Color(0.1, 0.1, 0.1),
                                       Color(0.1, 0.1, 0.1),
                                       Color(0.1, 0.1, 0.1),
                                       Color(0.0, 0.0, 0.0),
                                       1.5,
                                       25),
-               * glass = new Material(std::string("Glass"),
+               * glass = new Material("Glass",
                                       Color(0.0, 0.0, 0.0),
                                       Color(0.0, 0.0, 0.0),
                                       Color(0.0, 0.0, 0.0),
                                       Color(1.0, 1.0, 1.0),
                                       1.5,
                                       2.5),
-               * mirror = new Material(std::string("Mirror"),
+               * mirror = new Material("Mirror",
                                        Color(0.05, 0.05, 0.05),
                                        Color(0.05, 0.05, 0.05),
                                        Color(0.9, 0.9, 0.9),
