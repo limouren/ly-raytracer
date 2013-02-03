@@ -52,36 +52,37 @@ void Screen::saveBmp(char * outputFilename) const {
     exit(1);
   }
 
-  int new_i, new_j,
+  int imagePixelIndex, pixelIndex,
+      // Avoid this division somehow
       imageHeight = height / INT_RES_FACTOR,
       imageWidth = width / INT_RES_FACTOR,
-      pixel_count = imageHeight * imageWidth;
+      pixelCount = imageHeight * imageWidth;
 
   P_FLT factor = 1.0 / static_cast<P_FLT>(INT_RES_FACTOR * INT_RES_FACTOR);
-  C_FLT * red_channel = new C_FLT[pixel_count];
-  C_FLT * green_channel = new C_FLT[pixel_count];
-  C_FLT * blue_channel = new C_FLT[pixel_count];
+  C_FLT * redChannel = new C_FLT[pixelCount];
+  C_FLT * greenChannel = new C_FLT[pixelCount];
+  C_FLT * blueChannel = new C_FLT[pixelCount];
 
-  for (int i = 0; i < width; i++) {
-    for (int j = 0; j < height; j++) {
+  for (int i = 0; i < imageWidth; i++) {
+    for (int j = 0; j < imageHeight; j++) {
+      imagePixelIndex = (imageHeight - j - 1) * imageWidth + i;
       for (int m = 0; m < INT_RES_FACTOR; m++) {
         for (int n = 0; n < INT_RES_FACTOR; n++) {
-          new_i = i * INT_RES_FACTOR + m;
-          new_j = j * INT_RES_FACTOR + n;
+          pixelIndex = j * INT_RES_FACTOR * width + i * INT_RES_FACTOR;
 
-          red_channel[j*imageWidth + i] += pixels[new_j*width + new_i].r;
-          green_channel[j*imageWidth + i] += pixels[new_j*width + new_i].g;
-          blue_channel[j*imageWidth + i] += pixels[new_j*width + new_i].b;
+          redChannel[imagePixelIndex] += pixels[pixelIndex].r;
+          greenChannel[imagePixelIndex] += pixels[pixelIndex].g;
+          blueChannel[imagePixelIndex] += pixels[pixelIndex].b;
         }
       }
-      red_channel[j*imageWidth + i] *= factor;
-      green_channel[j*imageWidth + i] *= factor;
-      blue_channel[j*imageWidth + i] *= factor;
+      redChannel[imagePixelIndex] *= factor;
+      greenChannel[imagePixelIndex] *= factor;
+      blueChannel[imagePixelIndex] *= factor;
     }
   }
 
-  bitmap_image bmp_image(imageWidth, imageHeight);
-  bmp_image.import_rgb(red_channel, green_channel, blue_channel);
+  bitmap_image bmpImage(imageWidth, imageHeight);
+  bmpImage.import_rgb(redChannel, greenChannel, blueChannel);
 
   char outputPathname[1024];
   int size = snprintf(outputPathname, sizeof(outputFilename) + 6, "out/%s",
@@ -91,11 +92,11 @@ void Screen::saveBmp(char * outputFilename) const {
     exit(1);
   }
 
-  bmp_image.save_image(outputPathname);
+  bmpImage.save_image(outputPathname);
 
-  delete [] red_channel;
-  delete [] green_channel;
-  delete [] blue_channel;
+  delete [] redChannel;
+  delete [] greenChannel;
+  delete [] blueChannel;
 }
 
 
