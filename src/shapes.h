@@ -73,8 +73,6 @@ class Sphere: public Primitive {
     P_FLT radius;
     Point3D center;
 
-    Sphere(Material * material, P_FLT x, P_FLT y, P_FLT z, P_FLT radius):
-      Primitive(material), center(Point3D(x, y, z)), radius(radius) { }
     Sphere(Material * material, Point3D center, P_FLT radius):
       Primitive(material), center(center), radius(radius) {}
 

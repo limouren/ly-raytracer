@@ -32,6 +32,7 @@ class Scene {
     MODEL_CLS * modelRoot;
 
     // NOTE: For testing only
+    /*
     void init_ambience() {
       ambience = Color(0.4, 0.4, 0.4);
     }
@@ -198,6 +199,7 @@ class Scene {
 
       modelRoot = buildModelTree(models);
     }
+    */
 
     Scene() {
       medium = new Material("Vacuum",
