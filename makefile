@@ -19,9 +19,10 @@ OBJS := $(patsubst %.h,%.o,$(wildcard $(SRC_DIR)/*.h))
 
 tests = $(wildcard $(TEST_DIR)/*_test.cpp)
 
+# TODO(kent): restructure 3rdparty items to avoid filename collision
 THIRD_PARTY_DIRS = $(wildcard 3rdparty/*/latest/)
 
-INCLUDE_LIBS = $(foreach INCLUDEDIR,$(THIRD_PARTY_DIRS), -I$(INCLUDEDIR))
+INCLUDE_LIBS = $(foreach INCLUDEDIR, $(THIRD_PARTY_DIRS), -I$(INCLUDEDIR))
 INCLUDE_DIRS = -I$(SRC_DIR)
 
 .PHONY : tests
