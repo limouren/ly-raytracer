@@ -155,10 +155,7 @@ void rayTrace(const Scene &scene, const Camera &camera, Screen &screen) {
     pthread_join(threads[i], NULL);
   }
 
-  printf("Tracing complete, %d hits out of %d total\n",
-         pixelTasks->totalHits(), screen.width * screen.height);
   delete pixelTasks;
-
   screen.calibrate();
 }
 

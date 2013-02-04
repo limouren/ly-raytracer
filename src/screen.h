@@ -34,17 +34,15 @@ class PixelTask {
 
 class PixelTasks {
   private:
-    int hits, taskIndex;
-    pthread_mutex_t hitsMutex, tasksMutex;
+    int taskIndex;
+    pthread_mutex_t tasksMutex;
     PixelTask * tasks;
 
   public:
     explicit PixelTasks(int total_tasks) {
-      hits = 0;
       taskIndex = 0;
       tasks = new PixelTask[total_tasks];
 
-      hitsMutex = PTHREAD_MUTEX_INITIALIZER;
       tasksMutex = PTHREAD_MUTEX_INITIALIZER;
     }
 
@@ -58,26 +56,19 @@ class PixelTasks {
     }
 
     void run() {
-      int newHits, currentTask;
+      int currentTask;
 
       pthread_mutex_lock(&tasksMutex);
       while (taskIndex > 0) {
-        currentTask = taskIndex - 1;
         taskIndex--;
+        currentTask = taskIndex;
         pthread_mutex_unlock(&tasksMutex);
 
-        newHits = tasks[currentTask].run();
-        pthread_mutex_lock(&hitsMutex);
-        hits += newHits;
-        pthread_mutex_unlock(&hitsMutex);
+        tasks[currentTask].run();
 
         pthread_mutex_lock(&tasksMutex);
       }
       pthread_mutex_unlock(&tasksMutex);
-    }
-
-    int totalHits() {
-      return hits;
     }
 };
 
