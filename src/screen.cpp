@@ -85,7 +85,7 @@ void Screen::saveBmp(char * outputFilename) const {
   bmpImage.import_rgb(redChannel, greenChannel, blueChannel);
 
   char outputPathname[1024];
-  int size = snprintf(outputPathname, sizeof(outputFilename) + 6, "out/%s",
+  int size = snprintf(outputPathname, sizeof(outputPathname), "out/%s",
                       outputFilename);
   if (size > 1024) {
     printf("Output filename too long!\n");
