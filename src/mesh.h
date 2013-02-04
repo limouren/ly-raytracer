@@ -29,11 +29,11 @@ class TriangleMesh: public Primitive {
   public:
     // This constructor designed according to BART specifications
     TriangleMesh(Material * material,
-                 std::vector<Point3D> points,
+                 std::vector<Point3D> _points,
                  std::vector<Vector3D> normals,
                  std::vector<Vector2D> textureCoords,
                  std::vector<int *> triangleDefs):
-      points(points) {
+      points(_points) {
       buildBoundingVollume(points);
 
       // TODO(kent): Handle textured triangles
