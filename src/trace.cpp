@@ -67,18 +67,15 @@ inline int intersectMerge(int op, int hitsLeft, Intercept interceptsLeft[],
     }
   }
 
-  if (leftIndex < hitsLeft) {
-    while (index < MAX_INTERSECTIONS && leftIndex < hitsLeft) {
-      merged[index] = interceptsLeft[leftIndex];
-      leftIndex++;
-      index++;
-    }
-  } else {
-    while (index < MAX_INTERSECTIONS && rightIndex < hitsRight) {
-      merged[index] = interceptsRight[rightIndex];
-      rightIndex++;
-      index++;
-    }
+  while (index < MAX_INTERSECTIONS && leftIndex < hitsLeft) {
+    merged[index] = interceptsLeft[leftIndex];
+    leftIndex++;
+    index++;
+  }
+  while (index < MAX_INTERSECTIONS && rightIndex < hitsRight) {
+    merged[index] = interceptsRight[rightIndex];
+    rightIndex++;
+    index++;
   }
 
   return index;
