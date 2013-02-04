@@ -24,6 +24,7 @@ class TriangleMesh: public Primitive {
   private:
     BoundingVolume * boundingVolume;
     MODEL_CLS * triangles;
+    std::vector<Point3D> points;
 
   public:
     // This constructor designed according to BART specifications
@@ -31,16 +32,17 @@ class TriangleMesh: public Primitive {
                  std::vector<Point3D> points,
                  std::vector<Vector3D> normals,
                  std::vector<Vector2D> textureCoords,
-                 std::vector<int *> triangleDefs) {
+                 std::vector<int *> triangleDefs):
+      points(points) {
       buildBoundingVollume(points);
 
       // TODO(kent): Handle textured triangles
       std::vector<MODEL_CLS *> triangleVector;
       for (int i = 0; i < triangleDefs.size(); i++) {
         Triangle * triangle = new Triangle(material,
-                                           points[triangleDefs[i][0]],
-                                           points[triangleDefs[i][1]],
-                                           points[triangleDefs[i][2]]);
+                                           &points[triangleDefs[i][0]],
+                                           &points[triangleDefs[i][1]],
+                                           &points[triangleDefs[i][2]]);
         triangleVector.push_back(triangle);
       }
       triangles = buildModelTree(triangleVector);
