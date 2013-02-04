@@ -41,9 +41,9 @@ int intersect(const Ray &ray, MODEL_CLS * model, Intercept intercepts[],
 }
 
 
-int intersectMerge(int op, int hitsLeft, Intercept interceptsLeft[],
-                   int hitsRight, Intercept interceptsRight[],
-                   Intercept merged[]) {
+inline int intersectMerge(int op, int hitsLeft, Intercept interceptsLeft[],
+                          int hitsRight, Intercept interceptsRight[],
+                          Intercept merged[]) {
   // Assume union only for now
   // TODO(kent): Handle non unions
   // TODO(kent): Change intercept lists to vectors
@@ -51,8 +51,7 @@ int intersectMerge(int op, int hitsLeft, Intercept interceptsLeft[],
   int index = 0,
       leftIndex = 0,
       rightIndex = 0;
-  while (leftIndex != hitsLeft &&
-         rightIndex != hitsRight) {
+  while (leftIndex < hitsLeft && rightIndex < hitsRight) {
     if (interceptsLeft[leftIndex].t < interceptsRight[rightIndex].t) {
       merged[index] = interceptsLeft[leftIndex];
       leftIndex++;
@@ -68,14 +67,14 @@ int intersectMerge(int op, int hitsLeft, Intercept interceptsLeft[],
     }
   }
 
-  if (leftIndex != hitsLeft) {
-    while (leftIndex != hitsLeft && index < MAX_INTERSECTIONS) {
+  if (leftIndex < hitsLeft) {
+    while (index < MAX_INTERSECTIONS && leftIndex < hitsLeft) {
       merged[index] = interceptsLeft[leftIndex];
       leftIndex++;
       index++;
     }
   } else {
-    while (rightIndex != hitsRight && index < MAX_INTERSECTIONS) {
+    while (index < MAX_INTERSECTIONS && rightIndex < hitsRight) {
       merged[index] = interceptsRight[rightIndex];
       rightIndex++;
       index++;
