@@ -213,15 +213,15 @@ inline const int Vector3D::dominantIndex() const {
         abs_z = fabs(z);
   if (abs_x > abs_y) {
     if (abs_x > abs_z) {
-      return 0;
+      return x > 0? 0: 3;
     } else {
-      return 2;
+      return z > 0? 2: 5;
     }
   } else {
     if (abs_y > abs_z) {
-      return 1;
+      return y > 0? 1: 4;
     } else {
-      return 2;
+      return z > 0? 2: 5;
     }
   }
 }
