@@ -16,6 +16,7 @@
 #include "screen.cpp"
 #include "shade.cpp"
 #include "shapes.cpp"
+#include "texture.cpp"
 #include "trace.cpp"
 #include "triangle.cpp"
 #include "vector.cpp"

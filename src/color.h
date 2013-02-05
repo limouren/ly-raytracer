@@ -56,6 +56,14 @@ class Color {
 };
 
 
+class RGBColor {
+  public:
+    int r, g, b;
+
+    inline const Color toColor() const;
+};
+
+
 END_RAYTRACER
 
 
