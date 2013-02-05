@@ -1,0 +1,15 @@
+% BART: museum3.aff
+% Polygons: 10143
+% Spheres:  0
+% Cones:    8
+% Anim Tris:64
+
+b 0.5 0.5 1.0
+v
+from 0 0 0
+at 0 0 5
+up 0 1 0
+angle 45
+hither 0.1
+resolution 800 600
+l 1 1 0 1 1 1
