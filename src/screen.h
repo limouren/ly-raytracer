@@ -66,7 +66,7 @@ class PixelTasks {
         pthread_mutex_unlock(&tasksMutex);
 
         if (currentTask % 1000 == 0) {
-          progress = static_cast<double>(totalTasks - currentTask) /
+          progress = 100.0 * static_cast<double>(totalTasks - currentTask) /
                      static_cast<double>(totalTasks);
           printf("\rTracing...%.2f%% complete", progress);
         }
