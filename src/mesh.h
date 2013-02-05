@@ -10,6 +10,7 @@
 #include "model.h"
 #include "point.h"
 #include "ray.h"
+#include "texture.h"
 #include "triangle.h"
 #include "vector.h"
 
@@ -31,9 +32,10 @@ class TriangleMesh: public Primitive {
     TriangleMesh(Material * material,
                  std::vector<Point3D> _points,
                  std::vector<Vector3D> normals,
+                 Texture * texture,
                  std::vector<Vector2D> textureCoords,
                  std::vector<int *> triangleDefs):
-      points(_points) {
+      points(_points), texture(texture) {
       buildBoundingVollume(points);
 
       // TODO(kent): Handle textured triangles

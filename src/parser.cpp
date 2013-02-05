@@ -14,6 +14,7 @@
 #include "scene.h"
 #include "screen.h"
 #include "shapes.h"
+#include "texture.h"
 #include "vector.h"
 
 
@@ -31,6 +32,7 @@ using namespace std;
 BEGIN_RAYTRACER
 
 
+char directoryPath[1024];
 int globalDetailLevel = 0;
 
 
@@ -269,11 +271,11 @@ void parsePoly(FILE * file, vector<MODEL_CLS *> * models,
   }
 }
 
-
-void parseInclude(FILE * file, char * directoryPath, Scene * scene,
+void parseInclude(FILE * file, Scene * scene,
                   Camera * camera, Screen * screen,
                   vector<MODEL_CLS *> * models, Material * currentMaterial) {
-  char filename[100];
+  char filename[80],
+       filePath[1024];
   FILE * includeFile;
   int detailLevel;
 
@@ -283,10 +285,11 @@ void parseInclude(FILE * file, char * directoryPath, Scene * scene,
   }
 
   if (detailLevel <= globalDetailLevel) {
-    strncat(directoryPath, filename, strlen(filename));
+    strncpy(filePath, directoryPath, strlen(directoryPath) + 1);
+    strncat(filePath, filename, strlen(filename));
 
     Scene subscene;
-    parseFile(directoryPath, &subscene, camera, screen, currentMaterial);
+    parseFile(filePath, &subscene, camera, screen, currentMaterial);
 
     if (subscene.modelRoot != NULL) {
       models->push_back(subscene.modelRoot);
@@ -312,7 +315,7 @@ void parseTexturedTriangle(FILE *file) {
   Vec3f verts[3];
   Vec3f norms[3];
   float tu[3], tv[3];
-  char texturename[100];
+  char textureName[100];
 
   is_patch = getc(file);
   if (is_patch != 'p') {
@@ -320,7 +323,7 @@ void parseTexturedTriangle(FILE *file) {
      is_patch = 0;
   }
 
-  int dummy = fscanf(file, "%s", texturename);
+  int dummy = fscanf(file, "%s", textureName);
 
   for (q = 0; q < 3; q++) {
     if (fscanf(file, " %f %f %f",
@@ -343,11 +346,11 @@ void parseTexturedTriangle(FILE *file) {
 
   if (is_patch) {
      /* add a textured triangle patch here
-      * e.g., viAddTexturedTriPatch(texturename, verts, norms, tu, tv);
+      * e.g., viAddTexturedTriPatch(textureName, verts, norms, tu, tv);
       */
   } else {
      /* add a textured triangle here
-      * e.g.,  viAddTexturedTriangle(texturename, verts, tu, tv);
+      * e.g.,  viAddTexturedTriangle(textureName, verts, tu, tv);
       */
   }
   return;
@@ -625,9 +628,8 @@ void getVectors(FILE * file, const char * type, vector<Vector3D> * vectors) {
 }
 
 
-void getTextureCoords(FILE * file, const char * type,
-                      vector<Vector2D> * textureCoords) {
-  char textureName[100];
+void getTextureCoordinates(FILE * file, const char * type, char * textureName,
+                           vector<Vector2D> * textureCoords) {
   int flag, textureCoordNum;
   P_FLT x, y;
 
@@ -707,15 +709,16 @@ void getTriangleDefs(FILE * file, bool hasNorms, bool hasTextures,
 }
 
 
-void parseMesh(FILE * file, vector<MODEL_CLS *> * models,
+void parseMesh(FILE * file, Scene * scene, vector<MODEL_CLS *> * models,
                Material * currentMaterial) {
   char buffer[200],
-       texturename[200];
+       textureName[200] = "";
   int flag;
   vector<Point3D> vertex;
   vector<Vector3D> normal;
   vector<Vector2D> textureCoords;
   vector<int *> triangleDefs;
+  Texture * texture = NULL;
 
 
   if (fscanf(file, "%s", buffer) != 1) {
@@ -736,7 +739,7 @@ void parseMesh(FILE * file, vector<MODEL_CLS *> * models,
     flag = fscanf(file, "%s", buffer);
   }
   if (!strcmp(buffer, "texturecoords")) {
-    getTextureCoords(file, "textureCoord", &textureCoords);
+    getTextureCoordinates(file, "textureCoord", textureName, &textureCoords);
     flag = fscanf(file, "%s", buffer);
   }
 
@@ -748,8 +751,21 @@ void parseMesh(FILE * file, vector<MODEL_CLS *> * models,
     exit(1);
   }
 
-  models->push_back(new TriangleMesh(currentMaterial, vertex, normal,
-                                    textureCoords, triangleDefs));
+  if (strcmp(textureName, "")) {
+    std::map<std::string, Texture *>::iterator itr =
+      scene->textures.find(string(textureName));
+    if (itr == scene->textures.end()) {
+      texture = new Texture();
+      printf("%s\n", textureName);
+      texture->loadFromFile(textureName);
+      scene->textures[textureName] = texture;
+    } else {
+      texture = itr->second;
+    }
+  }
+
+  models->push_back(new TriangleMesh(currentMaterial, vertex, normal, texture,
+                                     textureCoords, triangleDefs));
 }
 
 
@@ -761,6 +777,9 @@ int parseFile(char * filename, Scene * scene, Camera * camera,
     printf("File %s not found.\n", filename);
     return 1;
   }
+  strncpy(directoryPath, filename, 1024);
+  *(strrchr(directoryPath, '/') + 1) = '\0';
+
 
   vector<MODEL_CLS *> models;
   Material * currentMaterial = previousMaterial;
@@ -801,12 +820,7 @@ int parseFile(char * filename, Scene * scene, Camera * camera,
         parsePoly(file, &models, currentMaterial);
         break;
       case 'i':
-        char directoryPath[1024];
-        strncpy(directoryPath, filename, 1024);
-        *(strrchr(directoryPath, '/') + 1)= '\0';
-
-        parseInclude(file, directoryPath, scene, camera, screen, &models,
-                     currentMaterial);
+        parseInclude(file, scene, camera, screen, &models, currentMaterial);
         break;
       case 'd':
         parseDetailLevel(file);
@@ -828,7 +842,7 @@ int parseFile(char * filename, Scene * scene, Camera * camera,
         parseKeyFrames(file);
         break;
       case 'm':
-        parseMesh(file, &models, currentMaterial);
+        parseMesh(file, scene, &models, currentMaterial);
         break;
       default:
         printf("unknown NFF primitive code: %c\n", ch);
