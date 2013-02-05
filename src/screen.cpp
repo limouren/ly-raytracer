@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <vector>
 
-#include "bitmap_image.hpp"
+#include "bitmap/bitmap/bitmap_image.hpp"
 #include "pthread.h"
 
 #include "config.h"

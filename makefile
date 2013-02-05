@@ -9,28 +9,14 @@ O_DIR = bin
 
 CONFIG_DIR = config
 SRC_DIR = src
-TEST_DIR = tests
+THIRD_PARTY_DIR = 3rdparty
 
-INCLUDES = $(INCLUDE_CONFIG) $(INCLUDE_DIRS) $(INCLUDE_LIBS)
+INCLUDES = $(INCLUDE_CONFIG) $(INCLUDE_SRC) $(THIRD_PARTY_LIBS)
 INCLUDE_CONFIG = -I$(CONFIG_DIR)
-
+INCLUDE_SRC = -I$(SRC_DIR)
+THIRD_PARTY_LIBS = -I$(THIRD_PARTY_DIR)
 
 OBJS := $(patsubst %.h,%.o,$(wildcard $(SRC_DIR)/*.h))
-
-tests = $(wildcard $(TEST_DIR)/*_test.cpp)
-
-# TODO(kent): restructure 3rdparty items to avoid filename collision
-THIRD_PARTY_DIRS = $(wildcard 3rdparty/*/latest/)
-
-INCLUDE_LIBS = $(foreach INCLUDEDIR, $(THIRD_PARTY_DIRS), -I$(INCLUDEDIR))
-INCLUDE_DIRS = -I$(SRC_DIR)
-
-.PHONY : tests
-tests: $(O_DIR)/run_tests
-
-$(O_DIR)/run_tests: run_tests.cpp $(tests)
-	$(CXX) $(CFLAGS) $< -o $@
-
 
 .PHONY : raytracer
 raytracer: $(O_DIR)/raytracer

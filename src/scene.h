@@ -5,7 +5,7 @@
 #include <math.h>
 #include <vector>
 
-#include "bitmap_image.hpp"
+#include "bitmap/bitmap/bitmap_image.hpp"
 
 #include "config.h"
 

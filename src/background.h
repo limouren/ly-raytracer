@@ -4,8 +4,6 @@
 
 #include <math.h>
 
-#include "bitmap_image.hpp"
-
 #include "config.h"
 
 #include "color.h"
