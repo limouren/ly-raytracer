@@ -34,14 +34,14 @@ class PixelTask {
 
 class PixelTasks {
   private:
-    int taskIndex;
+    int taskIndex, totalTasks;
     pthread_mutex_t tasksMutex;
     PixelTask * tasks;
 
   public:
-    explicit PixelTasks(int total_tasks) {
+    explicit PixelTasks(int _totalTasks): totalTasks(_totalTasks) {
+      tasks = new PixelTask[totalTasks];
       taskIndex = 0;
-      tasks = new PixelTask[total_tasks];
 
       tasksMutex = PTHREAD_MUTEX_INITIALIZER;
     }
@@ -57,6 +57,7 @@ class PixelTasks {
 
     void run() {
       int currentTask;
+      double progress;
 
       pthread_mutex_lock(&tasksMutex);
       while (taskIndex > 0) {
@@ -64,6 +65,11 @@ class PixelTasks {
         currentTask = taskIndex;
         pthread_mutex_unlock(&tasksMutex);
 
+        if (currentTask % 1000 == 0) {
+          progress = static_cast<double>(totalTasks - currentTask) /
+                     static_cast<double>(totalTasks);
+          printf("\rTracing...%.2f%% complete", progress);
+        }
         tasks[currentTask].run();
 
         pthread_mutex_lock(&tasksMutex);
