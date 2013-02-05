@@ -24,13 +24,6 @@ void TriangleMesh::buildBoundingVollume(std::vector<Point3D> points) {
     itr++;
   }
 
-  Vector3D safetyMargin = Vector3D(P_FLT_EPSILON * 2.0,
-                                   P_FLT_EPSILON * 2.0,
-                                   P_FLT_EPSILON * 2.0);
-
-  maxExt += safetyMargin;
-  minExt -= safetyMargin;
-
   boundingVolume = new Box(minExt, maxExt);
 }
 
