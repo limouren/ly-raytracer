@@ -7,6 +7,7 @@
 #include "config.h"
 
 #include "material.h"
+#include "texture.h"
 
 
 BEGIN_RAYTRACER
@@ -41,14 +42,23 @@ class Composite: public MODEL_CLS {
 class Primitive: public MODEL_CLS {
   public:
     Material * material;
+    Texture * texture;
 
     Primitive(): MODEL_CLS(0) {}
     explicit Primitive(Material * material):
       material(material), MODEL_CLS(0) {}
 
     virtual const int intersect(const Ray &ray, Intercept intercepts[],
-                                Material * entryMat) const {}
-    virtual const Vector3D normalAt(const Point3D &point) const {}
+                                Material * entryMat) const {
+      printf("WARNING: Unimplemented Primitive::intersect stub invoked\n");
+    }
+    virtual const Vector3D normalAt(const Point3D &point) const {
+      printf("WARNING: Unimplemented Primitive::normalAt stub invoked\n");
+    }
+    virtual const Vector2D textureCoordAt(const Point3D &point) const {
+      printf("WARNING: Unimplemented Primitive::textureCoordAt stub "
+             "invoked\n");
+    }
 
     virtual ~Primitive() {}
 };
