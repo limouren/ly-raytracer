@@ -56,7 +56,8 @@ class PixelTasks {
     }
 
     void run() {
-      int currentTask;
+      int currentTask,
+          thousandth = totalTasks / 10000;
       double progress;
 
       pthread_mutex_lock(&tasksMutex);
@@ -65,7 +66,7 @@ class PixelTasks {
         currentTask = taskIndex;
         pthread_mutex_unlock(&tasksMutex);
 
-        if (currentTask % 1000 == 0) {
+        if (currentTask % thousandth == 0) {
           progress = 100.0 * static_cast<double>(totalTasks - currentTask) /
                      static_cast<double>(totalTasks);
           printf("\rTracing...%.2f%% complete", progress);

@@ -36,7 +36,7 @@ int main(char * inputFilename, char * outputFilename) {
   printf("Tracing...");
   fflush(stdout);
   rayTrace(scene, camera, screen);
-  printf("\rTracing...completed.\n");
+  printf("\n");
 
   printf("Saving file to \"%s\"...", outputFilename);
   fflush(stdout);
