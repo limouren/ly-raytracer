@@ -40,16 +40,16 @@ const int Triangle::intersect(const Ray &ray, Intercept intercepts[],
       u = ray.orig.y + t * ray.dir.y;
       v = ray.orig.z + t * ray.dir.z;
 
-      if ((u - (vertex[0])->y) * ((vertex[1])->z - (vertex[0])->z) >
-          (v - (vertex[0])->z) * ((vertex[1])->y - (vertex[0])->y)) {
+      if ((u - (vertex1)->y) * ((vertex2)->z - (vertex1)->z) >
+          (v - (vertex1)->z) * ((vertex2)->y - (vertex1)->y)) {
         return 0;
       }
-      if ((u - (vertex[1])->y) * ((vertex[2])->z - (vertex[1])->z) >
-          (v - (vertex[1])->z) * ((vertex[2])->y - (vertex[1])->y)) {
+      if ((u - (vertex2)->y) * ((vertex3)->z - (vertex2)->z) >
+          (v - (vertex2)->z) * ((vertex3)->y - (vertex2)->y)) {
         return 0;
       }
-      if ((u - (vertex[2])->y) * ((vertex[0])->z - (vertex[2])->z) >
-          (v - (vertex[2])->z) * ((vertex[0])->y - (vertex[2])->y)) {
+      if ((u - (vertex3)->y) * ((vertex1)->z - (vertex3)->z) >
+          (v - (vertex3)->z) * ((vertex1)->y - (vertex3)->y)) {
         return 0;
       }
 
@@ -59,16 +59,16 @@ const int Triangle::intersect(const Ray &ray, Intercept intercepts[],
       u = ray.orig.x + t * ray.dir.x;
       v = ray.orig.z + t * ray.dir.z;
 
-      if ((u - (vertex[0])->x) * ((vertex[1])->z - (vertex[0])->z) <
-          (v - (vertex[0])->z) * ((vertex[1])->x - (vertex[0])->x)) {
+      if ((u - (vertex1)->x) * ((vertex2)->z - (vertex1)->z) <
+          (v - (vertex1)->z) * ((vertex2)->x - (vertex1)->x)) {
         return 0;
       }
-      if ((u - (vertex[1])->x) * ((vertex[2])->z - (vertex[1])->z) <
-          (v - (vertex[1])->z) * ((vertex[2])->x - (vertex[1])->x)) {
+      if ((u - (vertex2)->x) * ((vertex3)->z - (vertex2)->z) <
+          (v - (vertex2)->z) * ((vertex3)->x - (vertex2)->x)) {
         return 0;
       }
-      if ((u - (vertex[2])->x) * ((vertex[0])->z - (vertex[2])->z) <
-          (v - (vertex[2])->z) * ((vertex[0])->x - (vertex[2])->x)) {
+      if ((u - (vertex3)->x) * ((vertex1)->z - (vertex3)->z) <
+          (v - (vertex3)->z) * ((vertex1)->x - (vertex3)->x)) {
         return 0;
       }
 
@@ -78,16 +78,16 @@ const int Triangle::intersect(const Ray &ray, Intercept intercepts[],
       u = ray.orig.x + t * ray.dir.x;
       v = ray.orig.y + t * ray.dir.y;
 
-      if ((u - (vertex[0])->x) * ((vertex[1])->y - (vertex[0])->y) >
-          (v - (vertex[0])->y) * ((vertex[1])->x - (vertex[0])->x)) {
+      if ((u - (vertex1)->x) * ((vertex2)->y - (vertex1)->y) >
+          (v - (vertex1)->y) * ((vertex2)->x - (vertex1)->x)) {
         return 0;
       }
-      if ((u - (vertex[1])->x) * ((vertex[2])->y - (vertex[1])->y) >
-          (v - (vertex[1])->y) * ((vertex[2])->x - (vertex[1])->x)) {
+      if ((u - (vertex2)->x) * ((vertex3)->y - (vertex2)->y) >
+          (v - (vertex2)->y) * ((vertex3)->x - (vertex2)->x)) {
         return 0;
       }
-      if ((u - (vertex[2])->x) * ((vertex[0])->y - (vertex[2])->y) >
-          (v - (vertex[2])->y) * ((vertex[0])->x - (vertex[2])->x)) {
+      if ((u - (vertex3)->x) * ((vertex1)->y - (vertex3)->y) >
+          (v - (vertex3)->y) * ((vertex1)->x - (vertex3)->x)) {
         return 0;
       }
 
@@ -97,16 +97,16 @@ const int Triangle::intersect(const Ray &ray, Intercept intercepts[],
       u = ray.orig.y + t * ray.dir.y;
       v = ray.orig.z + t * ray.dir.z;
 
-      if ((u - (vertex[0])->y) * ((vertex[1])->z - (vertex[0])->z) <
-          (v - (vertex[0])->z) * ((vertex[1])->y - (vertex[0])->y)) {
+      if ((u - (vertex1)->y) * ((vertex2)->z - (vertex1)->z) <
+          (v - (vertex1)->z) * ((vertex2)->y - (vertex1)->y)) {
         return 0;
       }
-      if ((u - (vertex[1])->y) * ((vertex[2])->z - (vertex[1])->z) <
-          (v - (vertex[1])->z) * ((vertex[2])->y - (vertex[1])->y)) {
+      if ((u - (vertex2)->y) * ((vertex3)->z - (vertex2)->z) <
+          (v - (vertex2)->z) * ((vertex3)->y - (vertex2)->y)) {
         return 0;
       }
-      if ((u - (vertex[2])->y) * ((vertex[0])->z - (vertex[2])->z) <
-          (v - (vertex[2])->z) * ((vertex[0])->y - (vertex[2])->y)) {
+      if ((u - (vertex3)->y) * ((vertex1)->z - (vertex3)->z) <
+          (v - (vertex3)->z) * ((vertex1)->y - (vertex3)->y)) {
         return 0;
       }
 
@@ -116,16 +116,16 @@ const int Triangle::intersect(const Ray &ray, Intercept intercepts[],
       u = ray.orig.x + t * ray.dir.x;
       v = ray.orig.z + t * ray.dir.z;
 
-      if ((u - (vertex[0])->x) * ((vertex[1])->z - (vertex[0])->z) >
-          (v - (vertex[0])->z) * ((vertex[1])->x - (vertex[0])->x)) {
+      if ((u - (vertex1)->x) * ((vertex2)->z - (vertex1)->z) >
+          (v - (vertex1)->z) * ((vertex2)->x - (vertex1)->x)) {
         return 0;
       }
-      if ((u - (vertex[1])->x) * ((vertex[2])->z - (vertex[1])->z) >
-          (v - (vertex[1])->z) * ((vertex[2])->x - (vertex[1])->x)) {
+      if ((u - (vertex2)->x) * ((vertex3)->z - (vertex2)->z) >
+          (v - (vertex2)->z) * ((vertex3)->x - (vertex2)->x)) {
         return 0;
       }
-      if ((u - (vertex[2])->x) * ((vertex[0])->z - (vertex[2])->z) >
-          (v - (vertex[2])->z) * ((vertex[0])->x - (vertex[2])->x)) {
+      if ((u - (vertex3)->x) * ((vertex1)->z - (vertex3)->z) >
+          (v - (vertex3)->z) * ((vertex1)->x - (vertex3)->x)) {
         return 0;
       }
 
@@ -135,16 +135,16 @@ const int Triangle::intersect(const Ray &ray, Intercept intercepts[],
       u = ray.orig.x + t * ray.dir.x;
       v = ray.orig.y + t * ray.dir.y;
 
-      if ((u - (vertex[0])->x) * ((vertex[1])->y - (vertex[0])->y) <
-          (v - (vertex[0])->y) * ((vertex[1])->x - (vertex[0])->x)) {
+      if ((u - (vertex1)->x) * ((vertex2)->y - (vertex1)->y) <
+          (v - (vertex1)->y) * ((vertex2)->x - (vertex1)->x)) {
         return 0;
       }
-      if ((u - (vertex[1])->x) * ((vertex[2])->y - (vertex[1])->y) <
-          (v - (vertex[1])->y) * ((vertex[2])->x - (vertex[1])->x)) {
+      if ((u - (vertex2)->x) * ((vertex3)->y - (vertex2)->y) <
+          (v - (vertex2)->y) * ((vertex3)->x - (vertex2)->x)) {
         return 0;
       }
-      if ((u - (vertex[2])->x) * ((vertex[0])->y - (vertex[2])->y) <
-          (v - (vertex[2])->y) * ((vertex[0])->x - (vertex[2])->x)) {
+      if ((u - (vertex3)->x) * ((vertex1)->y - (vertex3)->y) <
+          (v - (vertex3)->y) * ((vertex1)->x - (vertex3)->x)) {
         return 0;
       }
 
@@ -161,17 +161,28 @@ const int Triangle::intersect(const Ray &ray, Intercept intercepts[],
 
 // This is inefficient and really shouldn't be used
 const Vector3D TrianglePatch::normalAt(const Point3D &point) const {
-  P_FLT vertexWeight[3], scale;
+  P_FLT scale,
+        vertexWeight1,
+        vertexWeight2,
+        vertexWeight3;
   Vector3D result;
 
-  vertexWeight[0] = 1 / (*vertex[0] - point).length();
-  vertexWeight[1] = 1 / (*vertex[1] - point).length();
-  vertexWeight[2] = 1 / (*vertex[2] - point).length();
+  if (point == *vertex1) {
+    return *vertexNormal1;
+  } else if  (point == *vertex2) {
+    return *vertexNormal2;
+  } else if  (point == *vertex3) {
+    return *vertexNormal3;
+  }
+
+  vertexWeight1 = 1 / (*vertex1 - point).length();
+  vertexWeight2 = 1 / (*vertex2 - point).length();
+  vertexWeight3 = 1 / (*vertex3 - point).length();
 
 
-  result = *vertexNormal[0] * vertexWeight[0] +
-           *vertexNormal[1] * vertexWeight[1] +
-           *vertexNormal[2] * vertexWeight[2];
+  result = *vertexNormal1 * vertexWeight1 +
+           *vertexNormal2 * vertexWeight2 +
+           *vertexNormal3 * vertexWeight3;
   result.normalize();
   return result;
 }

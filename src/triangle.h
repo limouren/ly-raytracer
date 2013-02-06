@@ -17,19 +17,20 @@ BEGIN_RAYTRACER
 
 class Triangle: public Plane {
   public:
-    Point3D * vertex[3];
+    Point3D * vertex1,
+            * vertex2,
+            * vertex3;
 
     Triangle(Material * material, Point3D * pointA, Point3D * pointB,
              Point3D * pointC): Plane(material) {
-      vertex[0] = pointA;
-      vertex[1] = pointB;
-      vertex[2] = pointC;
+      vertex1 = pointA;
+      vertex2 = pointB;
+      vertex3 = pointC;
 
-      normal = crossProduct(*vertex[1] - *vertex[0],
-                            *vertex[2] - *vertex[0]);
+      normal = crossProduct(*vertex2 - *vertex1, *vertex3 - *vertex1);
       normal.normalize();
 
-      d = -dotProduct(*vertex[0], normal);
+      d = -dotProduct(*vertex1, normal);
     };
 
     virtual const int intersect(const Ray &ray, Intercept intercepts[],
@@ -39,23 +40,48 @@ class Triangle: public Plane {
 
 class TexturedTriangle: public Triangle {
   public:
-    Vector2D vertexTextureCoord[3];
+    Vector2D * vertexTextureCoord1,
+             * vertexTextureCoord2,
+             * vertexTextureCoord3;
 
-    const Vector2D getBarycentrCoord(const Point3D &point) const;
+    TexturedTriangle(Material * material,
+                     Point3D * pointA, Point3D * pointB, Point3D * pointC,
+                     Vector2D * textureCoordA, Vector2D * textureCoordB,
+                     Vector2D * textureCoordC):
+      Triangle(material, pointA, pointB, pointC) {
+      vertexTextureCoord1 = textureCoordA;
+      vertexTextureCoord2 = textureCoordB;
+      vertexTextureCoord3 = textureCoordC;
+    }
+
+    TexturedTriangle(Material * material, Texture * texture,
+                     Point3D * pointA, Point3D * pointB, Point3D * pointC,
+                     Vector2D * textureCoordA, Vector2D * textureCoordB,
+                     Vector2D * textureCoordC):
+      Triangle(material, pointA, pointB, pointC) {
+      texture = texture;
+      vertexTextureCoord1 = textureCoordA;
+      vertexTextureCoord2 = textureCoordB;
+      vertexTextureCoord3 = textureCoordC;
+    }
+
+    const Vector2D getBarycentricCoord(const Point3D &point) const;
 };
 
 
 class TrianglePatch: public Triangle {
   public:
-    Vector3D * vertexNormal[3];
+    Vector3D * vertexNormal1,
+             * vertexNormal2,
+             * vertexNormal3;
 
-    TrianglePatch(Material * material, Point3D * pointA, Point3D * pointB,
-                  Point3D * pointC, Vector3D * normalA, Vector3D * normalB,
-                  Vector3D * normalC):
+    TrianglePatch(Material * material,
+                  Point3D * pointA, Point3D * pointB, Point3D * pointC,
+                  Vector3D * normalA, Vector3D * normalB, Vector3D * normalC):
       Triangle(material, pointA, pointB, pointC) {
-      vertexNormal[0] = normalA;
-      vertexNormal[1] = normalB;
-      vertexNormal[2] = normalC;
+      vertexNormal1 = normalA;
+      vertexNormal2 = normalB;
+      vertexNormal3 = normalC;
     }
 
     const Vector3D normalAt(const Point3D &point) const;
@@ -65,7 +91,31 @@ class TrianglePatch: public Triangle {
 
 // TODO(kent): Is there a better name that isn't "TexturedTrianglePatch"?
 // TODO(kent): Do this without virtual inheritance and deadly diamond
-class PhongTriangle: public TexturedTriangle, public TrianglePatch {
+class PhongTriangle: public Triangle {
+  public:
+    Vector2D * vertexTextureCoord1,
+             * vertexTextureCoord2,
+             * vertexTextureCoord3;
+    Vector3D * vertexNormal1,
+             * vertexNormal2,
+             * vertexNormal3;
+
+    PhongTriangle(Material * material, Point3D * pointA, Point3D * pointB,
+                  Point3D * pointC, Vector3D * normalA, Vector3D * normalB,
+                  Vector3D * normalC, Vector2D * textureCoordA,
+                  Vector2D * textureCoordB, Vector2D * textureCoordC):
+      Triangle(material, pointA, pointB, pointC) {
+      vertexNormal1 = normalA;
+      vertexNormal2 = normalB;
+      vertexNormal3 = normalC;
+      vertexTextureCoord1 = textureCoordA;
+      vertexTextureCoord2 = textureCoordB;
+      vertexTextureCoord3 = textureCoordC;
+    }
+
+    const Vector2D getBarycentricCoord(const Point3D &point) const;
+    const Vector3D normalAt(const Point3D &point) const;
+    const Vector3D normalAt(const Vector2D &barycentricCoord) const;
 };
 
 

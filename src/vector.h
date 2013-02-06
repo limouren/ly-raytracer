@@ -44,6 +44,13 @@ class Vector2D {
 };
 
 
+inline const bool operator ==(const Vector2D &vectorA,
+                              const Vector2D &vectorB) {
+  return (vectorA.x == vectorB.x &&
+          vectorA.y == vectorB.y);
+}
+
+
 inline const Vector2D operator -(const Vector2D &vector) {
   return Vector2D(-vector.x, -vector.y);
 }
@@ -93,6 +100,14 @@ class Vector3D {
     }
     #endif
 };
+
+
+inline const bool operator ==(const Vector3D &vectorA,
+                              const Vector3D &vectorB) {
+  return (vectorA.x == vectorB.x &&
+          vectorA.y == vectorB.y &&
+          vectorA.z == vectorB.z);
+}
 
 
 inline const Vector3D operator -(const Vector3D &vector) {
