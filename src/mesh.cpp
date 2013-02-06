@@ -29,9 +29,9 @@ void TriangleMesh::buildBoundingVollume(const std::vector<Point3D> &points) {
 
 void TriangleMesh::constructTriangles(const std::vector<int *> &triangleDefs) {
   std::vector<MODEL_CLS *> triangleVector;
-  std::vector<MODEL_CLS *>::const_iterator itr;
+  std::vector<int *>::const_iterator itr;
   if (normalNum == 0 && textureCoordNum == 0) {
-    for (itr = triangleDefs.begin(); itr < triangleDefs.end(); itr++) {
+    for (itr = triangleDefs.begin(); itr != triangleDefs.end(); itr++) {
       Triangle * triangle = new Triangle(material,
                                          &points[*itr[0]],
                                          &points[*itr[1]],
@@ -39,7 +39,7 @@ void TriangleMesh::constructTriangles(const std::vector<int *> &triangleDefs) {
       triangleVector.push_back(triangle);
     }
   } else if (textureCoordNum == 0) {
-    for (itr = triangleDefs.begin(); itr < triangleDefs.end(); itr++) {
+    for (itr = triangleDefs.begin(); itr != triangleDefs.end(); itr++) {
       TrianglePatch * triangle = new TrianglePatch(material,
                                                    &points[*itr[0]],
                                                    &points[*itr[1]],
