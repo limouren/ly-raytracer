@@ -2,8 +2,6 @@
 #define PARSE_H
 
 
-#include <string>
-
 #include "config.h"
 
 
@@ -16,7 +14,7 @@ class Scene;
 class Screen;
 
 
-int parseFile(char * filename, Scene * scene, Camera * camera,
+int parseFile(const char * filename, Scene * scene, Camera * camera,
               Screen * screen, Material * currentMaterial);
 
 

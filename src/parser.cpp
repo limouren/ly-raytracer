@@ -1,8 +1,8 @@
 // TODO(kent): Finish up the stubs for animation
-#include <cstring>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <vector>
 
 #include "config.h"
@@ -34,6 +34,12 @@ BEGIN_RAYTRACER
 
 char directoryPath[1024];
 int globalDetailLevel = 0;
+
+
+const void fullFilePath(char * filepath, char * filename) {
+  strncpy(filepath, directoryPath, strlen(directoryPath) + 1);
+  strncat(filepath, filename, strlen(filename));
+}
 
 
 void parseComment(FILE *file) {
@@ -274,7 +280,7 @@ void parseInclude(FILE * file, Scene * scene,
                   Camera * camera, Screen * screen,
                   vector<MODEL_CLS *> * models, Material * currentMaterial) {
   char filename[80],
-       filePath[1024];
+       filepath[1024];
   FILE * includeFile;
   int detailLevel;
 
@@ -284,11 +290,10 @@ void parseInclude(FILE * file, Scene * scene,
   }
 
   if (detailLevel <= globalDetailLevel) {
-    strncpy(filePath, directoryPath, strlen(directoryPath) + 1);
-    strncat(filePath, filename, strlen(filename));
-
+    fullFilePath(filepath, filename);
     Scene subscene;
-    parseFile(filePath, &subscene, camera, screen, currentMaterial);
+    parseFile(filepath, &subscene, camera, screen,
+              currentMaterial);
 
     if (subscene.modelRoot != NULL) {
       models->push_back(subscene.modelRoot);
@@ -310,7 +315,8 @@ void parseDetailLevel(FILE * file) {
 void parseTexturedTriangle(FILE *file, Scene * scene,
                            vector<MODEL_CLS *> * models,
                            Material * currentMaterial) {
-  char textureName[100];
+  char * filepath,
+       textureName[100];
   int patch;
   // TODO(kent): Clean this up later and avoid memory leak
   Point3D vertex[3];
@@ -351,7 +357,9 @@ void parseTexturedTriangle(FILE *file, Scene * scene,
   }
 
   Texture * texture = new Texture();
-  scene->textures[textureName] = texture;
+  filepath = new char[1024];
+  fullFilePath(filepath, textureName);
+  scene->textures[filepath] = texture;
   // if (patch) {
   //   // Phong triangle?
   // } else {
@@ -710,7 +718,8 @@ void getTriangleDefs(FILE * file, bool hasNorms, bool hasTextures,
 
 void parseMesh(FILE * file, Scene * scene, vector<MODEL_CLS *> * models,
                Material * currentMaterial) {
-  char buffer[200],
+  char * filepath,
+       buffer[200],
        textureName[200] = "";
   int flag;
   vector<Point3D> vertex;
@@ -751,11 +760,14 @@ void parseMesh(FILE * file, Scene * scene, vector<MODEL_CLS *> * models,
   }
 
   if (strcmp(textureName, "")) {
-    map<string, Texture *>::iterator itr =
-      scene->textures.find(string(textureName));
+    filepath = new char[1024];
+    fullFilePath(filepath, textureName);
+
+    map<const char *, Texture *>::iterator itr =
+      scene->textures.find(filepath);
     if (itr == scene->textures.end()) {
       texture = new Texture();
-      scene->textures[textureName] = texture;
+      scene->textures[filepath] = texture;
     } else {
       texture = itr->second;
     }
@@ -766,7 +778,7 @@ void parseMesh(FILE * file, Scene * scene, vector<MODEL_CLS *> * models,
 }
 
 
-int parseFile(char * filename, Scene * scene, Camera * camera,
+int parseFile(const char * filename, Scene * scene, Camera * camera,
               Screen * screen, Material * previousMaterial) {
   FILE * file;
 
@@ -849,6 +861,7 @@ int parseFile(char * filename, Scene * scene, Camera * camera,
   }
 
   scene->modelRoot = buildModelTree(models);
+  scene->loadTextures();
   return 0;
 }
 

@@ -2,8 +2,6 @@
 #define SRC_TEXTURE_H_
 
 
-#include <string>
-
 #include "config.h"
 
 #include "color.h"
@@ -21,8 +19,8 @@ class Texture {
     RGBColor * pixels;
 
   public:
-    Texture * loadFromFile(const std::string filename);
-    Texture * loadFromPpm(const std::string filename);
+    void loadFromFile(const char * filename);
+    void loadFromPpm(const char * filename);
 
     inline const Color getColor(const Vector2D &textureCoord);
 };

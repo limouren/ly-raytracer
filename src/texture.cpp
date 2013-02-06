@@ -1,4 +1,4 @@
-#include <string>
+#include <string.h>
 
 #include "bart/src/texture.c"
 
@@ -12,18 +12,16 @@
 BEGIN_RAYTRACER
 
 
-Texture * Texture::loadFromFile(std::string filename) {
+void Texture::loadFromFile(const char * filename) {
   // TODO(kent): Handle other texture file types
   return loadFromPpm(filename);
 }
 
 
-Texture * Texture::loadFromPpm(std::string _filename) {
-  char filename[1024];
-  strncpy(filename,  _filename.c_str(), _filename.length());
-  ::Texture * bartTexture = ::viReadPPM(filename);
-
-  return NULL;
+void Texture::loadFromPpm(const char * filename) {
+  char _filename[1024];
+  strncpy(_filename, filename, strlen(filename));
+  ::Texture * bartTexture = ::viReadPPM(_filename);
 }
 
 
