@@ -35,18 +35,32 @@ class TriangleMesh: public Primitive {
                  Texture * texture,
                  std::vector<Vector2D> textureCoords,
                  std::vector<int *> triangleDefs):
-      points(_points), texture(texture) {
+      Primitive(), points(_points) {
       buildBoundingVollume(points);
 
-      // TODO(kent): Handle textured triangles
       std::vector<MODEL_CLS *> triangleVector;
-      for (int i = 0; i < triangleDefs.size(); i++) {
-        Triangle * triangle = new Triangle(material,
-                                           &points[triangleDefs[i][0]],
-                                           &points[triangleDefs[i][1]],
-                                           &points[triangleDefs[i][2]]);
-        triangleVector.push_back(triangle);
+      if (normals.empty() && textureCoords.empty()) {
+        for (int i = 0; i < triangleDefs.size(); i++) {
+          Triangle * triangle = new Triangle(material,
+                                             &points[triangleDefs[i][0]],
+                                             &points[triangleDefs[i][1]],
+                                             &points[triangleDefs[i][2]]);
+          triangleVector.push_back(triangle);
+        }
+      } else if (textureCoords.empty()) {
+        for (int i = 0; i < triangleDefs.size(); i++) {
+          TrianglePatch * triangle = new
+            TrianglePatch(material,
+                          &points[triangleDefs[i][0]],
+                          &points[triangleDefs[i][1]],
+                          &points[triangleDefs[i][2]],
+                          &normals[triangleDefs[i][3]],
+                          &normals[triangleDefs[i][4]],
+                          &normals[triangleDefs[i][5]]);
+          triangleVector.push_back(triangle);
+        }
       }
+
       triangles = buildModelTree(triangleVector);
     }
 

@@ -159,4 +159,22 @@ const int Triangle::intersect(const Ray &ray, Intercept intercepts[],
 }
 
 
+// This is inefficient and really shouldn't be used
+const Vector3D TrianglePatch::normalAt(const Point3D &point) const {
+  P_FLT vertexWeight[3], scale;
+  Vector3D result;
+
+  vertexWeight[0] = 1 / (*vertex[0] - point).length();
+  vertexWeight[1] = 1 / (*vertex[1] - point).length();
+  vertexWeight[2] = 1 / (*vertex[2] - point).length();
+
+
+  result = *vertexNormal[0] * vertexWeight[0] +
+           *vertexNormal[1] * vertexWeight[1] +
+           *vertexNormal[2] * vertexWeight[2];
+  result.normalize();
+  return result;
+}
+
+
 END_RAYTRACER

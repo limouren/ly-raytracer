@@ -9,6 +9,7 @@
 #include "point.h"
 #include "ray.h"
 #include "shapes.h"
+#include "vector.h"
 
 
 BEGIN_RAYTRACER
@@ -31,8 +32,40 @@ class Triangle: public Plane {
       d = -dotProduct(*vertex[0], normal);
     };
 
-    const int intersect(const Ray &ray, Intercept intercepts[],
-                        Material * entryMat) const;
+    virtual const int intersect(const Ray &ray, Intercept intercepts[],
+                                Material * entryMat) const;
+};
+
+
+class TexturedTriangle: public Triangle {
+  public:
+    Vector2D vertexTextureCoord[3];
+
+    const Vector2D getBarycentrCoord(const Point3D &point) const;
+};
+
+
+class TrianglePatch: public Triangle {
+  public:
+    Vector3D * vertexNormal[3];
+
+    TrianglePatch(Material * material, Point3D * pointA, Point3D * pointB,
+                  Point3D * pointC, Vector3D * normalA, Vector3D * normalB,
+                  Vector3D * normalC):
+      Triangle(material, pointA, pointB, pointC) {
+      vertexNormal[0] = normalA;
+      vertexNormal[1] = normalB;
+      vertexNormal[2] = normalC;
+    }
+
+    const Vector3D normalAt(const Point3D &point) const;
+    const Vector3D normalAt(const Vector2D &barycentricCoord) const;
+};
+
+
+// TODO(kent): Is there a better name that isn't "TexturedTrianglePatch"?
+// TODO(kent): Do this without virtual inheritance and deadly diamond
+class PhongTriangle: public TexturedTriangle, public TrianglePatch {
 };
 
 
