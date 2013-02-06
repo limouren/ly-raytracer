@@ -75,7 +75,6 @@ class PolygonPatch: public Polygon {
                  Vector3D * normals):
       Polygon(material, pointNum, points) {
       vertexNormal = new Vector3D[vertexNum];
-
       for (int i = 0; i < vertexNum; i++) {
         vertexNormal[i] = normals[i];
       }

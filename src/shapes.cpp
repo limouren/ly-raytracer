@@ -77,6 +77,25 @@ const int Polygon::intersect(const Ray &ray, Intercept intercepts[],
 }
 
 
+const Vector3D PolygonPatch::normalAt(const Point3D &point) const {
+  P_FLT * weights = new P_FLT[vertexNum];
+  Vector3D resultNorm(0.0, 0.0, 0.0);
+
+  for (int i = 0; i < vertexNum; i++) {
+    if (point == vertex[i]) {
+      return vertexNormal[i];
+    }
+  }
+  for (int i = 0; i < vertexNum; i++) {
+    weights[i] = 1 / (vertex[i] - point).length();
+    resultNorm += vertexNormal[i] * weights[i];
+  }
+
+  resultNorm.normalize();
+  return resultNorm;
+}
+
+
 const int Sphere::intersect(const Ray &ray, Intercept intercepts[],
                             Material * entryMat) const {
   bool insideOut = (radius < 0.0);

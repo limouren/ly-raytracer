@@ -256,8 +256,8 @@ void parsePoly(FILE * file, vector<MODEL_CLS *> * models,
       }
     }
 
-    // TODO(kent): Implement polygon patch
-    models->push_back(new Polygon(currentMaterial, vertexNum, vertex));
+    models->push_back(new PolygonPatch(currentMaterial, vertexNum, vertex,
+                                       normal));
   } else {
     for (int i = 0; i < vertexNum; i++) {
       if (fscanf(file, " %f %f %f",
