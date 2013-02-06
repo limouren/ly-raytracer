@@ -46,7 +46,7 @@ class Polygon: public Plane {
 
     Polygon(Material * material, int pointNum, Point3D * points):
       Plane(material), vertexNum(pointNum) {
-      vertex = new Point3D[pointNum];
+      vertex = new Point3D[vertexNum];
       for (int i = 0; i < vertexNum; i++) {
         vertex[i] = points[i];
       }
@@ -64,6 +64,28 @@ class Polygon: public Plane {
 
     const int intersect(const Ray &ray, Intercept intercepts[],
                         Material * entryMat) const;
+};
+
+
+class PolygonPatch: public Polygon {
+  public:
+    Vector3D * vertexNormal;
+
+    PolygonPatch(Material * material, int pointNum, Point3D * points,
+                 Vector3D * normals):
+      Polygon(material, pointNum, points) {
+      vertexNormal = new Vector3D[vertexNum];
+
+      for (int i = 0; i < vertexNum; i++) {
+        vertexNormal[i] = normals[i];
+      }
+    }
+
+    ~PolygonPatch() {
+      delete[] vertexNormal;
+    }
+
+    const Vector3D normalAt(const Point3D &point) const;
 };
 
 
