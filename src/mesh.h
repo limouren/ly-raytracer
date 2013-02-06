@@ -23,48 +23,49 @@ class Intercept;
 
 class TriangleMesh: public Primitive {
   private:
-    BoundingVolume * boundingVolume;
     MODEL_CLS * triangles;
-    std::vector<Point3D> points;
+    BoundingVolume * boundingVolume;
+    int pointNum, normalNum, textureCoordNum;
+    Point3D * points;
+    Vector3D * normals;
+    Vector2D * textureCoords;
 
   public:
     // This constructor designed according to BART specifications
     TriangleMesh(Material * material,
-                 std::vector<Point3D> _points,
-                 std::vector<Vector3D> normals,
                  Texture * texture,
-                 std::vector<Vector2D> textureCoords,
+                 std::vector<Point3D> _points,
+                 std::vector<Vector3D> _normals,
+                 std::vector<Vector2D> _textureCoords,
                  std::vector<int *> triangleDefs):
-      Primitive(), points(_points) {
-      buildBoundingVollume(points);
+      Primitive() {
+      texture = texture;
 
-      std::vector<MODEL_CLS *> triangleVector;
-      if (normals.empty() && textureCoords.empty()) {
-        for (int i = 0; i < triangleDefs.size(); i++) {
-          Triangle * triangle = new Triangle(material,
-                                             &points[triangleDefs[i][0]],
-                                             &points[triangleDefs[i][1]],
-                                             &points[triangleDefs[i][2]]);
-          triangleVector.push_back(triangle);
-        }
-      } else if (textureCoords.empty()) {
-        for (int i = 0; i < triangleDefs.size(); i++) {
-          TrianglePatch * triangle = new
-            TrianglePatch(material,
-                          &points[triangleDefs[i][0]],
-                          &points[triangleDefs[i][1]],
-                          &points[triangleDefs[i][2]],
-                          &normals[triangleDefs[i][3]],
-                          &normals[triangleDefs[i][4]],
-                          &normals[triangleDefs[i][5]]);
-          triangleVector.push_back(triangle);
-        }
+      pointNum = _points.size();
+      points = new Point3D[pointNum];
+      for (int i = 0; i < pointNum; i++) {
+        points[i] = _points[i];
       }
 
-      triangles = buildModelTree(triangleVector);
+      normalNum = _normals.size();
+      normals = new Vector3D[normalNum];
+      for (int i = 0; i < normalNum; i++) {
+        normals[i] = _normals[i];
+      }
+
+      textureCoordNum = _textureCoords.size();
+      textureCoords = new Vector2D[textureCoordNum];
+      for (int i = 0; i < textureCoordNum; i++) {
+        textureCoords[i] = _textureCoords[i];
+      }
+
+      buildBoundingVollume(_points);
+      constructTriangles(triangleDefs);
     }
 
-    void buildBoundingVollume(std::vector<Point3D> points);
+    void buildBoundingVollume(const std::vector<Point3D> &points);
+
+    void constructTriangles(const std::vector<int *> &triangleDefs);
 
     const int intersect(const Ray &ray, Intercept intercepts[],
                         Material * entryMat) const;

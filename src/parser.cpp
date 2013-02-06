@@ -308,56 +308,59 @@ void parseDetailLevel(FILE * file) {
 }
 
 
-// TODO(kent): Handle textured triangles
-void parseTexturedTriangle(FILE *file) {
-  int is_patch;
-  int q;
-  Vec3f verts[3];
-  Vec3f norms[3];
-  float tu[3], tv[3];
+void parseTexturedTriangle(FILE *file, Scene * scene,
+                            std::vector<MODEL_CLS *> &models,
+                           Material * currentMaterial) {
   char textureName[100];
+  int patch;
+  // TODO(kent): Clean this up later and avoid memory leak
+  Point3D * vertex = new Point3D[3];
+  Vector2D * textureCoord = new Vector2D[2];
+  Vector3D * normal = new Vector3D[3];
 
-  is_patch = getc(file);
-  if (is_patch != 'p') {
-     ungetc(is_patch, file);
-     is_patch = 0;
+  patch = getc(file);
+  if (patch != 'p') {
+     ungetc(patch, file);
+     patch = 0;
   }
 
-  int dummy = fscanf(file, "%s", textureName);
+  if (fscanf(file, "%s", textureName) != 1) {
+    printf("Error: could not parse texture name of textured triangle\n");
+    exit(1);
+  }
 
-  for (q = 0; q < 3; q++) {
+  for (int i = 0; i < 3; i++) {
     if (fscanf(file, " %f %f %f",
-        &verts[q][X], &verts[q][Y], &verts[q][Z]) != 3) {
-      goto parseErr;
+               &vertex[i].x, &vertex[i].y, &vertex[i].z) != 3) {
+      printf("Error: could not parse textured triangle\n");
+      exit(1);
     }
 
-    if (is_patch) {
+    if (patch) {
       if (fscanf(file, " %f %f %f",
-                 &norms[q][X], &norms[q][Y], &norms[q][Z]) != 3) {
-        goto parseErr;
+                 &normal[i].x, &normal[i].y, &normal[i].z) != 3) {
+        printf("Error: could not parse textured triangle\n");
+        exit(1);
       }
     }
 
-    if (fscanf(file, " %f %f ", &tu[q], &tv[q]) != 2) {
-      goto parseErr;
+    if (fscanf(file, " %f %f ",
+               &textureCoord[i].x, &textureCoord[i].y) != 2) {
+      printf("Error: could not parse textured triangle\n");
+      exit(1);
     }
   }
 
-
-  if (is_patch) {
-     /* add a textured triangle patch here
-      * e.g., viAddTexturedTriPatch(textureName, verts, norms, tu, tv);
-      */
+  Texture * texture = new Texture();
+  scene->textures[textureName] = texture;
+  if (patch) {
+    // Phong triangle?
   } else {
-     /* add a textured triangle here
-      * e.g.,  viAddTexturedTriangle(textureName, verts, tu, tv);
-      */
+    models.push_back(new TexturedTriangle(
+      currentMaterial, texture,
+      &vertex[0], &vertex[1], &vertex[2],
+      &textureCoord[0], &textureCoord[1], &textureCoord[2]));
   }
-  return;
-
-  parseErr:
-    printf("Error: could not parse textured triangle\n");
-    exit(1);
 }
 
 
@@ -407,7 +410,7 @@ void parseTextureStuff(FILE *file) {
 
   is_triangle = getc(file);
   if (is_triangle =='t') {
-    parseTexturedTriangle(file);
+    // parseTexturedTriangle(file);
   } else if (is_triangle == 'p') {
     is_triangle = getc(file);
     if (is_triangle == 'a') {
@@ -756,15 +759,13 @@ void parseMesh(FILE * file, Scene * scene, vector<MODEL_CLS *> * models,
       scene->textures.find(string(textureName));
     if (itr == scene->textures.end()) {
       texture = new Texture();
-      printf("%s\n", textureName);
-      texture->loadFromFile(textureName);
       scene->textures[textureName] = texture;
     } else {
       texture = itr->second;
     }
   }
 
-  models->push_back(new TriangleMesh(currentMaterial, vertex, normal, texture,
+  models->push_back(new TriangleMesh(currentMaterial, texture, vertex, normal,
                                      textureCoords, triangleDefs));
 }
 
