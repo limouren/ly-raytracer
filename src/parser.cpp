@@ -190,10 +190,9 @@ void parseCone(FILE * file, vector<MODEL_CLS *> * models,
                Material * currentMaterial) {
   Point3D apex, base;
   P_FLT radiusApex, radiusBase;
-
   if (fscanf(file, " %f %f %f %f %f %f %f %f",
-            &base.x, &base.y, &base.z, &radiusBase,
-            &apex.x, &apex.y, &apex.z, &radiusApex) !=8) {
+             &base.x, &base.y, &base.z, &radiusBase,
+             &apex.x, &apex.y, &apex.z, &radiusApex) !=8) {
     printf("cylinder or cone syntax error\n");
     exit(1);
   }
@@ -309,14 +308,14 @@ void parseDetailLevel(FILE * file) {
 
 
 void parseTexturedTriangle(FILE *file, Scene * scene,
-                            std::vector<MODEL_CLS *> &models,
+                           vector<MODEL_CLS *> * models,
                            Material * currentMaterial) {
   char textureName[100];
   int patch;
   // TODO(kent): Clean this up later and avoid memory leak
-  Point3D * vertex = new Point3D[3];
-  Vector2D * textureCoord = new Vector2D[2];
-  Vector3D * normal = new Vector3D[3];
+  Point3D vertex[3];
+  Vector2D textureCoord[2];
+  Vector3D normal[3];
 
   patch = getc(file);
   if (patch != 'p') {
@@ -353,14 +352,14 @@ void parseTexturedTriangle(FILE *file, Scene * scene,
 
   Texture * texture = new Texture();
   scene->textures[textureName] = texture;
-  if (patch) {
-    // Phong triangle?
-  } else {
-    models.push_back(new TexturedTriangle(
-      currentMaterial, texture,
-      &vertex[0], &vertex[1], &vertex[2],
-      &textureCoord[0], &textureCoord[1], &textureCoord[2]));
-  }
+  // if (patch) {
+  //   // Phong triangle?
+  // } else {
+  //   models->push_back(new TexturedTriangle(
+  //     currentMaterial, texture,
+  //     &vertex[0], &vertex[1], &vertex[2],
+  //     &textureCoord[0], &textureCoord[1], &textureCoord[2]));
+  // }
 }
 
 
@@ -405,20 +404,21 @@ void parseAnimatedTriangle(FILE *file) {
 }
 
 
-void parseTextureStuff(FILE *file) {
-  int is_triangle;
+void parseTextureStuff(FILE * file, Scene * scene,
+                       vector<MODEL_CLS *> * models,
+                       Material * currentMaterial) {
+  char inputChar;
 
-  is_triangle = getc(file);
-  if (is_triangle =='t') {
-    // parseTexturedTriangle(file);
-  } else if (is_triangle == 'p') {
-    is_triangle = getc(file);
-    if (is_triangle == 'a') {
+  inputChar = getc(file);
+  if (inputChar =='t') {
+    parseTexturedTriangle(file, scene, models, currentMaterial);
+  } else if (inputChar == 'p') {
+    inputChar = getc(file);
+    if (inputChar == 'a') {
       parseAnimatedTriangle(file);
     }
   } else {
-    printf("Error: tt and ttp are valid codes (not t%c).\n",
-           static_cast<char>(is_triangle));
+    printf("Error: tt and ttp are valid codes (not t%c).\n", inputChar);
     exit(1);
   }
 }
@@ -593,7 +593,7 @@ void parseA(FILE * file, Scene * scene) {
 
 void getPoints(FILE * file, const char * type, vector<Point3D> * points) {
   int pointNum;
-  P_FLT x, y, z;
+  Point3D point;
 
   if (fscanf(file, "%d", &pointNum) != 1) {
     printf("Error: could not parse mesh (expected '%sNum').\n", type);
@@ -601,19 +601,19 @@ void getPoints(FILE * file, const char * type, vector<Point3D> * points) {
   }
 
   for (int i = 0; i < pointNum; i++) {
-    if (fscanf(file, "%f %f %f ", &x, &y, &z) != 3) {
+    if (fscanf(file, "%f %f %f ", &point.x, &point.y, &point.z) != 3) {
       printf("Error: could not read %d %ss of mesh.\n", pointNum, type);
       exit(1);
     }
 
-    points->push_back(Point3D(x, y, z));
+    points->push_back(point);
   }
 }
 
 
 void getVectors(FILE * file, const char * type, vector<Vector3D> * vectors) {
   int vectorNum;
-  P_FLT x, y, z;
+  Vector3D vector;
 
   if (fscanf(file, "%d", &vectorNum) != 1) {
     printf("Error: could not parse mesh (expected '%sNum').\n", type);
@@ -621,12 +621,12 @@ void getVectors(FILE * file, const char * type, vector<Vector3D> * vectors) {
   }
 
   for (int i = 0; i < vectorNum; i++) {
-    if (fscanf(file, "%f %f %f ", &x, &y, &z) != 3) {
+    if (fscanf(file, "%f %f %f ", &vector.x, &vector.y, &vector.z) != 3) {
       printf("Error: could not read %d %ss of mesh.\n", vectorNum, type);
       exit(1);
     }
 
-    vectors->push_back(Vector3D(x, y, z));
+    vectors->push_back(vector);
   }
 }
 
@@ -658,11 +658,7 @@ void getTextureCoordinates(FILE * file, const char * type, char * textureName,
 
 void getTriangleDefs(FILE * file, bool hasNorms, bool hasTextures,
                      vector<int *> * triangleDefs) {
-  int definitionSize, index,
-      normal1, normal2, normal3,
-      texture1, texture2, texture3,
-      vertex1, vertex2, vertex3,
-      triangleNum;
+  int definitionSize, index, triangleNum;
 
   if (fscanf(file, "%d", &triangleNum) != 1) {
     printf("Error: could not parse mesh (expected 'triangleNum').\n");
@@ -747,7 +743,7 @@ void parseMesh(FILE * file, Scene * scene, vector<MODEL_CLS *> * models,
   }
 
   if (!strcmp(buffer, "triangles")) {
-    getTriangleDefs(file, !normal.empty(), !textureCoords.empty(),
+    getTriangleDefs(file, normal.size() > 0, textureCoords.size() > 0,
                     &triangleDefs);
   } else {
     printf("Error: expected 'triangles' in mesh.\n");
@@ -755,7 +751,7 @@ void parseMesh(FILE * file, Scene * scene, vector<MODEL_CLS *> * models,
   }
 
   if (strcmp(textureName, "")) {
-    std::map<std::string, Texture *>::iterator itr =
+    map<string, Texture *>::iterator itr =
       scene->textures.find(string(textureName));
     if (itr == scene->textures.end()) {
       texture = new Texture();
@@ -827,7 +823,7 @@ int parseFile(char * filename, Scene * scene, Camera * camera,
         parseDetailLevel(file);
         break;
       case 't':
-        parseTextureStuff(file);
+        parseTextureStuff(file, scene, &models, currentMaterial);
         break;
       case 'x':
         parseXform(file);

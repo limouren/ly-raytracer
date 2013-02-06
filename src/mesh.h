@@ -38,7 +38,7 @@ class TriangleMesh: public Primitive {
                  std::vector<Vector3D> _normals,
                  std::vector<Vector2D> _textureCoords,
                  std::vector<int *> triangleDefs):
-      Primitive() {
+      Primitive(material) {
       texture = texture;
 
       pointNum = _points.size();
@@ -80,6 +80,9 @@ class TriangleMesh: public Primitive {
     ~TriangleMesh() {
       delete boundingVolume;
       delete triangles;
+      delete [] normals;
+      delete [] points;
+      delete [] textureCoords;
     }
 };
 
