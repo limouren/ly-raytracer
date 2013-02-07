@@ -43,7 +43,7 @@ class PixelTasks {
       tasks = new PixelTask[totalTasks];
       taskIndex = 0;
 
-      tasksMutex = PTHREAD_MUTEX_INITIALIZER;
+      pthread_mutex_init(&tasksMutex, NULL);
     }
 
     ~PixelTasks() {
