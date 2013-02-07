@@ -84,15 +84,8 @@ void Screen::saveBmp(char * outputFilename) const {
   bitmap_image bmpImage(imageWidth, imageHeight);
   bmpImage.import_rgb(redChannel, greenChannel, blueChannel);
 
-  char outputPathname[1024];
-  int size = snprintf(outputPathname, sizeof(outputPathname), "out/%s",
-                      outputFilename);
-  if (size > 1024) {
-    printf("Output filename too long!\n");
-    exit(1);
-  }
 
-  bmpImage.save_image(outputPathname);
+  bmpImage.save_image(outputFilename);
 
   delete [] redChannel;
   delete [] greenChannel;
