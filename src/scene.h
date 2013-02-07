@@ -56,7 +56,6 @@ class Scene {
     void loadTextures() {
       for (std::map<const char *, Texture *>::iterator itr = textures.begin();
            itr != textures.end(); itr++) {
-        printf("%s right now\n", itr->first);
         itr->second->loadFromFile(itr->first);
       }
     }

@@ -24,15 +24,10 @@ int intersect(const Ray &ray, MODEL_CLS * model, Intercept intercepts[],
               interceptsRight[MAX_INTERSECTIONS];
 
     hitsLeft = intersect(ray, composite->left, interceptsLeft, entryMat);
-    if (hitsLeft == 0 && composite->op != '|') {
-      return 0;
-    } else {
-      hitsRight = intersect(ray, composite->right, interceptsRight, entryMat);
+    hitsRight = intersect(ray, composite->right, interceptsRight, entryMat);
 
-      int hits = intersectMerge(composite->op, hitsLeft, interceptsLeft,
-                                hitsRight, interceptsRight, intercepts);
-      return hits;
-    }
+    return intersectMerge(composite->op, hitsLeft, interceptsLeft,
+                              hitsRight, interceptsRight, intercepts);
   } else {
     Primitive * prim = static_cast<Primitive *>(model);
 

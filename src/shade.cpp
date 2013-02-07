@@ -1,7 +1,3 @@
-#ifndef SHADE_H
-#define SHADE_H
-
-
 #include <math.h>
 
 #include "config.h"
@@ -147,6 +143,3 @@ void shadeBackground(const Ray &ray, Color * color) {
 
 
 END_RAYTRACER
-
-
-#endif
