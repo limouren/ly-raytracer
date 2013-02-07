@@ -114,8 +114,8 @@ class PhongTriangle: public Triangle {
     }
 
     const Vector2D getBarycentricCoord(const Point3D &point) const;
-    const Vector3D normalAt(const Point3D &point) const;
-    const Vector3D normalAt(const Vector2D &barycentricCoord) const;
+    // const Vector3D normalAt(const Point3D &point) const;
+    // const Vector3D normalAt(const Vector2D &barycentricCoord) const;
 };
 
 

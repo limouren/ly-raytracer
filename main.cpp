@@ -33,6 +33,7 @@ int main(char * inputFilename, char * outputFilename) {
   fflush(stdout);
   parseFile(inputFilename, &scene, &camera, &screen, NULL);
   printf("completed.\n");
+  scene.loadTextures();
 
   printf("Tracing...");
   fflush(stdout);

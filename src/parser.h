@@ -15,7 +15,7 @@ class Screen;
 
 
 int parseFile(const char * filename, Scene * scene, Camera * camera,
-              Screen * screen, Material * currentMaterial);
+              Screen * screen, Material ** currentMaterial);
 
 
 END_RAYTRACER

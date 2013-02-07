@@ -278,7 +278,7 @@ void parsePoly(FILE * file, vector<MODEL_CLS *> * models,
 
 void parseInclude(FILE * file, Scene * scene,
                   Camera * camera, Screen * screen,
-                  vector<MODEL_CLS *> * models, Material * currentMaterial) {
+                  vector<MODEL_CLS *> * models, Material ** currentMaterial) {
   char filename[80],
        filepath[1024];
   FILE * includeFile;
@@ -779,7 +779,7 @@ void parseMesh(FILE * file, Scene * scene, vector<MODEL_CLS *> * models,
 
 
 int parseFile(const char * filename, Scene * scene, Camera * camera,
-              Screen * screen, Material * previousMaterial) {
+              Screen * screen, Material ** previousMaterial) {
   FILE * file;
 
   if (!(file = fopen(filename, "r"))) {
@@ -791,7 +791,7 @@ int parseFile(const char * filename, Scene * scene, Camera * camera,
 
 
   vector<MODEL_CLS *> models;
-  Material * currentMaterial = previousMaterial;
+  Material * currentMaterial = previousMaterial? *previousMaterial: NULL;
 
   char last;
   int ch;
@@ -829,7 +829,7 @@ int parseFile(const char * filename, Scene * scene, Camera * camera,
         parsePoly(file, &models, currentMaterial);
         break;
       case 'i':
-        parseInclude(file, scene, camera, screen, &models, currentMaterial);
+        parseInclude(file, scene, camera, screen, &models, &currentMaterial);
         break;
       case 'd':
         parseDetailLevel(file);
@@ -861,7 +861,9 @@ int parseFile(const char * filename, Scene * scene, Camera * camera,
   }
 
   scene->modelRoot = buildModelTree(models);
-  scene->loadTextures();
+  if (previousMaterial) {
+    *previousMaterial = currentMaterial;
+  }
   return 0;
 }
 

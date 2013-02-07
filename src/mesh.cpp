@@ -32,22 +32,47 @@ void TriangleMesh::constructTriangles(const std::vector<int *> &triangleDefs) {
   std::vector<int *>::const_iterator itr;
   if (normalNum == 0 && textureCoordNum == 0) {
     for (itr = triangleDefs.begin(); itr != triangleDefs.end(); itr++) {
-      Triangle * triangle = new Triangle(material,
-                                         &points[(*itr)[0]],
-                                         &points[(*itr)[1]],
-                                         &points[(*itr)[2]]);
-      triangleVector.push_back(triangle);
+      triangleVector.push_back(
+        new Triangle(material,
+                     &points[(*itr)[0]],
+                     &points[(*itr)[1]],
+                     &points[(*itr)[2]]));
     }
   } else if (textureCoordNum == 0) {
     for (itr = triangleDefs.begin(); itr != triangleDefs.end(); itr++) {
-      TrianglePatch * triangle = new TrianglePatch(material,
-                                                   &points[(*itr)[0]],
-                                                   &points[(*itr)[1]],
-                                                   &points[(*itr)[2]],
-                                                   &normals[(*itr)[3]],
-                                                   &normals[(*itr)[4]],
-                                                   &normals[(*itr)[5]]);
-      triangleVector.push_back(triangle);
+      triangleVector.push_back(
+        new TrianglePatch(material,
+                          &points[(*itr)[0]],
+                          &points[(*itr)[1]],
+                          &points[(*itr)[2]],
+                          &normals[(*itr)[3]],
+                          &normals[(*itr)[4]],
+                          &normals[(*itr)[5]]));
+    }
+  } else if (normalNum == 0) {
+    for (itr = triangleDefs.begin(); itr != triangleDefs.end(); itr++) {
+      triangleVector.push_back(
+        new TexturedTriangle(material,
+                             &points[(*itr)[0]],
+                             &points[(*itr)[1]],
+                             &points[(*itr)[2]],
+                             &textureCoords[(*itr)[3]],
+                             &textureCoords[(*itr)[4]],
+                             &textureCoords[(*itr)[5]]));
+    }
+  } else {
+    for (itr = triangleDefs.begin(); itr != triangleDefs.end(); itr++) {
+      triangleVector.push_back(
+        new PhongTriangle(material,
+                          &points[(*itr)[0]],
+                          &points[(*itr)[1]],
+                          &points[(*itr)[2]],
+                          &normals[(*itr)[3]],
+                          &normals[(*itr)[4]],
+                          &normals[(*itr)[5]],
+                          &textureCoords[(*itr)[6]],
+                          &textureCoords[(*itr)[7]],
+                          &textureCoords[(*itr)[8]]));
     }
   }
 
