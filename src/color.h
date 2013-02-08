@@ -58,7 +58,15 @@ class Color {
 
 class RGBColor {
   public:
-    int r, g, b;
+    unsigned int r, g, b;
+
+    RGBColor() {}
+
+    explicit RGBColor(unsigned char * mRGB) {
+      r = static_cast<unsigned int>(*mRGB);
+      g = static_cast<unsigned int>(*(mRGB + 1));
+      b = static_cast<unsigned int>(*(mRGB + 2));
+    }
 
     inline const Color toColor() const;
 };

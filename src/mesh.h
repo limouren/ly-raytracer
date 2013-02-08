@@ -38,9 +38,7 @@ class TriangleMesh: public Primitive {
                  std::vector<Vector3D> _normals,
                  std::vector<Vector2D> _textureCoords,
                  std::vector<int *> triangleDefs):
-      Primitive(material) {
-      texture = texture;
-
+      Primitive(material, texture) {
       pointNum = _points.size();
       points = new Point3D[pointNum];
       for (int i = 0; i < pointNum; i++) {

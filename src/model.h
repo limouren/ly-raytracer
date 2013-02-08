@@ -47,6 +47,8 @@ class Primitive: public MODEL_CLS {
     Primitive(): MODEL_CLS(0) {}
     explicit Primitive(Material * material):
       material(material), MODEL_CLS(0) {}
+    Primitive(Material * material, Texture * texture):
+      material(material), texture(texture), MODEL_CLS(0) {}
 
     virtual const int intersect(const Ray &ray, Intercept intercepts[],
                                 Material * entryMat) const {

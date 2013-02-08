@@ -23,6 +23,10 @@ class Texture {
     void loadFromPpm(const char * filename);
 
     inline const Color getColor(const Vector2D &textureCoord);
+
+    ~Texture() {
+      delete [] pixels;
+    }
 };
 
 
