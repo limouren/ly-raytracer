@@ -43,7 +43,7 @@ void Texture::loadFromPpm(const char * filename) {
 }
 
 
-const Color Texture::getColor(const Vector2D &textureCoord) {
+const Color Texture::colorAt(const Vector2D &textureCoord) {
   int x, y;
   P_FLT xInteger, xFraction, yInteger, yFraction;
 

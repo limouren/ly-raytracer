@@ -19,10 +19,12 @@ class Texture {
     RGBColor * pixels;
 
   public:
+    Texture() {}
+
     void loadFromFile(const char * filename);
     void loadFromPpm(const char * filename);
 
-    inline const Color getColor(const Vector2D &textureCoord);
+    inline const Color colorAt(const Vector2D &textureCoord);
 
     ~Texture() {
       delete [] pixels;
