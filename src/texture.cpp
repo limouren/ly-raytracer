@@ -25,7 +25,7 @@ void Texture::loadFromPpm(const char * filename) {
   unsigned char * mRGBPtr;
   int pixelCount;
 
-  strncpy(_filename, filename, strlen(filename));
+  strncpy(_filename, filename, strlen(filename) + 1);
   ::Texture * bartTexture = ::viReadPPM(_filename);
 
   height = bartTexture->mHeight;
