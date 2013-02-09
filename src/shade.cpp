@@ -58,8 +58,7 @@ bool transmissionDirection(Material * entryMat, Material * hitMat,
 
 
 void shade(int level, C_FLT weight, const Point3D &interceptPoint,
-           const Vector3D &normal, const Vector3D &incident,
-           Intercept * intercepts, Color * color) {
+           const Vector3D &incident, Intercept * intercepts, Color * color) {
   Material * entryMat = intercepts[0].material,
            * hitMat = intercepts[0].enter?
                       intercepts[0].primitive->material: scene.medium;
@@ -67,7 +66,12 @@ void shade(int level, C_FLT weight, const Point3D &interceptPoint,
   C_FLT specWeight = hitMat->specular.magnitude() * weight,
         transWeight = hitMat->transmission.magnitude() * weight;
 
-  Vector3D specDir, transDir;
+  Vector3D specDir, transDir, normal;
+
+  normal = intercepts[0].primitive->normalAt(interceptPoint);
+  if (dotProduct(incident, normal) > 0.0) {
+    normal.negate();
+  }
   specularDirection(incident, normal, specDir);
   bool transmission = transmissionDirection(entryMat, hitMat, incident, normal,
                                             transDir);
