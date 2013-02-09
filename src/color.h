@@ -60,9 +60,9 @@ class RGBColor {
   public:
     int r, g, b;
 
-    RGBColor() {}
+    inline RGBColor() {}
 
-    explicit RGBColor(unsigned char * mRGB) {
+    inline explicit RGBColor(unsigned char * mRGB) {
       r = static_cast<int>(*mRGB);
       g = static_cast<int>(*(mRGB + 1));
       b = static_cast<int>(*(mRGB + 2));

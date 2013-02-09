@@ -6,7 +6,7 @@
 BEGIN_RAYTRACER
 
 
-Point2D& Point2D::operator =(const Point2D &point) {
+inline Point2D& Point2D::operator =(const Point2D &point) {
   if (this == &point) {
     return *this;
   }
@@ -18,12 +18,12 @@ Point2D& Point2D::operator =(const Point2D &point) {
 }
 
 
-const Vector2D Point2D::operator -(const Point2D &point) const {
+inline const Vector2D Point2D::operator -(const Point2D &point) const {
   return Vector2D(x - point.x, y - point.y);
 }
 
 
-const Point2D Point2D::operator +(const Vector2D &vector) const {
+inline const Point2D Point2D::operator +(const Vector2D &vector) const {
   Point2D result = *this;
   result += vector;
 
@@ -31,7 +31,7 @@ const Point2D Point2D::operator +(const Vector2D &vector) const {
 }
 
 
-const Point2D Point2D::operator -(const Vector2D &vector) const {
+inline const Point2D Point2D::operator -(const Vector2D &vector) const {
   Point2D result = *this;
   result -= vector;
 
@@ -39,7 +39,7 @@ const Point2D Point2D::operator -(const Vector2D &vector) const {
 }
 
 
-Point2D& Point2D::operator +=(const Vector2D &vector) {
+inline Point2D& Point2D::operator +=(const Vector2D &vector) {
   x += vector.x;
   y += vector.y;
 
@@ -47,7 +47,7 @@ Point2D& Point2D::operator +=(const Vector2D &vector) {
 }
 
 
-Point2D& Point2D::operator -=(const Vector2D &vector) {
+inline Point2D& Point2D::operator -=(const Vector2D &vector) {
   x -= vector.x;
   y -= vector.y;
 
@@ -57,7 +57,7 @@ Point2D& Point2D::operator -=(const Vector2D &vector) {
 
 
 
-Point3D& Point3D::operator =(const Point3D &point) {
+inline Point3D& Point3D::operator =(const Point3D &point) {
   if (this == &point) {
     return *this;
   }
@@ -70,12 +70,12 @@ Point3D& Point3D::operator =(const Point3D &point) {
 }
 
 
-const Vector3D Point3D::operator -(const Point3D &point) const {
+inline const Vector3D Point3D::operator -(const Point3D &point) const {
   return Vector3D(x - point.x, y - point.y, z - point.z);
 }
 
 
-const Point3D Point3D::operator +(const Vector3D &vector) const {
+inline const Point3D Point3D::operator +(const Vector3D &vector) const {
   Point3D result = *this;
   result += vector;
 
@@ -83,7 +83,7 @@ const Point3D Point3D::operator +(const Vector3D &vector) const {
 }
 
 
-const Point3D Point3D::operator -(const Vector3D &vector) const {
+inline const Point3D Point3D::operator -(const Vector3D &vector) const {
   Point3D result = *this;
   result -= vector;
 
@@ -91,7 +91,7 @@ const Point3D Point3D::operator -(const Vector3D &vector) const {
 }
 
 
-Point3D& Point3D::operator +=(const Vector3D &vector) {
+inline Point3D& Point3D::operator +=(const Vector3D &vector) {
   x += vector.x;
   y += vector.y;
   z += vector.z;
@@ -100,7 +100,7 @@ Point3D& Point3D::operator +=(const Vector3D &vector) {
 }
 
 
-Point3D& Point3D::operator -=(const Vector3D &vector) {
+inline Point3D& Point3D::operator -=(const Vector3D &vector) {
   x -= vector.x;
   y -= vector.y;
   z -= vector.z;
