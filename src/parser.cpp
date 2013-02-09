@@ -319,9 +319,10 @@ void parseTexturedTriangle(FILE *file, Scene * scene,
        textureName[100];
   int patch;
   // TODO(kent): Clean this up later and avoid memory leak
-  Point3D vertex[3];
-  Vector2D textureCoord[2];
-  Vector3D normal[3];
+  P_FLT x, y, z;
+  Point3D * vertex[3];
+  Vector2D * textureCoord[3];
+  Vector3D * normal[3];
 
   patch = getc(file);
   if (patch != 'p') {
@@ -335,39 +336,43 @@ void parseTexturedTriangle(FILE *file, Scene * scene,
   }
 
   for (int i = 0; i < 3; i++) {
-    if (fscanf(file, " %f %f %f",
-               &vertex[i].x, &vertex[i].y, &vertex[i].z) != 3) {
+    if (fscanf(file, " %f %f %f", &x, &y, &z) != 3) {
       printf("Error: could not parse textured triangle\n");
       exit(1);
     }
+    vertex[i] = new Point3D(x, y, z);
 
     if (patch) {
-      if (fscanf(file, " %f %f %f",
-                 &normal[i].x, &normal[i].y, &normal[i].z) != 3) {
+      if (fscanf(file, " %f %f %f", &x, &y, &z) != 3) {
         printf("Error: could not parse textured triangle\n");
         exit(1);
       }
+      normal[i] = new Vector3D(x, y, z);
     }
 
-    if (fscanf(file, " %f %f ",
-               &textureCoord[i].x, &textureCoord[i].y) != 2) {
+    if (fscanf(file, " %f %f ", &x, &y) != 2) {
       printf("Error: could not parse textured triangle\n");
       exit(1);
     }
+    textureCoord[i] = new Vector2D(x, y);
   }
 
   Texture * texture = new Texture();
   filepath = new char[1024];
   fullFilePath(filepath, textureName);
   scene->textures[filepath] = texture;
-  // if (patch) {
-  //   // Phong triangle?
-  // } else {
-  //   models->push_back(new TexturedTriangle(
-  //     currentMaterial, texture,
-  //     &vertex[0], &vertex[1], &vertex[2],
-  //     &textureCoord[0], &textureCoord[1], &textureCoord[2]));
-  // }
+  if (patch) {
+    models->push_back(new PhongTriangle(
+      currentMaterial, texture,
+      vertex[0], vertex[1], vertex[2],
+      normal[0], normal[1], normal[2],
+      textureCoord[0], textureCoord[1], textureCoord[2]));
+  } else {
+    models->push_back(new TexturedTriangle(
+      currentMaterial, texture,
+      vertex[0], vertex[1], vertex[2],
+      textureCoord[0], textureCoord[1], textureCoord[2]));
+  }
 }
 
 
