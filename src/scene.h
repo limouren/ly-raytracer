@@ -49,7 +49,6 @@ class Scene {
            itr != textures.end(); itr++) {
         (*itr)->loadFromFile();
       }
-      printf("%d textures loaded\n", textures.size());
     }
 
     // TODO(kent): Fix this eventually

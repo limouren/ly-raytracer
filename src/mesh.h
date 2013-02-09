@@ -57,13 +57,13 @@ class TriangleMesh: public Primitive {
         textureCoords[i] = _textureCoords[i];
       }
 
-      buildBoundingVollume(_points);
+      buildBoundingVolume();
       constructTriangles(triangleDefs);
     }
 
-    void buildBoundingVollume(const std::vector<Point3D> &points);
+    inline void buildBoundingVolume();
 
-    void constructTriangles(const std::vector<int *> &triangleDefs);
+    inline void constructTriangles(const std::vector<int *> &triangleDefs);
 
     const int intersect(const Ray &ray, Intercept intercepts[],
                         Material * entryMat) const;

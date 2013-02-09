@@ -13,21 +13,19 @@ class Material;
 class Point3D;
 
 
-void TriangleMesh::buildBoundingVollume(const std::vector<Point3D> &points) {
-  std::vector<Point3D>::const_iterator itr = points.begin();
-
-  Point3D maxExt = *itr,
-          minExt = *itr;
-  while (itr < points.end()) {
-    maxExt = max(maxExt, *itr);
-    minExt = min(minExt, *itr);
-    itr++;
+inline void TriangleMesh::buildBoundingVolume() {
+  Point3D maxExt = points[0],
+          minExt = points[0];
+  for (int i = 1; i < pointNum; i++) {
+    maxExt = max(maxExt, points[i]);
+    minExt = min(minExt, points[i]);
   }
 
   boundingVolume = new Box(minExt, maxExt);
 }
 
-void TriangleMesh::constructTriangles(const std::vector<int *> &triangleDefs) {
+inline void TriangleMesh::constructTriangles(
+  const std::vector<int *> &triangleDefs) {
   std::vector<MODEL_CLS *> triangleVector;
   std::vector<int *>::const_iterator itr;
   if (normalNum == 0 && textureCoordNum == 0) {

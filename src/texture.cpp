@@ -17,7 +17,6 @@ BEGIN_RAYTRACER
 void Texture::loadFromFile() {
   // TODO(kent): Handle other texture file types
   loadFromPpm();
-  printf("Loaded %s\n", filepath);
 }
 
 

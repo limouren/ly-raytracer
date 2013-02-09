@@ -41,15 +41,17 @@ class Composite: public MODEL_CLS {
 
 class Primitive: public MODEL_CLS {
   public:
+    BoundingVolume * boundingVolume;
     Material * material;
     Texture * texture;
 
     Primitive():
-      material(NULL), texture(NULL), MODEL_CLS(0) {}
+      boundingVolume(NULL), material(NULL), texture(NULL), MODEL_CLS(0) {}
     explicit Primitive(Material * material):
-      material(material), texture(NULL), MODEL_CLS(0) {}
+      boundingVolume(NULL), material(material), texture(NULL), MODEL_CLS(0) {}
     Primitive(Material * material, Texture * texture):
-      material(material), texture(texture), MODEL_CLS(0) {}
+      boundingVolume(NULL), material(material), texture(texture),
+      MODEL_CLS(0) {}
 
     virtual const Color getTextureColor(const std::vector<P_FLT> mapping)
       const {

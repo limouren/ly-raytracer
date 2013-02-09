@@ -58,12 +58,15 @@ class Polygon: public Plane {
       normal.normalize();
 
       d = -dotProduct(vertex[0], normal);
+
+      buildBoundingVolume();
     };
 
     ~Polygon() {
       delete [] vertex;
     }
 
+    inline void buildBoundingVolume();
     const int intersect(const Ray &ray, Intercept intercepts[],
                         Material * entryMat) const;
 };
@@ -97,8 +100,11 @@ class Sphere: public Primitive {
     Point3D center;
 
     Sphere(Material * material, Point3D center, P_FLT radius):
-      Primitive(material), center(center), radius(radius) {}
+      Primitive(material), center(center), radius(radius) {
+      buildBoundingVolume();
+    }
 
+    inline void buildBoundingVolume();
     const int intersect(const Ray &ray, Intercept intercepts[],
                         Material * entryMat) const;
     const Vector3D normalAt(const Point3D &point) const;

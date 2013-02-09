@@ -2,6 +2,7 @@
 
 #include "config.h"
 
+#include "bounding_volume.h"
 #include "intercept.h"
 #include "math_util.h"
 #include "model.h"
@@ -33,10 +34,23 @@ const int Plane::intersect(const Ray &ray, Intercept intercepts[],
 }
 
 
+inline void Polygon::buildBoundingVolume() {
+  Point3D maxExt = vertex[0],
+          minExt = vertex[0];
+  for (int i = 1; i < vertexNum; i++) {
+    maxExt = max(maxExt, vertex[i]);
+    minExt = min(minExt, vertex[i]);
+  }
+
+  boundingVolume = new Box(minExt, maxExt);
+}
+
+
 // Ref: Glassner -An Introduction to Ray Tracing - P.53-59
 const int Polygon::intersect(const Ray &ray, Intercept intercepts[],
                              Material * entryMat) const {
-  if (Plane::intersect(ray, intercepts, entryMat) == 0) {
+  if (!boundingVolume->intersect(ray) ||
+      Plane::intersect(ray, intercepts, entryMat) == 0) {
     return 0;
   }
 
@@ -96,8 +110,18 @@ const Vector3D PolygonPatch::normalAt(const Point3D &point) const {
 }
 
 
+inline void Sphere::buildBoundingVolume() {
+  Vector3D radiusVector(radius);
+  boundingVolume = new Box(center + radiusVector, center - radiusVector);
+}
+
+
 const int Sphere::intersect(const Ray &ray, Intercept intercepts[],
                             Material * entryMat) const {
+  if (!boundingVolume->intersect(ray)) {
+    return 0;
+  }
+
   bool insideOut = (radius < 0.0);
   P_FLT halfChordSqr, halfChord, ocSqr, rayClosest, t;
   Vector3D originToCenter;
