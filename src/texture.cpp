@@ -45,12 +45,19 @@ const Color Texture::colorAt(const Vector2D &textureCoord) {
   int x, y;
   P_FLT xInteger, xFraction, yInteger, yFraction;
 
+  // First modf removes texture coordinates > 1, second for color interpolation
   xFraction = modf(textureCoord.x, &xInteger);
-  x = static_cast<int>(xFraction * width);
-  yFraction = modf(textureCoord.y, &yInteger);
-  y = static_cast<int>(yFraction * height);
+  xFraction = modf(xFraction * width, &xInteger);
+  x = std::min(width - 2, static_cast<int>(xInteger));
 
-  return pixels[y * width + x].toColor();
+  yFraction = modf(textureCoord.y, &yInteger);
+  yFraction = modf(yFraction * height, &yInteger);
+  y = std::min(height - 2, static_cast<int>(yInteger));
+
+  return pixels[y * width + x].toColor() * (1 - xFraction) * (1 - yFraction) +
+         pixels[y * width + x + 1].toColor() * xFraction * (1 - yFraction) +
+         pixels[(y + 1) * width + x].toColor() * (1 - xFraction) * yFraction +
+         pixels[(y + 1) * width + x + 1].toColor() * xFraction * yFraction;
 }
 
 
