@@ -12,6 +12,23 @@
 BEGIN_RAYTRACER
 
 
+const Vector3D Triangle::getBaryCoord(const Point3D &point) const {
+  Vector3D v12 = *vertex2 - *vertex1,
+           v13 = *vertex3 - *vertex1,
+           vP1 = point - *vertex1;
+  P_FLT d00 = dotProduct(v12, v12),
+        d01 = dotProduct(v12, v13),
+        d11 = dotProduct(v13, v13),
+        d20 = dotProduct(vP1, v12),
+        d21 = dotProduct(vP1, v13);
+  P_FLT denom = d00 * d11 - d01 * d01;
+  P_FLT v = (d11 * d20 - d01 * d21) / denom,
+        w = (d00 * d21 - d01 * d20) / denom,
+        u = 1.0 - v - w;
+  return Vector3D(u, v, w);
+}
+
+
 // Ref: Glassner -An Introduction to Ray Tracing - P.53-59
 const int Triangle::intersect(const Ray &ray, Intercept intercepts[],
                               Material * entryMat) const {

@@ -34,6 +34,7 @@ void TriangleMesh::constructTriangles(const std::vector<int *> &triangleDefs) {
     for (itr = triangleDefs.begin(); itr != triangleDefs.end(); itr++) {
       triangleVector.push_back(
         new Triangle(material,
+                     NULL,
                      &points[(*itr)[0]],
                      &points[(*itr)[1]],
                      &points[(*itr)[2]]));
@@ -42,6 +43,7 @@ void TriangleMesh::constructTriangles(const std::vector<int *> &triangleDefs) {
     for (itr = triangleDefs.begin(); itr != triangleDefs.end(); itr++) {
       triangleVector.push_back(
         new TrianglePatch(material,
+                          NULL,
                           &points[(*itr)[0]],
                           &points[(*itr)[1]],
                           &points[(*itr)[2]],
@@ -53,6 +55,7 @@ void TriangleMesh::constructTriangles(const std::vector<int *> &triangleDefs) {
     for (itr = triangleDefs.begin(); itr != triangleDefs.end(); itr++) {
       triangleVector.push_back(
         new TexturedTriangle(material,
+                             texture,
                              &points[(*itr)[0]],
                              &points[(*itr)[1]],
                              &points[(*itr)[2]],
@@ -64,6 +67,7 @@ void TriangleMesh::constructTriangles(const std::vector<int *> &triangleDefs) {
     for (itr = triangleDefs.begin(); itr != triangleDefs.end(); itr++) {
       triangleVector.push_back(
         new PhongTriangle(material,
+                          texture,
                           &points[(*itr)[0]],
                           &points[(*itr)[1]],
                           &points[(*itr)[2]],

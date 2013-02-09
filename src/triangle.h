@@ -21,8 +21,9 @@ class Triangle: public Plane {
             * vertex2,
             * vertex3;
 
-    Triangle(Material * material, Point3D * pointA, Point3D * pointB,
-             Point3D * pointC): Plane(material) {
+    Triangle(Material * material,
+             Point3D * pointA, Point3D * pointB, Point3D * pointC):
+      Plane(material) {
       vertex1 = pointA;
       vertex2 = pointB;
       vertex3 = pointC;
@@ -33,6 +34,20 @@ class Triangle: public Plane {
       d = -dotProduct(*vertex1, normal);
     };
 
+    Triangle(Material * material, Texture * texture,
+             Point3D * pointA, Point3D * pointB, Point3D * pointC):
+      Plane(material, texture) {
+      vertex1 = pointA;
+      vertex2 = pointB;
+      vertex3 = pointC;
+
+      normal = crossProduct(*vertex2 - *vertex1, *vertex3 - *vertex1);
+      normal.normalize();
+
+      d = -dotProduct(*vertex1, normal);
+    };
+
+    const Vector3D getBaryCoord(const Point3D &point) const;
     virtual const int intersect(const Ray &ray, Intercept intercepts[],
                                 Material * entryMat) const;
 };
@@ -44,28 +59,15 @@ class TexturedTriangle: public Triangle {
              * vertexTextureCoord2,
              * vertexTextureCoord3;
 
-    TexturedTriangle(Material * material,
-                     Point3D * pointA, Point3D * pointB, Point3D * pointC,
-                     Vector2D * textureCoordA, Vector2D * textureCoordB,
-                     Vector2D * textureCoordC):
-      Triangle(material, pointA, pointB, pointC) {
-      vertexTextureCoord1 = textureCoordA;
-      vertexTextureCoord2 = textureCoordB;
-      vertexTextureCoord3 = textureCoordC;
-    }
-
     TexturedTriangle(Material * material, Texture * texture,
                      Point3D * pointA, Point3D * pointB, Point3D * pointC,
                      Vector2D * textureCoordA, Vector2D * textureCoordB,
                      Vector2D * textureCoordC):
-      Triangle(material, pointA, pointB, pointC) {
-      texture = texture;
+      Triangle(material, texture, pointA, pointB, pointC) {
       vertexTextureCoord1 = textureCoordA;
       vertexTextureCoord2 = textureCoordB;
       vertexTextureCoord3 = textureCoordC;
     }
-
-    const Vector2D getBarycentricCoord(const Point3D &point) const;
 };
 
 
@@ -85,7 +87,7 @@ class TrianglePatch: public Triangle {
     }
 
     const Vector3D normalAt(const Point3D &point) const;
-    const Vector3D normalAt(const Vector2D &barycentricCoord) const;
+    const Vector3D normalAt(const Vector3D &baryCoord) const;
 };
 
 
@@ -100,11 +102,12 @@ class PhongTriangle: public Triangle {
              * vertexNormal2,
              * vertexNormal3;
 
-    PhongTriangle(Material * material, Point3D * pointA, Point3D * pointB,
-                  Point3D * pointC, Vector3D * normalA, Vector3D * normalB,
-                  Vector3D * normalC, Vector2D * textureCoordA,
-                  Vector2D * textureCoordB, Vector2D * textureCoordC):
-      Triangle(material, pointA, pointB, pointC) {
+    PhongTriangle(Material * material, Texture * texture,
+                  Point3D * pointA, Point3D * pointB, Point3D * pointC,
+                  Vector3D * normalA, Vector3D * normalB, Vector3D * normalC,
+                  Vector2D * textureCoordA, Vector2D * textureCoordB,
+                  Vector2D * textureCoordC):
+      Triangle(material, texture, pointA, pointB, pointC) {
       vertexNormal1 = normalA;
       vertexNormal2 = normalB;
       vertexNormal3 = normalC;
@@ -113,9 +116,7 @@ class PhongTriangle: public Triangle {
       vertexTextureCoord3 = textureCoordC;
     }
 
-    const Vector2D getBarycentricCoord(const Point3D &point) const;
-    // const Vector3D normalAt(const Point3D &point) const;
-    // const Vector3D normalAt(const Vector2D &barycentricCoord) const;
+    // const Vector3D normalAt(const Vector2D &baryCoord) const;
 };
 
 
