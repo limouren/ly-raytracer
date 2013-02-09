@@ -44,9 +44,10 @@ class Primitive: public MODEL_CLS {
     Material * material;
     Texture * texture;
 
-    Primitive(): MODEL_CLS(0) {}
+    Primitive():
+      material(NULL), texture(NULL), MODEL_CLS(0) {}
     explicit Primitive(Material * material):
-      material(material), MODEL_CLS(0) {}
+      material(material), texture(NULL), MODEL_CLS(0) {}
     Primitive(Material * material, Texture * texture):
       material(material), texture(texture), MODEL_CLS(0) {}
 

@@ -138,6 +138,11 @@ void shade(int level, C_FLT weight, const Point3D &interceptPoint,
       }
     }
   }
+
+  if (intercepts[0].enter && intercepts[0].primitive->texture != NULL) {
+    *color *= intercepts[0].primitive->getTextureColor(
+      intercepts[0].primitive->inverseMap(interceptPoint));
+  }
 }
 
 

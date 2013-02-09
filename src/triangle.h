@@ -120,7 +120,7 @@ class PhongTriangle: public Triangle {
       vertexTextureCoord3 = textureCoordC;
     }
 
-    // const Vector3D normalAt(const Vector2D &baryCoord) const;
+    const Color getTextureColor(const std::vector<P_FLT> mapping) const;
 };
 
 

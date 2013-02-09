@@ -218,4 +218,14 @@ const Vector3D TrianglePatch::normalAt(const Point3D &point) const {
 }
 
 
+const Color PhongTriangle::getTextureColor(
+  const std::vector<P_FLT> mapping) const {
+  Vector2D textureCoord = *vertexTextureCoord1 * mapping[0] +
+                          *vertexTextureCoord2 * mapping[1] +
+                          *vertexTextureCoord3 * mapping[2];
+
+  return texture->colorAt(textureCoord);
+}
+
+
 END_RAYTRACER
