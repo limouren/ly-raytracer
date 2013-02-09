@@ -49,9 +49,9 @@ class Triangle: public Plane {
       d = -dotProduct(*vertex1, normal);
     };
 
-    std::vector<P_FLT> inverseMap(const Point3D &point) const;
-    virtual const int intersect(const Ray &ray, Intercept intercepts[],
+    const int intersect(const Ray &ray, Intercept intercepts[],
                                 Material * entryMat) const;
+    std::vector<P_FLT> inverseMap(const Point3D &point) const;
 };
 
 
@@ -70,6 +70,8 @@ class TexturedTriangle: public Triangle {
       vertexTextureCoord2 = textureCoordB;
       vertexTextureCoord3 = textureCoordC;
     }
+
+    const Color getTextureColor(const std::vector<P_FLT> mapping) const;
 };
 
 

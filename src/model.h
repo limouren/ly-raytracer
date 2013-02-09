@@ -50,14 +50,15 @@ class Primitive: public MODEL_CLS {
     Primitive(Material * material, Texture * texture):
       material(material), texture(texture), MODEL_CLS(0) {}
 
-    virtual const int intersect(const Ray &ray, Intercept intercepts[],
-                                Material * entryMat) const {
-      printf("ERROR: Unimplemented Primitive::intersect stub invoked\n");
+    virtual const Color getTextureColor(const std::vector<P_FLT> mapping)
+      const {
+      printf("ERROR: Unimplemented Primitive::getTextureCoord stub invoked\n");
       exit(1);
     }
 
-    virtual const Vector3D normalAt(const Point3D &point) const {
-      printf("ERROR: Unimplemented Primitive::normalAt stub invoked\n");
+    virtual const int intersect(const Ray &ray, Intercept intercepts[],
+                                Material * entryMat) const {
+      printf("ERROR: Unimplemented Primitive::intersect stub invoked\n");
       exit(1);
     }
 
@@ -66,9 +67,8 @@ class Primitive: public MODEL_CLS {
       exit(1);
     }
 
-    virtual const Vector2D getTextureColor(const std::vector<P_FLT> mapping)
-      const {
-      printf("ERROR: Unimplemented Primitive::getTextureCoord stub invoked\n");
+    virtual const Vector3D normalAt(const Point3D &point) const {
+      printf("ERROR: Unimplemented Primitive::normalAt stub invoked\n");
       exit(1);
     }
 
