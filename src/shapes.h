@@ -22,6 +22,8 @@ class Plane: public Primitive {
     Vector3D normal;  // {A, B, C}
 
     explicit Plane(Material * material): Primitive(material) {}
+    Plane(Material * material, Texture * texture):
+      Primitive(material, texture) {}
 
     Plane(Material * material, const Point3D &point, const Vector3D &vector):
       Primitive(material) {

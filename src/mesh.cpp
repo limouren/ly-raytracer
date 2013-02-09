@@ -43,7 +43,6 @@ void TriangleMesh::constructTriangles(const std::vector<int *> &triangleDefs) {
     for (itr = triangleDefs.begin(); itr != triangleDefs.end(); itr++) {
       triangleVector.push_back(
         new TrianglePatch(material,
-                          NULL,
                           &points[(*itr)[0]],
                           &points[(*itr)[1]],
                           &points[(*itr)[2]],
