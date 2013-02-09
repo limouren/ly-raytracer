@@ -17,7 +17,7 @@ class Vector2D {
   public:
     P_FLT x, y;
 
-    inline Vector2D(): x(0.0), y(0.0) {}
+    inline Vector2D() {}
 
     inline Vector2D(const P_FLT x, const P_FLT y): x(x), y(y) {}
 
@@ -66,7 +66,7 @@ class Vector3D {
   public:
     P_FLT x, y, z;
 
-    inline Vector3D(): x(0.0), y(0.0), z(0.0) {}
+    inline Vector3D() {}
     explicit inline Vector3D(const P_FLT pFlt): x(pFlt), y(pFlt), z(pFlt) {}
 
     inline Vector3D(const P_FLT x, const P_FLT y, const P_FLT z):
