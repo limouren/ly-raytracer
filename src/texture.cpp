@@ -14,19 +14,18 @@
 BEGIN_RAYTRACER
 
 
-void Texture::loadFromFile(const char * filename) {
+void Texture::loadFromFile() {
   // TODO(kent): Handle other texture file types
-  return loadFromPpm(filename);
+  loadFromPpm();
+  printf("Loaded %s\n", filepath);
 }
 
 
-void Texture::loadFromPpm(const char * filename) {
-  char _filename[1024];
+void Texture::loadFromPpm() {
   unsigned char * mRGBPtr;
   int pixelCount;
 
-  strncpy(_filename, filename, strlen(filename) + 1);
-  ::Texture * bartTexture = ::viReadPPM(_filename);
+  ::Texture * bartTexture = ::viReadPPM(filepath);
 
   height = bartTexture->mHeight;
   width = bartTexture->mWidth;
@@ -47,14 +46,13 @@ const Color Texture::colorAt(const Vector2D &textureCoord) {
   int x, y;
   P_FLT xInteger, xFraction, yInteger, yFraction;
 
-  xFraction = modf(textureCoord.x * width, &xInteger);
-  x = static_cast<int>(xInteger);
-  yFraction = modf(textureCoord.y * height, &yInteger);
-  y = static_cast<int>(yInteger);
+  xFraction = modf(textureCoord.x, &xInteger);
+  x = static_cast<int>(xFraction * width);
+  yFraction = modf(textureCoord.y, &yInteger);
+  y = static_cast<int>(yFraction * height);
 
   return pixels[y * width + x].toColor();
 }
-
 
 
 END_RAYTRACER

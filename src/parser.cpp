@@ -291,13 +291,7 @@ void parseInclude(FILE * file, Scene * scene,
 
   if (detailLevel <= globalDetailLevel) {
     fullFilePath(filepath, filename);
-    Scene subscene;
-    parseFile(filepath, &subscene, camera, screen,
-              currentMaterial);
-
-    if (subscene.modelRoot != NULL) {
-      models->push_back(subscene.modelRoot);
-    }
+    parseFile(filepath, scene, camera, screen, currentMaterial);
   } else {
     printf("Skipping include file: %s\n", filename);
   }
@@ -315,8 +309,8 @@ void parseDetailLevel(FILE * file) {
 void parseTexturedTriangle(FILE *file, Scene * scene,
                            vector<MODEL_CLS *> * models,
                            Material * currentMaterial) {
-  char * filepath,
-       textureName[100];
+  char filepath[1024],
+       textureName[200];
   int patch;
   // TODO(kent): Clean this up later and avoid memory leak
   P_FLT x, y, z;
@@ -334,6 +328,10 @@ void parseTexturedTriangle(FILE *file, Scene * scene,
     printf("Error: could not parse texture name of textured triangle\n");
     exit(1);
   }
+
+  fullFilePath(filepath, textureName);
+  Texture * texture = new Texture(filepath);
+  scene->textures.push_back(texture);
 
   for (int i = 0; i < 3; i++) {
     if (fscanf(file, " %f %f %f", &x, &y, &z) != 3) {
@@ -357,10 +355,6 @@ void parseTexturedTriangle(FILE *file, Scene * scene,
     textureCoord[i] = new Vector2D(x, y);
   }
 
-  Texture * texture = new Texture();
-  filepath = new char[1024];
-  fullFilePath(filepath, textureName);
-  scene->textures[filepath] = texture;
   if (patch) {
     models->push_back(new PhongTriangle(
       currentMaterial, texture,
@@ -723,9 +717,8 @@ void getTriangleDefs(FILE * file, bool hasNorms, bool hasTextures,
 
 void parseMesh(FILE * file, Scene * scene, vector<MODEL_CLS *> * models,
                Material * currentMaterial) {
-  char * filepath,
-       buffer[200],
-       textureName[200] = "";
+  char textureName[200],
+       buffer[200];
   int flag;
   vector<Point3D> vertex;
   vector<Vector3D> normal;
@@ -753,6 +746,12 @@ void parseMesh(FILE * file, Scene * scene, vector<MODEL_CLS *> * models,
   }
   if (!strcmp(buffer, "texturecoords")) {
     getTextureCoordinates(file, "textureCoord", textureName, &textureCoords);
+
+    char filepath[1024];
+    fullFilePath(filepath, textureName);
+    texture = new Texture(filepath);
+    scene->textures.push_back(texture);
+
     flag = fscanf(file, "%s", buffer);
   }
 
@@ -762,20 +761,6 @@ void parseMesh(FILE * file, Scene * scene, vector<MODEL_CLS *> * models,
   } else {
     printf("Error: expected 'triangles' in mesh.\n");
     exit(1);
-  }
-
-  if (strcmp(textureName, "")) {
-    filepath = new char[1024];
-    fullFilePath(filepath, textureName);
-
-    map<const char *, Texture *>::iterator itr =
-      scene->textures.find(filepath);
-    if (itr == scene->textures.end()) {
-      texture = new Texture();
-      scene->textures[filepath] = texture;
-    } else {
-      texture = itr->second;
-    }
   }
 
   models->push_back(new TriangleMesh(currentMaterial, texture, vertex, normal,
@@ -865,7 +850,11 @@ int parseFile(const char * filename, Scene * scene, Camera * camera,
     }
   }
 
+  if (scene->modelRoot != NULL) {
+    models.push_back(scene->modelRoot);
+  }
   scene->modelRoot = buildModelTree(models);
+
   if (previousMaterial) {
     *previousMaterial = currentMaterial;
   }

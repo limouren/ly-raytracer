@@ -2,7 +2,6 @@
 #define SCENE_H
 
 
-#include <map>
 #include <math.h>
 #include <string.h>
 #include <vector>
@@ -25,14 +24,6 @@
 BEGIN_RAYTRACER
 
 
-class cStrCmp {
-  public:
-    inline bool operator()(const char * a, const char * b) {
-      return strcmp(a, b) < 0;
-    }
-};
-
-
 class Scene {
   public:
     Color ambience, backgroundColor;
@@ -40,10 +31,10 @@ class Scene {
     Material * medium;
     std::vector<Light * > lights;
     std::vector<Material *> materials;
-    std::map<const char *, Texture *, cStrCmp> textures;
+    std::vector<Texture *> textures;
     MODEL_CLS * modelRoot;
 
-    Scene() {
+    Scene(): modelRoot(NULL) {
       medium = new Material("Vacuum",
                             Color(0.0, 0.0, 0.0),
                             Color(0.0, 0.0, 0.0),
@@ -54,10 +45,11 @@ class Scene {
     }
 
     void loadTextures() {
-      for (std::map<const char *, Texture *>::iterator itr = textures.begin();
+      for (std::vector<Texture *>::iterator itr = textures.begin();
            itr != textures.end(); itr++) {
-        itr->second->loadFromFile(itr->first);
+        (*itr)->loadFromFile();
       }
+      printf("%d textures loaded\n", textures.size());
     }
 
     // TODO(kent): Fix this eventually

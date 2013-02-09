@@ -2,6 +2,8 @@
 #define SRC_TEXTURE_H_
 
 
+#include <string.h>
+
 #include "config.h"
 
 #include "color.h"
@@ -13,16 +15,19 @@ BEGIN_RAYTRACER
 
 class Texture {
   private:
-    bool continuous;
     int height, width;
 
     RGBColor * pixels;
 
   public:
-    Texture() {}
+    char filepath[1024];
 
-    void loadFromFile(const char * filename);
-    void loadFromPpm(const char * filename);
+    explicit Texture(char * _filepath): height(0), width(0), pixels(NULL) {
+      strncpy(filepath, _filepath, strlen(_filepath) + 1);
+    }
+
+    void loadFromFile();
+    void loadFromPpm();
 
     inline const Color colorAt(const Vector2D &textureCoord);
 
