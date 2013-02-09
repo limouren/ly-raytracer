@@ -20,7 +20,7 @@ class Color {
     C_FLT g;
     C_FLT b;
 
-    inline Color(): r(0.0), g(0.0), b(0.0) {}
+    inline Color(): r(0.0f), g(0.0f), b(0.0f) {}
     inline explicit Color(const C_FLT intensity):
       r(intensity), g(intensity), b(intensity) {}
     inline Color(const C_FLT r, const C_FLT g, const C_FLT b):
@@ -45,7 +45,7 @@ class Color {
     }
 
     inline C_FLT magnitude() {
-      return (r * 0.299)  + (g * 0.587) + (b * 0.114);
+      return (r * 0.299f)  + (g * 0.587f) + (b * 0.114f);
     }
 
     #ifdef DEBUG

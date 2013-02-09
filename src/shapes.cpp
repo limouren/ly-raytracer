@@ -26,7 +26,7 @@ const int Plane::intersect(const Ray &ray, Intercept intercepts[],
   t = -(dotProduct(normal, ray.orig) + d) / lightDotNorm;
 
   if (fGreaterZero(t)) {
-    intercepts[0] = Intercept(t, lightDotNorm < 0.0, entryMat, this);
+    intercepts[0] = Intercept(t, lightDotNorm < 0.0f, entryMat, this);
     return 1;
   }
 
@@ -65,19 +65,19 @@ const int Polygon::intersect(const Ray &ray, Intercept intercepts[],
 
   int windingNumber = 0,
       first = vertexNum - 1;
-  bool firstYPositive = (vertex2D[first].y >= 0.0),
+  bool firstYPositive = (vertex2D[first].y >= 0.0f),
        secondYPositive;
 
   for (int second = 0; second < vertexNum; second++) {
-    secondYPositive = (vertex2D[second].y >= 0.0);
+    secondYPositive = (vertex2D[second].y >= 0.0f);
 
     if (firstYPositive != secondYPositive) {
-      if (vertex2D[first].x >= 0.0 && vertex2D[second].x >= 0.0) {
+      if (vertex2D[first].x >= 0.0f && vertex2D[second].x >= 0.0f) {
         windingNumber++;
-      } else if ((vertex2D[first].x >= 0.0 || vertex2D[second].x >= 0.0) &&
+      } else if ((vertex2D[first].x >= 0.0f || vertex2D[second].x >= 0.0f) &&
                  vertex2D[first].x - (vertex2D[first].y *
                  (vertex2D[second].x - vertex2D[first].x) /
-                 (vertex2D[second].y - vertex2D[first].y)) > 0.0) {
+                 (vertex2D[second].y - vertex2D[first].y)) > 0.0f) {
         windingNumber++;
       }
     }
@@ -87,13 +87,13 @@ const int Polygon::intersect(const Ray &ray, Intercept intercepts[],
   }
 
   delete [] vertex2D;
-  return windingNumber % 2;
+  return windingNumber & 1;
 }
 
 
 const Vector3D PolygonPatch::normalAt(const Point3D &point) const {
   P_FLT * weights = new P_FLT[vertexNum];
-  Vector3D resultNorm(0.0, 0.0, 0.0);
+  Vector3D resultNorm(0.0f, 0.0f, 0.0f);
 
   for (int i = 0; i < vertexNum; i++) {
     if (point == vertex[i]) {
@@ -122,7 +122,7 @@ const int Sphere::intersect(const Ray &ray, Intercept intercepts[],
     return 0;
   }
 
-  bool insideOut = (radius < 0.0);
+  bool insideOut = (radius < 0.0f);
   P_FLT halfChordSqr, halfChord, ocSqr, rayClosest, t;
   Vector3D originToCenter;
 
@@ -159,7 +159,7 @@ const int Sphere::intersect(const Ray &ray, Intercept intercepts[],
 
 const Vector3D Sphere::normalAt(const Point3D &point) const {
   Vector3D normal;
-  if (radius < 0.0) {
+  if (radius < 0.0f) {
     normal = point - center;
   } else {
     normal = center - point;

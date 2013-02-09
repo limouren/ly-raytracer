@@ -70,7 +70,7 @@ inline Color Color::operator *=(const C_FLT scalar) {
 }
 
 
-#define INV_255 0.00392156862
+#define INV_255 0.00392156862f
 inline const Color RGBColor::toColor() const {
   return Color(static_cast<C_FLT>(r) * INV_255,
                static_cast<C_FLT>(g) * INV_255,

@@ -12,10 +12,10 @@
 #define END_RAYTRACER }
 
 
-#define PI (3.141592653589793)
+#define PI (3.141592653589793f)
 
 // Camera Settings
-#define DEFAULT_ASPECT_RATIO (1.33)
+#define DEFAULT_ASPECT_RATIO (1.33333f)
 
 // Max intersections per ray against solid
 #define MAX_INTERSECTIONS (4)
@@ -24,13 +24,13 @@
 #define MAX_LEVEL (8)
 
 // Minimum ray weght threshold
-#define MIN_WEIGHT (0.01)
+#define MIN_WEIGHT (0.01f)
 
 // Float comparison epsilon
-#define P_FLT_EPSILON (1.0e-5)
+#define P_FLT_EPSILON (1.0E-5f)
 
 // Maximum size for positional values
-#define P_FLT_MAX (1.0e10)
+#define P_FLT_MAX (1.0E+10f)
 
 
 #define MODEL_CLS Model

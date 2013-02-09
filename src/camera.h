@@ -20,7 +20,7 @@ class Camera {
       dir.normalize();
       P_FLT dirDotUp = dotProduct(dir, up);
 
-      P_FLT root = 1 / sqrt(1 - dirDotUp * dirDotUp);
+      P_FLT root = 1.0f / sqrt(1.0f - dirDotUp * dirDotUp);
       forward = up * dirDotUp * root + dir * root;
     }
 

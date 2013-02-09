@@ -44,7 +44,7 @@ const bool Box::intersect(const Ray &ray) const {
   if (t2 < tFar) {
     tFar = t2;
   }
-  if (tNear > tFar || tFar < 0) {
+  if (tNear > tFar || tFar < 0.0f) {
     return false;
   }
 
@@ -61,7 +61,7 @@ const bool Box::intersect(const Ray &ray) const {
   if (t2 < tFar) {
     tFar = t2;
   }
-  if (tNear > tFar || tFar < 0) {
+  if (tNear > tFar || tFar < 0.0f) {
     return false;
   }
 
@@ -78,7 +78,7 @@ const bool Box::intersect(const Ray &ray) const {
   if (t2 < tFar) {
     tFar = t2;
   }
-  if (tNear > tFar || tFar < 0) {
+  if (tNear > tFar || tFar < 0.0f) {
     return false;
   }
 

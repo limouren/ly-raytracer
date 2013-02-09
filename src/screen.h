@@ -27,7 +27,7 @@ class PixelTask {
     PixelTask(Color * color, const Ray &ray): color(color), ray(ray) {}
 
     int run() {
-      return trace(0, 1.0, ray, color, scene.medium);  // Assume outside
+      return trace(0, 1.0f, ray, color, scene.medium);  // Assume outside
     }
 };
 
@@ -67,7 +67,7 @@ class PixelTasks {
         pthread_mutex_unlock(&tasksMutex);
 
         if (currentTask % thousandth == 0) {
-          progress = 100.0 * static_cast<double>(totalTasks - currentTask) /
+          progress = 100.0f * static_cast<double>(totalTasks - currentTask) /
                      static_cast<double>(totalTasks);
           printf("\rTracing...%.2f%% complete", progress);
         }

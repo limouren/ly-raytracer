@@ -171,10 +171,10 @@ std::vector<P_FLT> Triangle::inverseMap(const Point3D &point) const {
         d11 = dotProduct(v13, v13),
         d20 = dotProduct(vP1, v12),
         d21 = dotProduct(vP1, v13);
-  P_FLT denom =  1.0 / (d00 * d11 - d01 * d01);
+  P_FLT denom =  1.0f / (d00 * d11 - d01 * d01);
   mapping[1] = (d11 * d20 - d01 * d21) * denom,
   mapping[2] = (d00 * d21 - d01 * d20) * denom,
-  mapping[0] = 1.0 - mapping[1] - mapping[2];
+  mapping[0] = 1.0f - mapping[1] - mapping[2];
   return mapping;
 }
 
@@ -205,9 +205,9 @@ const Vector3D TrianglePatch::normalAt(const Point3D &point) const {
     return *vertexNormal3;
   }
 
-  vertexWeight1 = 1.0 / (*vertex1 - point).length();
-  vertexWeight2 = 1.0 / (*vertex2 - point).length();
-  vertexWeight3 = 1.0 / (*vertex3 - point).length();
+  vertexWeight1 = 1.0f / (*vertex1 - point).length();
+  vertexWeight2 = 1.0f / (*vertex2 - point).length();
+  vertexWeight3 = 1.0f / (*vertex3 - point).length();
 
 
   result = *vertexNormal1 * vertexWeight1 +

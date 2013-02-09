@@ -43,21 +43,21 @@ void Texture::loadFromPpm() {
 
 const Color Texture::colorAt(const Vector2D &textureCoord) {
   int x, y;
-  P_FLT xInteger, xFraction, yInteger, yFraction;
+  P_FLT xInteger, xFract, yInteger, yFract;
 
   // First modf removes texture coordinates > 1, second for color interpolation
-  xFraction = modf(textureCoord.x, &xInteger);
-  xFraction = modf(xFraction * width, &xInteger);
+  xFract = modf(textureCoord.x, &xInteger);
+  xFract = modf(xFract * width, &xInteger);
   x = std::min(width - 2, static_cast<int>(xInteger));
 
-  yFraction = modf(textureCoord.y, &yInteger);
-  yFraction = modf(yFraction * height, &yInteger);
+  yFract = modf(textureCoord.y, &yInteger);
+  yFract = modf(yFract * height, &yInteger);
   y = std::min(height - 2, static_cast<int>(yInteger));
 
-  return pixels[y * width + x].toColor() * (1 - xFraction) * (1 - yFraction) +
-         pixels[y * width + x + 1].toColor() * xFraction * (1 - yFraction) +
-         pixels[(y + 1) * width + x].toColor() * (1 - xFraction) * yFraction +
-         pixels[(y + 1) * width + x + 1].toColor() * xFraction * yFraction;
+  return pixels[y * width + x].toColor() * (1.0f - xFract) * (1.0f - yFract) +
+         pixels[y * width + x + 1].toColor() * xFract * (1.0f - yFract) +
+         pixels[(y + 1) * width + x].toColor() * (1.0f - xFract) * yFract +
+         pixels[(y + 1) * width + x + 1].toColor() * xFract * yFract;
 }
 
 

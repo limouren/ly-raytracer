@@ -99,8 +99,8 @@ inline const P_FLT Vector2D::lengthSqr() const {
 inline const P_FLT Vector2D::normalize() {
   // TODO(kent): See if we can use inv. sqrt hack
   P_FLT len = length();
-  if (len != 0.0) {
-    *this *= (1.0 / len);
+  if (len != 0.0f) {
+    *this *= (1.0f / len);
   }
 
   return len;
@@ -240,8 +240,8 @@ inline const P_FLT Vector3D::lengthSqr() const {
 inline const P_FLT Vector3D::normalize() {
   // TODO(kent): See if we can use inv. sqrt hack
   P_FLT len = length();
-  if (len != 0.0) {
-    *this *= (1.0 / len);
+  if (len != 0.0f) {
+    *this *= (1.0f / len);
   }
 
   return len;

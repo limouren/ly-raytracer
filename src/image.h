@@ -19,12 +19,12 @@ class Image {
       pixels = new Color[height * width];
     }
 
-    Image(int height, int width, Color * pixels_) {
+    Image(int height, int width, Color * _pixels) {
       int total_pixels = height * width;
 
       pixels = new Color[total_pixels];
       for (int i = 0; i < total_pixels; i++) {
-        pixels[i] = pixels_[i];
+        pixels[i] = _pixels[i];
       }
     }
 };

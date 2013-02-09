@@ -40,7 +40,7 @@ inline const bool fLess(const P_FLT pFltA, const P_FLT pFltB) {
 
 
 inline const P_FLT fMean(const P_FLT pFltA, const P_FLT pFltB) {
-  return 0.5 * (pFltA + pFltB);
+  return 0.5f * (pFltA + pFltB);
 }
 
 

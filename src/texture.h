@@ -22,7 +22,7 @@ class Texture {
   public:
     char filepath[1024];
 
-    explicit Texture(char * _filepath): height(0), width(0), pixels(NULL) {
+    explicit Texture(char * _filepath) {
       strncpy(filepath, _filepath, strlen(_filepath) + 1);
     }
 

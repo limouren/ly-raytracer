@@ -20,7 +20,7 @@ class Vector3D;
 
 
 void Screen::calibrate() {
-  C_FLT factor = 0.0;
+  C_FLT factor = 0.0f;
   for (int i = 0; i < width; i++) {
     for (int j = 0; j < height; j++) {
       if (pixels[j*width + i].r > factor) {
@@ -35,8 +35,8 @@ void Screen::calibrate() {
     }
   }
 
-  if (factor > 1.0) {
-    factor = 1.0 / factor;
+  if (factor > 1.0f) {
+    factor = 1.0f / factor;
     for (int i = 0; i < width; i++) {
       for (int j = 0; j < height; j++) {
         pixels[j*width + i] *= factor;
@@ -58,7 +58,7 @@ void Screen::saveBmp(char * outputFilename) const {
       imageWidth = width / INT_RES_FACTOR,
       pixelCount = imageHeight * imageWidth;
 
-  P_FLT factor = 1.0 / static_cast<P_FLT>(INT_RES_FACTOR * INT_RES_FACTOR);
+  P_FLT factor = 1.0f / static_cast<P_FLT>(INT_RES_FACTOR * INT_RES_FACTOR);
   C_FLT * redChannel = new C_FLT[pixelCount];
   C_FLT * greenChannel = new C_FLT[pixelCount];
   C_FLT * blueChannel = new C_FLT[pixelCount];
@@ -107,7 +107,7 @@ void rayTrace(const Scene &scene, const Camera &camera, Screen &screen) {
   screen.width = camera.imageWidth * INT_RES_FACTOR;
   screen.pixels = new Color[screen.width * screen.height];
 
-  P_FLT horizontalMag = sin(camera.angle * 0.5);
+  P_FLT horizontalMag = sin(camera.angle * 0.5f);
   P_FLT verticalMag = horizontalMag / camera.aspectRatio;
   Vector3D top = camera.up * verticalMag;
 
@@ -123,7 +123,7 @@ void rayTrace(const Scene &scene, const Camera &camera, Screen &screen) {
   j_step.negate();
 
   Vector3D top_left_pixel = top_left - camera.viewpoint +
-                            (i_step * 0.5) + (j_step * 0.5);
+                            (i_step * 0.5f) + (j_step * 0.5f);
 
   PixelTasks * pixelTasks = new PixelTasks(screen.width * screen.height);
   for (int i = 0; i < screen.width; i++) {

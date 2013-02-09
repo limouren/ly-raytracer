@@ -22,10 +22,10 @@ C_FLT shadow(const Ray &ray, P_FLT t) {
 
   int hits = intersect(ray, scene.modelRoot, intercepts, NULL);
   if (hits == 0 || intercepts[0].t > t) {
-    return 1.0;
+    return 1.0f;
   }
 
-  return 0.0;
+  return 0.0f;
 }
 
 
@@ -46,8 +46,8 @@ bool transmissionDirection(Material * entryMat, Material * hitMat,
   refrRatio = entryMat->refraction / hitMat->refraction;
 
   cosEntry = -dotProduct(incident, normal);
-  cosExitSqr = 1.0 - refrRatio * refrRatio * (1.0 - (cosEntry * cosEntry));
-  if (cosExitSqr < 0.0) {
+  cosExitSqr = 1.0f - refrRatio * refrRatio * (1.0f - (cosEntry * cosEntry));
+  if (cosExitSqr < 0.0f) {
     return false;  // Total internal reflection
   } else {
     result = incident * refrRatio + normal *
@@ -69,7 +69,7 @@ void shade(int level, C_FLT weight, const Point3D &interceptPoint,
   Vector3D specDir, transDir, normal;
 
   normal = intercepts[0].primitive->normalAt(interceptPoint);
-  if (dotProduct(incident, normal) > 0.0) {
+  if (dotProduct(incident, normal) > 0.0f) {
     normal.negate();
   }
   specularDirection(incident, normal, specDir);
@@ -95,7 +95,7 @@ void shade(int level, C_FLT weight, const Point3D &interceptPoint,
       Vector3D h = pointToLight - incident;
       h.normalize();
       P_FLT specDot = dotProduct(normal, h);
-      if (specDot > 0.0) {
+      if (specDot > 0.0f) {
         *color += light->color * hitMat->specular *
                   pow(specDot, hitMat->shine);
       }
@@ -103,7 +103,7 @@ void shade(int level, C_FLT weight, const Point3D &interceptPoint,
                fLessZero(shadow(rayToLight, distanceToLight))) {
       // Light source specular transmission
       C_FLT refrRatio = hitMat->refraction / entryMat->refraction;
-      if (!fEqual(refrRatio, 1.0)) {
+      if (!fEqual(refrRatio, 1.0f)) {
         Vector3D h_j = (-incident - pointToLight * refrRatio) /
                        (refrRatio - 1);
         h_j.normalize();
