@@ -17,7 +17,6 @@ BEGIN_RAYTRACER
 // Ref: Glassner -An Introduction to Ray Tracing - P.53-59
 const int Triangle::intersect(const Ray &ray, Intercept intercepts[],
                               Material * entryMat) const {
-  int dominantIndex;
   P_FLT normalDotOrig, normalDotDir,
         t, u, v;
 
@@ -36,8 +35,7 @@ const int Triangle::intersect(const Ray &ray, Intercept intercepts[],
 
   // inspired by povray triangle intersection
   // idea: cross product each vector after projecting to YZ/XZ/XY plane
-  dominantIndex = normal.dominantIndex();
-  switch (dominantIndex) {
+  switch (normal.dominantIndex()) {
     case 0:  // x dominant, normal.x > 0
       u = ray.orig.y + t * ray.dir.y;
       v = ray.orig.z + t * ray.dir.z;
@@ -153,10 +151,7 @@ const int Triangle::intersect(const Ray &ray, Intercept intercepts[],
       break;
   }
 
-  intercepts[0].t = t;
-  intercepts[0].enter = (normalDotDir < 0);
-  intercepts[0].material = entryMat;
-  intercepts[0].primitive = this;
+  intercepts[0] = Intercept(t, normalDotDir < 0, entryMat, this);
   return 1;
 }
 
