@@ -18,6 +18,9 @@ BEGIN_RAYTRACER
 
 
 class Triangle: public Plane {
+  private:
+    unsigned char dominantIndex;
+
   public:
     Point3D * vertex1,
             * vertex2,
@@ -33,6 +36,8 @@ class Triangle: public Plane {
       normal = crossProduct(*vertex2 - *vertex1, *vertex3 - *vertex1);
       normal.normalize();
 
+      dominantIndex = normal.dominantIndex();
+
       d = -dotProduct(*vertex1, normal);
     };
 
@@ -45,6 +50,8 @@ class Triangle: public Plane {
 
       normal = crossProduct(*vertex2 - *vertex1, *vertex3 - *vertex1);
       normal.normalize();
+
+      dominantIndex = normal.dominantIndex();
 
       d = -dotProduct(*vertex1, normal);
     };

@@ -35,7 +35,7 @@ const int Triangle::intersect(const Ray &ray, Intercept intercepts[],
 
   // inspired by povray triangle intersection
   // idea: cross product each vector after projecting to YZ/XZ/XY plane
-  switch (normal.dominantIndex()) {
+  switch (dominantIndex) {
     case 0:  // x dominant, normal.x > 0
       u = ray.orig.y + t * ray.dir.y;
       v = ray.orig.z + t * ray.dir.z;
