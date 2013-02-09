@@ -205,9 +205,9 @@ const Vector3D TrianglePatch::normalAt(const Point3D &point) const {
     return *vertexNormal3;
   }
 
-  vertexWeight1 = 1 / (*vertex1 - point).length();
-  vertexWeight2 = 1 / (*vertex2 - point).length();
-  vertexWeight3 = 1 / (*vertex3 - point).length();
+  vertexWeight1 = 1.0 / (*vertex1 - point).length();
+  vertexWeight2 = 1.0 / (*vertex2 - point).length();
+  vertexWeight3 = 1.0 / (*vertex3 - point).length();
 
 
   result = *vertexNormal1 * vertexWeight1 +
