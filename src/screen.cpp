@@ -65,7 +65,7 @@ void Screen::saveBmp(char * outputFilename) const {
 
   for (int i = 0; i < imageWidth; i++) {
     for (int j = 0; j < imageHeight; j++) {
-      imagePixelIndex = (imageHeight - j - 1) * imageWidth + i;
+      imagePixelIndex = (imageHeight - j) * imageWidth - i - 1;
       for (int m = 0; m < INT_RES_FACTOR; m++) {
         for (int n = 0; n < INT_RES_FACTOR; n++) {
           pixelIndex = j * INT_RES_FACTOR * width + i * INT_RES_FACTOR;
