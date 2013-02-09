@@ -54,12 +54,9 @@ class Primitive: public MODEL_CLS {
                                 Material * entryMat) const {
       printf("WARNING: Unimplemented Primitive::intersect stub invoked\n");
     }
+
     virtual const Vector3D normalAt(const Point3D &point) const {
       printf("WARNING: Unimplemented Primitive::normalAt stub invoked\n");
-    }
-    virtual const Vector2D textureCoordAt(const Point3D &point) const {
-      printf("WARNING: Unimplemented Primitive::textureCoordAt stub "
-             "invoked\n");
     }
 
     virtual ~Primitive() {}
