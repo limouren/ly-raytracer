@@ -69,10 +69,8 @@ class TriangleMesh: public Primitive {
                         Material * entryMat) const;
     const Vector3D normalAt(const Point3D &point) {
       // This shouldn't be getting called.
-      printf("WARNING: Calling unimplemented TriangleMesh normalAt.\n");
+      printf("ERROR: Calling unimplemented TriangleMesh normalAt.\n");
       exit(1);
-      Vector3D vector;
-      return vector;
     }
 
     ~TriangleMesh() {

@@ -1,3 +1,5 @@
+#include <vector>
+
 #include "config.h"
 
 #include "intercept.h"
@@ -12,7 +14,8 @@
 BEGIN_RAYTRACER
 
 
-const Vector3D Triangle::getBaryCoord(const Point3D &point) const {
+std::vector<P_FLT> Triangle::inverseMap(const Point3D &point) const {
+  std::vector<P_FLT> mapping(0.0, 3);
   Vector3D v12 = *vertex2 - *vertex1,
            v13 = *vertex3 - *vertex1,
            vP1 = point - *vertex1;
@@ -22,10 +25,10 @@ const Vector3D Triangle::getBaryCoord(const Point3D &point) const {
         d20 = dotProduct(vP1, v12),
         d21 = dotProduct(vP1, v13);
   P_FLT denom = d00 * d11 - d01 * d01;
-  P_FLT v = (d11 * d20 - d01 * d21) / denom,
-        w = (d00 * d21 - d01 * d20) / denom,
-        u = 1.0 - v - w;
-  return Vector3D(u, v, w);
+  mapping[1] = (d11 * d20 - d01 * d21) / denom,
+  mapping[2] = (d00 * d21 - d01 * d20) / denom,
+  mapping[0] = 1.0 - mapping[1] - mapping[2];
+  return mapping;
 }
 
 

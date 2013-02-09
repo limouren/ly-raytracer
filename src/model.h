@@ -52,11 +52,24 @@ class Primitive: public MODEL_CLS {
 
     virtual const int intersect(const Ray &ray, Intercept intercepts[],
                                 Material * entryMat) const {
-      printf("WARNING: Unimplemented Primitive::intersect stub invoked\n");
+      printf("ERROR: Unimplemented Primitive::intersect stub invoked\n");
+      exit(1);
     }
 
     virtual const Vector3D normalAt(const Point3D &point) const {
-      printf("WARNING: Unimplemented Primitive::normalAt stub invoked\n");
+      printf("ERROR: Unimplemented Primitive::normalAt stub invoked\n");
+      exit(1);
+    }
+
+    virtual std::vector<P_FLT> inverseMap(const Point3D &point) const {
+      printf("ERROR: Unimplemented Primitive::inverseMap stub invoked\n");
+      exit(1);
+    }
+
+    virtual const Vector2D getTextureColor(const std::vector<P_FLT> mapping)
+      const {
+      printf("ERROR: Unimplemented Primitive::getTextureCoord stub invoked\n");
+      exit(1);
     }
 
     virtual ~Primitive() {}

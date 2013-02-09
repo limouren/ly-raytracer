@@ -2,6 +2,8 @@
 #define TRIANGLE_H
 
 
+#include <vector>
+
 #include "config.h"
 
 #include "intercept.h"
@@ -47,7 +49,7 @@ class Triangle: public Plane {
       d = -dotProduct(*vertex1, normal);
     };
 
-    const Vector3D getBaryCoord(const Point3D &point) const;
+    std::vector<P_FLT> inverseMap(const Point3D &point) const;
     virtual const int intersect(const Ray &ray, Intercept intercepts[],
                                 Material * entryMat) const;
 };
