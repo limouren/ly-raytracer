@@ -95,12 +95,15 @@ class PolygonPatch: public Polygon {
 
 // Quadrics
 class Sphere: public Primitive {
-  public:
+  private:
+    bool insideOut;
     P_FLT radius;
     Point3D center;
 
-    Sphere(Material * material, Point3D center, P_FLT radius):
-      Primitive(material), center(center), radius(radius) {
+  public:
+    Sphere(Material * material, const Point3D &center, P_FLT radius):
+      Primitive(material), insideOut(radius < 0.0), center(center),
+      radius(fabs(radius)) {
       buildBoundingVolume();
     }
 

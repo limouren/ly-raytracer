@@ -122,20 +122,19 @@ const int Sphere::intersect(const Ray &ray, Intercept intercepts[],
     return 0;
   }
 
-  bool insideOut = (radius < 0.0f);
-  P_FLT halfChordSqr, halfChord, ocSqr, rayClosest, t;
-  Vector3D originToCenter;
+  P_FLT halfChordSqr, halfChord, ocSqr, radiusSqr, rayClosest;
+  Vector3D originToCenter = center - ray.orig;
 
-  originToCenter = center - ray.orig;
   ocSqr = originToCenter.lengthSqr();
+  radiusSqr = radius * radius;
   rayClosest = dotProduct(originToCenter, ray.dir);
 
-  if (fLessZero(rayClosest) and !fLess(ocSqr, radius * radius)) {
+  if (fLessZero(rayClosest) and !fLess(ocSqr, radiusSqr)) {
     return 0;
   }
 
 
-  halfChordSqr = (radius * radius) - ocSqr + (rayClosest * rayClosest);
+  halfChordSqr = radiusSqr - ocSqr + (rayClosest * rayClosest);
   if (fLessZero(halfChordSqr)) {
     return 0;
   }
