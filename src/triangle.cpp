@@ -162,7 +162,7 @@ const int Triangle::intersect(const Ray &ray, Intercept intercepts[],
 
 
 std::vector<P_FLT> Triangle::inverseMap(const Point3D &point) const {
-  std::vector<P_FLT> mapping(0.0, 3);
+  std::vector<P_FLT> mapping(3, 0.0);
   Vector3D v12 = *vertex2 - *vertex1,
            v13 = *vertex3 - *vertex1,
            vP1 = point - *vertex1;
@@ -171,9 +171,9 @@ std::vector<P_FLT> Triangle::inverseMap(const Point3D &point) const {
         d11 = dotProduct(v13, v13),
         d20 = dotProduct(vP1, v12),
         d21 = dotProduct(vP1, v13);
-  P_FLT denom = d00 * d11 - d01 * d01;
-  mapping[1] = (d11 * d20 - d01 * d21) / denom,
-  mapping[2] = (d00 * d21 - d01 * d20) / denom,
+  P_FLT denom =  1.0 / (d00 * d11 - d01 * d01);
+  mapping[1] = (d11 * d20 - d01 * d21) * denom,
+  mapping[2] = (d00 * d21 - d01 * d20) * denom,
   mapping[0] = 1.0 - mapping[1] - mapping[2];
   return mapping;
 }
