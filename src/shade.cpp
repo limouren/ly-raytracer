@@ -99,7 +99,7 @@ void shade(int level, C_FLT weight, const Point3D &interceptPoint,
         *color += light->color * hitMat->specular *
                   pow(specDot, hitMat->shine);
       }
-    } else if (fLessZero(transmission && lightDotNormal) &&
+    } else if (transmission && fLessZero(lightDotNormal) &&
                fLessZero(shadow(rayToLight, distanceToLight))) {
       // Light source specular transmission
       C_FLT refrRatio = hitMat->refraction / entryMat->refraction;
