@@ -35,8 +35,9 @@ class Plane: public Primitive {
 
     virtual const int intersect(const Ray &ray, Intercept intercepts[],
                                 Material * entryMat) const;
-    virtual const Vector3D normalAt(const Point3D &point) const {
-      return normal;
+    virtual void getIntersect(const Point3D &point, Vector3D * normal,
+                              std::vector<P_FLT> * mapping) const {
+      *normal = this->normal;
     }
 };
 
@@ -89,7 +90,8 @@ class PolygonPatch: public Polygon {
       delete[] vertexNormal;
     }
 
-    const Vector3D normalAt(const Point3D &point) const;
+    virtual void getIntersect(const Point3D &point, Vector3D * normal,
+                              std::vector<P_FLT> * mapping) const;
 };
 
 
@@ -110,7 +112,8 @@ class Sphere: public Primitive {
     inline void buildBoundingVolume();
     const int intersect(const Ray &ray, Intercept intercepts[],
                         Material * entryMat) const;
-    const Vector3D normalAt(const Point3D &point) const;
+    void getIntersect(const Point3D &point, Vector3D * normal,
+                      std::vector<P_FLT> * mapping) const;
 };
 
 

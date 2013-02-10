@@ -91,28 +91,44 @@ const int Polygon::intersect(const Ray &ray, Intercept intercepts[],
 }
 
 
-const Vector3D PolygonPatch::normalAt(const Point3D &point) const {
+void PolygonPatch::getIntersect(const Point3D &point, Vector3D * normal,
+                                std::vector<P_FLT> * mapping) const {
+  // TODO(kent): True interpolation
   P_FLT * weights = new P_FLT[vertexNum];
-  Vector3D resultNorm(0.0f, 0.0f, 0.0f);
+  *normal = Vector3D(0.0f);
 
   for (int i = 0; i < vertexNum; i++) {
     if (point == vertex[i]) {
-      return vertexNormal[i];
+      *normal = vertexNormal[i];
+      return;
     }
   }
   for (int i = 0; i < vertexNum; i++) {
     weights[i] = 1 / (vertex[i] - point).length();
-    resultNorm += vertexNormal[i] * weights[i];
+    *normal += vertexNormal[i] * weights[i];
   }
 
-  resultNorm.normalize();
-  return resultNorm;
+  delete [] weights;
+  normal->normalize();
 }
 
 
 inline void Sphere::buildBoundingVolume() {
   Vector3D radiusVector(radius);
   boundingVolume = new Box(center + radiusVector, center - radiusVector);
+}
+
+
+void Sphere::getIntersect(const Point3D &point, Vector3D * normal,
+                          std::vector<P_FLT> * mapping) const {
+  // TODO(kent): Inverse sphere mapping
+  if (insideOut) {
+    *normal = point - center;
+  } else {
+    *normal = center - point;
+  }
+
+  normal->normalize();
 }
 
 
@@ -153,19 +169,6 @@ const int Sphere::intersect(const Ray &ray, Intercept intercepts[],
                               this);
     return 1;
   }
-}
-
-
-const Vector3D Sphere::normalAt(const Point3D &point) const {
-  Vector3D normal;
-  if (radius < 0.0f) {
-    normal = point - center;
-  } else {
-    normal = center - point;
-  }
-
-  normal.normalize();
-  return normal;
 }
 
 

@@ -57,7 +57,7 @@ class Triangle: public Plane {
     };
 
     const int intersect(const Ray &ray, Intercept intercepts[],
-                                Material * entryMat) const;
+                        Material * entryMat) const;
     std::vector<P_FLT> inverseMap(const Point3D &point) const;
 };
 
@@ -78,6 +78,8 @@ class TexturedTriangle: public Triangle {
       vertexTextureCoord3 = textureCoordC;
     }
 
+    void getIntersect(const Point3D &point, Vector3D * normal,
+                      std::vector<P_FLT> * mapping) const;
     const Color getTextureColor(const std::vector<P_FLT> mapping) const;
 };
 
@@ -97,7 +99,8 @@ class TrianglePatch: public Triangle {
       vertexNormal3 = normalC;
     }
 
-    const Vector3D normalAt(const Point3D &point) const;
+    void getIntersect(const Point3D &point, Vector3D * normal,
+                      std::vector<P_FLT> * mapping) const;
 };
 
 
@@ -126,8 +129,9 @@ class PhongTriangle: public Triangle {
       vertexTextureCoord3 = textureCoordC;
     }
 
+    void getIntersect(const Point3D &point, Vector3D * normal,
+                      std::vector<P_FLT> * mapping) const;
     const Color getTextureColor(const std::vector<P_FLT> mapping) const;
-    const Vector3D normalAt(const Point3D &point) const;
 };
 
 

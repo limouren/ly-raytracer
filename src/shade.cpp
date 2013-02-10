@@ -70,8 +70,9 @@ inline void shade(const int level, const C_FLT weight,
         transWeight = hitMat->transmission.magnitude() * weight;
 
   Vector3D specDir, transDir, normal;
+  std::vector<P_FLT> mapping;
 
-  normal = intercepts[0].primitive->normalAt(interceptPoint);
+  intercepts[0].primitive->getIntersect(interceptPoint, &normal, &mapping);
   if (dotProduct(incident, normal) > 0.0f) {
     normal.negate();
   }
@@ -143,8 +144,7 @@ inline void shade(const int level, const C_FLT weight,
   }
 
   if (intercepts[0].enter && intercepts[0].primitive->texture != NULL) {
-    *color *= intercepts[0].primitive->getTextureColor(
-      intercepts[0].primitive->inverseMap(interceptPoint));
+    *color *= intercepts[0].primitive->getTextureColor(mapping);
   }
 }
 

@@ -174,6 +174,13 @@ std::vector<P_FLT> Triangle::inverseMap(const Point3D &point) const {
 }
 
 
+void TexturedTriangle::getIntersect(const Point3D &point, Vector3D * normal,
+                                    std::vector<P_FLT> * mapping) const {
+  *mapping = inverseMap(point);
+  *normal = this->normal;
+}
+
+
 const Color TexturedTriangle::getTextureColor(
   const std::vector<P_FLT> mapping) const {
   Vector2D textureCoord = *vertexTextureCoord1 * mapping[0] +
@@ -184,13 +191,21 @@ const Color TexturedTriangle::getTextureColor(
 }
 
 
-const Vector3D TrianglePatch::normalAt(const Point3D &point) const {
-  // Avoid inverse mapping separately for texture color and this
-  std::vector<P_FLT> mapping = inverseMap(point);
+void TrianglePatch::getIntersect(const Point3D &point, Vector3D * normal,
+                                 std::vector<P_FLT> * mapping) const {
+  *mapping = inverseMap(point);
+  *normal = *vertexNormal1 * (*mapping)[0] +
+            *vertexNormal2 * (*mapping)[1] +
+            *vertexNormal3 * (*mapping)[2];
+}
 
-  return *vertexNormal1 * mapping[0] +
-         *vertexNormal2 * mapping[1] +
-         *vertexNormal3 * mapping[2];
+
+void PhongTriangle::getIntersect(const Point3D &point, Vector3D * normal,
+                                 std::vector<P_FLT> * mapping) const {
+  *mapping = inverseMap(point);
+  *normal = *vertexNormal1 * (*mapping)[0] +
+            *vertexNormal2 * (*mapping)[1] +
+            *vertexNormal3 * (*mapping)[2];
 }
 
 
@@ -201,16 +216,6 @@ const Color PhongTriangle::getTextureColor(
                           *vertexTextureCoord3 * mapping[2];
 
   return texture->colorAt(textureCoord);
-}
-
-
-const Vector3D PhongTriangle::normalAt(const Point3D &point) const {
-  // Avoid inverse mapping separately for texture color and this
-  std::vector<P_FLT> mapping = inverseMap(point);
-
-  return *vertexNormal1 * mapping[0] +
-         *vertexNormal2 * mapping[1] +
-         *vertexNormal3 * mapping[2];
 }
 
 
