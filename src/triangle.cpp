@@ -184,32 +184,13 @@ const Color TexturedTriangle::getTextureColor(
 }
 
 
-// This is inefficient and really shouldn't be used
 const Vector3D TrianglePatch::normalAt(const Point3D &point) const {
-  P_FLT scale,
-        vertexWeight1,
-        vertexWeight2,
-        vertexWeight3;
-  Vector3D result;
+  // Avoid inverse mapping separately for texture color and this
+  std::vector<P_FLT> mapping = inverseMap(point);
 
-  if (point == *vertex1) {
-    return *vertexNormal1;
-  } else if  (point == *vertex2) {
-    return *vertexNormal2;
-  } else if  (point == *vertex3) {
-    return *vertexNormal3;
-  }
-
-  vertexWeight1 = 1.0f / (*vertex1 - point).length();
-  vertexWeight2 = 1.0f / (*vertex2 - point).length();
-  vertexWeight3 = 1.0f / (*vertex3 - point).length();
-
-
-  result = *vertexNormal1 * vertexWeight1 +
-           *vertexNormal2 * vertexWeight2 +
-           *vertexNormal3 * vertexWeight3;
-  result.normalize();
-  return result;
+  return *vertexNormal1 * mapping[0] +
+         *vertexNormal2 * mapping[1] +
+         *vertexNormal3 * mapping[2];
 }
 
 
@@ -220,6 +201,16 @@ const Color PhongTriangle::getTextureColor(
                           *vertexTextureCoord3 * mapping[2];
 
   return texture->colorAt(textureCoord);
+}
+
+
+const Vector3D PhongTriangle::normalAt(const Point3D &point) const {
+  // Avoid inverse mapping separately for texture color and this
+  std::vector<P_FLT> mapping = inverseMap(point);
+
+  return *vertexNormal1 * mapping[0] +
+         *vertexNormal2 * mapping[1] +
+         *vertexNormal3 * mapping[2];
 }
 
 

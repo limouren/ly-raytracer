@@ -98,7 +98,6 @@ class TrianglePatch: public Triangle {
     }
 
     const Vector3D normalAt(const Point3D &point) const;
-    const Vector3D normalAt(const Vector3D &baryCoord) const;
 };
 
 
@@ -128,6 +127,7 @@ class PhongTriangle: public Triangle {
     }
 
     const Color getTextureColor(const std::vector<P_FLT> mapping) const;
+    const Vector3D normalAt(const Point3D &point) const;
 };
 
 
