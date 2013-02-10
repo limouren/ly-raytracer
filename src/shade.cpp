@@ -17,7 +17,7 @@
 BEGIN_RAYTRACER
 
 
-C_FLT shadow(const Ray &ray, P_FLT t) {
+inline C_FLT shadow(const Ray &ray, P_FLT t) {
   Intercept intercepts[MAX_INTERSECTIONS];
 
   int hits = intersect(ray, scene.modelRoot, intercepts, NULL);
@@ -29,15 +29,17 @@ C_FLT shadow(const Ray &ray, P_FLT t) {
 }
 
 
-void specularDirection(const Vector3D &incident, const Vector3D &normal,
-                       Vector3D &result) {
-  result = incident - (normal * dotProduct(normal, incident) * 2);
+inline void specularDirection(const Vector3D &incident, const Vector3D &normal,
+                              Vector3D * result) {
+  *result = incident - (normal * dotProduct(normal, incident) * 2);
 }
 
 
-bool transmissionDirection(Material * entryMat, Material * hitMat,
-                           const Vector3D &incident, const Vector3D &normal,
-                           Vector3D &result) {
+inline bool transmissionDirection(const Material * entryMat,
+                                  const Material * hitMat,
+                                  const Vector3D &incident,
+                                  const Vector3D &normal,
+                                  Vector3D * result) {
   P_FLT refrRatio,
         cosEntry,
         cosExitSqr;
@@ -50,15 +52,16 @@ bool transmissionDirection(Material * entryMat, Material * hitMat,
   if (cosExitSqr < 0.0f) {
     return false;  // Total internal reflection
   } else {
-    result = incident * refrRatio + normal *
-             (refrRatio * cosEntry - sqrt(cosExitSqr));
+    *result = incident * refrRatio + normal *
+              (refrRatio * cosEntry - sqrt(cosExitSqr));
     return true;
   }
 }
 
 
-void shade(int level, C_FLT weight, const Point3D &interceptPoint,
-           const Vector3D &incident, Intercept * intercepts, Color * color) {
+inline void shade(const int level, const C_FLT weight,
+                  const Point3D &interceptPoint, const Vector3D &incident,
+                  Intercept * intercepts, Color * color) {
   Material * entryMat = intercepts[0].material,
            * hitMat = intercepts[0].enter?
                       intercepts[0].primitive->material: scene.medium;
@@ -72,9 +75,9 @@ void shade(int level, C_FLT weight, const Point3D &interceptPoint,
   if (dotProduct(incident, normal) > 0.0f) {
     normal.negate();
   }
-  specularDirection(incident, normal, specDir);
+  specularDirection(incident, normal, &specDir);
   bool transmission = transmissionDirection(entryMat, hitMat, incident, normal,
-                                            transDir);
+                                            &transDir);
 
   *color += scene.ambience * hitMat->ambience;
 
@@ -146,7 +149,7 @@ void shade(int level, C_FLT weight, const Point3D &interceptPoint,
 }
 
 
-void shadeBackground(const Ray &ray, Color * color) {
+inline void shadeBackground(const Ray &ray, Color * color) {
   *color += scene.backgroundColor;
 }
 

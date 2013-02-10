@@ -14,8 +14,8 @@
 BEGIN_RAYTRACER
 
 
-int intersect(const Ray &ray, MODEL_CLS * model, Intercept intercepts[],
-              Material * entryMat) {
+inline int intersect(const Ray &ray, MODEL_CLS * model, Intercept intercepts[],
+                     Material * entryMat) {
   if (model->composite_flag) {
     Composite * composite = static_cast<Composite *>(model);
 
@@ -36,8 +36,9 @@ int intersect(const Ray &ray, MODEL_CLS * model, Intercept intercepts[],
 }
 
 
-inline int intersectMerge(int op, int hitsLeft, Intercept interceptsLeft[],
-                          int hitsRight, Intercept interceptsRight[],
+inline int intersectMerge(const int op,
+                          const int hitsLeft, Intercept interceptsLeft[],
+                          const int hitsRight, Intercept interceptsRight[],
                           Intercept merged[]) {
   // Assume union only for now
   // TODO(kent): Handle non unions
@@ -77,8 +78,8 @@ inline int intersectMerge(int op, int hitsLeft, Intercept interceptsLeft[],
 }
 
 
-int trace(int level, C_FLT weight, const Ray &ray, Color * color,
-          Material * entryMat) {
+inline int trace(const int level, const C_FLT weight, const Ray &ray,
+                 Color * color, Material * entryMat) {
   Intercept intercepts[MAX_INTERSECTIONS];
 
   int hits = intersect(ray, scene.modelRoot, intercepts, entryMat);

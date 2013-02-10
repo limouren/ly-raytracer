@@ -14,15 +14,16 @@
 BEGIN_RAYTRACER
 
 
-int intersect(const Ray &ray, MODEL_CLS * model, Intercept intercepts[],
-              Material * entryMat);
+inline int intersect(const Ray &ray, MODEL_CLS * model, Intercept intercepts[],
+                     Material * entryMat);
 
-int intersectMerge(int op, int hit_left, Intercept intercept_left[],
-                   int hit_right, Intercept intercept_right[],
-                   Intercept merged[]);
+inline int intersectMerge(const int op,
+                          const int hitsLeft, Intercept interceptLeft[],
+                          const int hitsRight, Intercept interceptRight[],
+                          Intercept merged[]);
 
-int trace(int level, C_FLT weight, const Ray &ray, Color * color,
-          Material * entryMat);
+inline int trace(const int level, const C_FLT weight, const Ray &ray,
+                 Color * color, Material * entryMat);
 
 
 END_RAYTRACER
