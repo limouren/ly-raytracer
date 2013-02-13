@@ -2,6 +2,7 @@
 #define SCREEN_H
 
 
+#include <algorithm>
 #include <pthread.h>
 
 #include "config.h"
@@ -34,46 +35,46 @@ class PixelTask {
 
 class PixelTasks {
   private:
-    int taskIndex, totalTasks;
+    int totalTasks;
     pthread_mutex_t tasksMutex;
-    PixelTask * tasks;
+    std::vector<PixelTask> tasks;
 
   public:
-    explicit PixelTasks(int _totalTasks): totalTasks(_totalTasks) {
-      tasks = new PixelTask[totalTasks];
-      taskIndex = 0;
-
+    PixelTasks() {
       pthread_mutex_init(&tasksMutex, NULL);
     }
 
-    ~PixelTasks() {
-      delete [] tasks;
+    void insertTask(const PixelTask &pixelTask) {
+      tasks.push_back(pixelTask);
     }
 
-    void insertTask(const PixelTask &pixelTask) {
-      tasks[taskIndex] = pixelTask;
-      taskIndex++;
+    void prepare() {
+      totalTasks = tasks.size();
+      std::random_shuffle(tasks.begin(), tasks.end());
     }
 
     void run() {
-      int currentTask,
+      int taskNum,
           thousandth = totalTasks / 10000;
       double progress;
+      PixelTask currentTask;
 
       pthread_mutex_lock(&tasksMutex);
-      while (taskIndex > 0) {
-        taskIndex--;
-        currentTask = taskIndex;
+      taskNum = tasks.size();
+      while (taskNum > 0) {
+        currentTask = tasks.back();
+        tasks.pop_back();
         pthread_mutex_unlock(&tasksMutex);
 
-        if (currentTask % thousandth == 0) {
-          progress = 100.0f * static_cast<double>(totalTasks - currentTask) /
+        if (taskNum % thousandth == 0) {
+          progress = 100.0f * static_cast<double>(totalTasks - taskNum) /
                      static_cast<double>(totalTasks);
           printf("\rTracing...%.2f%% complete", progress);
         }
-        tasks[currentTask].run();
+        currentTask.run();
 
         pthread_mutex_lock(&tasksMutex);
+        taskNum = tasks.size();
       }
       pthread_mutex_unlock(&tasksMutex);
     }

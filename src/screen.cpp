@@ -125,7 +125,7 @@ void rayTrace(const Scene &scene, const Camera &camera, Screen &screen) {
   Vector3D top_left_pixel = top_left - camera.viewpoint +
                             (i_step * 0.5f) + (j_step * 0.5f);
 
-  PixelTasks * pixelTasks = new PixelTasks(screen.width * screen.height);
+  PixelTasks * pixelTasks = new PixelTasks();
   for (int i = 0; i < screen.width; i++) {
     for (int j = 0; j < screen.height; j++) {
       Vector3D ray_dir = top_left_pixel +
@@ -139,6 +139,8 @@ void rayTrace(const Scene &scene, const Camera &camera, Screen &screen) {
     }
   }
 
+  pixelTasks->prepare();
+
   pthread_t threads[THREAD_NUM];
   for (int i = 0; i < THREAD_NUM; i++) {
     pthread_create(&threads[i], NULL, &runPixelTasks,
@@ -147,6 +149,7 @@ void rayTrace(const Scene &scene, const Camera &camera, Screen &screen) {
   for (int i = 0; i < THREAD_NUM; i++) {
     pthread_join(threads[i], NULL);
   }
+  printf("\rTracing...100.00%% completed.\n");
 
   delete pixelTasks;
   screen.calibrate();
