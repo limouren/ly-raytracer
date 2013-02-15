@@ -194,15 +194,21 @@ void parseFill(FILE * file, Scene * scene, Material ** currentMaterial) {
 
 void parseCone(FILE * file, vector<MODEL_CLS *> * models,
                Material * currentMaterial) {
-  Point3D apex, base;
-  P_FLT radiusApex, radiusBase;
+  Point3D apexCenter, baseCenter;
+  P_FLT apexRadius, baseRadius;
   if (fscanf(file, " %f %f %f %f %f %f %f %f",
-             &base.x, &base.y, &base.z, &radiusBase,
-             &apex.x, &apex.y, &apex.z, &radiusApex) !=8) {
+             &baseCenter.x, &baseCenter.y, &baseCenter.z, &baseRadius,
+             &apexCenter.x, &apexCenter.y, &apexCenter.z, &apexRadius) != 8) {
     printf("cylinder or cone syntax error\n");
     exit(1);
   }
-  // TODO(kent): Handle cones;
+
+  if (apexRadius == baseRadius) {
+    models->push_back(new Cylinder(currentMaterial, baseCenter, apexCenter,
+                                  apexRadius));
+  } else {
+    printf("WARNING: Skipped unimplemented cone\n");
+  }
 }
 
 

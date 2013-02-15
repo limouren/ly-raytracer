@@ -42,6 +42,20 @@ class Plane: public Primitive {
 };
 
 
+/* class Circle: public Plane {
+  public:
+    P_FLT radius;
+    Point3D center;
+
+    Circle(Material * material, const Point3D &center, const P_FLT radius,
+           const Vector3D &normal):
+      Plane(material), center(center), radius(radius), normal(normal) {}
+
+    const int intersect(const Ray &ray, Intercept intercepts[],
+                        Material * entrymat) const;
+} */
+
+
 class Polygon: public Plane {
   public:
     int vertexNum;
@@ -96,6 +110,36 @@ class PolygonPatch: public Polygon {
 
 
 // Quadrics
+class Cylinder: public Primitive {
+  private:
+    bool insideOut;
+    P_FLT height, radius, radiusSqr, apexD, baseD;
+    Point3D apexCenter, baseCenter;
+    Vector3D axisNormal;
+
+  public:
+    // NOTE: -ve radius means the cylinder is inward facing
+    Cylinder(Material * material, const Point3D &baseCenter,
+             const Point3D &apexCenter, const P_FLT radius):
+      Primitive(material), insideOut(radius < 0.0f),
+      radius(fabs(radius)), radiusSqr(radius * radius),
+      apexCenter(apexCenter), baseCenter(baseCenter) {
+      axisNormal = apexCenter - baseCenter;
+      height = axisNormal.normalize();
+      apexD = - dotProduct(axisNormal, apexCenter);
+      baseD = - dotProduct(axisNormal, baseCenter);
+
+      buildBoundingVolume();
+    }
+
+    inline void buildBoundingVolume();
+    const int intersect(const Ray &ray, Intercept intercepts[],
+                        Material * entryMat) const;
+    void getIntersect(const Point3D &point, Vector3D * normal,
+                      std::vector<P_FLT> * mapping) const;
+};
+
+
 class Sphere: public Primitive {
   private:
     bool insideOut;
