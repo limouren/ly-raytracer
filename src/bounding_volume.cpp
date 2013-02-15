@@ -13,12 +13,12 @@
 BEGIN_RAYTRACER
 
 
+using namespace std;
+
+
 // Ref: Glassner -An Introduction to Ray Tracing - P.65-66
 const bool Box::intersect(const Ray &ray) const {
-  P_FLT t1, t2,
-        invX, invY, invZ,
-        tNear = -P_FLT_MAX,
-        tFar = P_FLT_MAX;
+  P_FLT inv, t1, t2, tNear, tFar;
 
   if ((fIsZero(ray.dir.x) &&
        (ray.orig.x < minExt.x || ray.orig.x > maxExt.x)) ||
@@ -26,41 +26,44 @@ const bool Box::intersect(const Ray &ray) const {
        (ray.orig.y < minExt.y || ray.orig.y > maxExt.y)) ||
       (fIsZero(ray.dir.z) &&
        (ray.orig.z < minExt.z || ray.orig.z > maxExt.z))) {
-      return false;
+    return false;
   }
 
-  invX = 1.0f / ray.dir.x,
-  t1 = (minExt.x - ray.orig.x) * invX;
-  t2 = (maxExt.x - ray.orig.x) * invX;
+  tNear = -P_FLT_MAX;
+  tFar = P_FLT_MAX;
+
+  inv = 1.0f / ray.dir.x;
+  t1 = (minExt.x - ray.orig.x) * inv;
+  t2 = (maxExt.x - ray.orig.x) * inv;
   if (t1 > t2) {
-    std::swap(t1, t2);
+    swap(t1, t2);
   }
-  tNear = std::max(t1, tNear);
-  tFar = std::min(t2, tFar);
+  tNear = max(t1, tNear);
+  tFar = min(t2, tFar);
   if (tNear > tFar || tFar < 0.0f) {
     return false;
   }
 
-  invY = 1.0f / ray.dir.y,
-  t1 = (minExt.y - ray.orig.y) * invY;
-  t2 = (maxExt.y - ray.orig.y) * invY;
+  inv = 1.0f / ray.dir.y;
+  t1 = (minExt.y - ray.orig.y) * inv;
+  t2 = (maxExt.y - ray.orig.y) * inv;
   if (t1 > t2) {
-    std::swap(t1, t2);
+    swap(t1, t2);
   }
-  tNear = std::max(t1, tNear);
-  tFar = std::min(t2, tFar);
+  tNear = max(t1, tNear);
+  tFar = min(t2, tFar);
   if (tNear > tFar || tFar < 0.0f) {
     return false;
   }
 
-  invZ = 1.0f / ray.dir.z;
-  t1 = (minExt.z - ray.orig.z) * invZ;
-  t2 = (maxExt.z - ray.orig.z) * invZ;
+  inv = 1.0f / ray.dir.z;
+  t1 = (minExt.z - ray.orig.z) * inv;
+  t2 = (maxExt.z - ray.orig.z) * inv;
   if (t1 > t2) {
-    std::swap(t1, t2);
+    swap(t1, t2);
   }
-  tNear = std::max(t1, tNear);
-  tFar = std::min(t2, tFar);
+  tNear = max(t1, tNear);
+  tFar = min(t2, tFar);
   if (tNear > tFar || tFar < 0.0f) {
     return false;
   }
