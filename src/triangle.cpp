@@ -16,8 +16,8 @@ BEGIN_RAYTRACER
 
 
 void Triangle::buildBoundingVolume() {
-  Point3D minExt = min(min(*vertex1, *vertex2), *vertex3),
-          maxExt = max(max(*vertex1, *vertex2), *vertex3);
+  Point3D minExt = pointMin(pointMin(*vertex1, *vertex2), *vertex3),
+          maxExt = pointMax(pointMax(*vertex1, *vertex2), *vertex3);
   boundingVolume = new Box(minExt, maxExt);
 }
 

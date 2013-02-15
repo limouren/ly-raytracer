@@ -51,8 +51,8 @@ inline void Polygon::buildBoundingVolume() {
   Point3D maxExt = vertex[0],
           minExt = vertex[0];
   for (int i = 1; i < vertexNum; i++) {
-    maxExt = max(maxExt, vertex[i]);
-    minExt = min(minExt, vertex[i]);
+    maxExt = pointMax(maxExt, vertex[i]);
+    minExt = pointMin(minExt, vertex[i]);
   }
 
   boundingVolume = new Box(minExt, maxExt);
@@ -136,10 +136,10 @@ const int Cone::buildBoundingVolume() {
                       sqrt(1 - base.normal.y * base.normal.y) * base.radius,
                       sqrt(1 - base.normal.z * base.normal.z) * base.radius);
 
-  Point3D minExt = min(base.center - baseExtend,
-                       apex.center - apexExtend);
-          maxExt = max(base.center + baseExtend,
-                       apex.center + apexExtend);
+  Point3D minExt = pointMin(base.center - baseExtend,
+                            apex.center - apexExtend);
+          maxExt = pointMax(base.center + baseExtend,
+                            apex.center + apexExtend);
   boundingVolume = new Box(minExt, maxExt);
 }
 
@@ -150,10 +150,10 @@ const int Cone::intersectQuadric() const {} */
 
 void Cylinder::buildBoundingVolume() {
   Vector3D radiusVector(radius);
-  Point3D minExt = min(baseCenter - radiusVector,
-                       apexCenter - radiusVector),
-          maxExt = max(baseCenter + radiusVector,
-                       apexCenter + radiusVector);
+  Point3D minExt = pointMin(baseCenter - radiusVector,
+                            apexCenter - radiusVector),
+          maxExt = pointMax(baseCenter + radiusVector,
+                            apexCenter + radiusVector);
   boundingVolume = new Box(minExt, maxExt);
 }
 

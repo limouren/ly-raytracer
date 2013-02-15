@@ -17,8 +17,8 @@ inline void TriangleMesh::buildBoundingVolume() {
   Point3D maxExt = points[0],
           minExt = points[0];
   for (int i = 1; i < pointNum; i++) {
-    maxExt = max(maxExt, points[i]);
-    minExt = min(minExt, points[i]);
+    maxExt = pointMax(maxExt, points[i]);
+    minExt = pointMin(minExt, points[i]);
   }
 
   boundingVolume = new Box(minExt, maxExt);

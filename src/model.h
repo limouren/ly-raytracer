@@ -38,8 +38,8 @@ class BVHNode: public MODEL_CLS {
       left->boundingVolume->getBox(&minExtLeft, &maxExtLeft);
       right->boundingVolume->getBox(&minExtRight, &maxExtRight);
 
-      boundingVolume = new Box(min(minExtLeft, minExtRight),
-                               max(maxExtLeft, maxExtRight));
+      boundingVolume = new Box(pointMin(minExtLeft, minExtRight),
+                               pointMax(maxExtLeft, maxExtRight));
     }
 
     ~BVHNode() {

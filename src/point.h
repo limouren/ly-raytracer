@@ -67,11 +67,11 @@ inline const P_FLT dotProduct(const Vector3D &a, const Point3D &b) {
   return dotProduct(a, static_cast<Vector3D>(b));
 }
 
-inline const Point3D max(const Point3D &a, const Point3D &b) {
+inline const Point3D pointMax(const Point3D &a, const Point3D &b) {
   return Point3D(std::max(a.x, b.x), std::max(a.y, b.y), std::max(a.z, b.z));
 }
 
-inline const Point3D min(const Point3D &a, const Point3D &b) {
+inline const Point3D pointMin(const Point3D &a, const Point3D &b) {
   return Point3D(std::min(a.x, b.x), std::min(a.y, b.y), std::min(a.z, b.z));
 }
 
