@@ -80,7 +80,9 @@ class Primitive: public MODEL_CLS {
       exit(1);
     }
 
-    virtual ~Primitive() {}
+    virtual ~Primitive() {
+      delete boundingVolume;
+    }
 };
 
 

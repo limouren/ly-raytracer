@@ -2,6 +2,7 @@
 
 #include "config.h"
 
+#include "bounding_volume.h"
 #include "intercept.h"
 #include "material.h"
 #include "point.h"
@@ -12,6 +13,13 @@
 
 
 BEGIN_RAYTRACER
+
+
+void Triangle::buildBoundingVolume() {
+  Point3D minExt = min(min(*vertex1, *vertex2), *vertex3),
+          maxExt = max(max(*vertex1, *vertex2), *vertex3);
+  boundingVolume = new Box(minExt, maxExt);
+}
 
 
 // Ref: Glassner -An Introduction to Ray Tracing - P.53-59

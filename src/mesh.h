@@ -24,7 +24,6 @@ class Intercept;
 class TriangleMesh: public Primitive {
   private:
     MODEL_CLS * triangles;
-    BoundingVolume * boundingVolume;
     int pointNum, normalNum, textureCoordNum;
     Point3D * points;
     Vector3D * normals;
@@ -74,7 +73,6 @@ class TriangleMesh: public Primitive {
     }
 
     ~TriangleMesh() {
-      delete boundingVolume;
       delete triangles;
       delete [] normals;
       delete [] points;

@@ -39,6 +39,8 @@ class Triangle: public Plane {
       dominantIndex = normal.dominantIndex();
 
       d = -dotProduct(*vertex1, normal);
+
+      buildBoundingVolume();
     };
 
     Triangle(Material * material, Texture * texture,
@@ -54,8 +56,11 @@ class Triangle: public Plane {
       dominantIndex = normal.dominantIndex();
 
       d = -dotProduct(*vertex1, normal);
+
+      buildBoundingVolume();
     };
 
+    void buildBoundingVolume();
     const int intersect(const Ray &ray, Intercept intercepts[],
                         Material * entryMat) const;
     std::vector<P_FLT> inverseMap(const Point3D &point) const;
