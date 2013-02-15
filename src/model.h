@@ -18,7 +18,7 @@ BEGIN_RAYTRACER
 // Ref: An Introduction to Ray Tracing; A.S. Glassner (1989)
 class MODEL_CLS {
   public:
-    int type;
+    unsigned char type;
     BoundingVolume * boundingVolume;
 
     explicit MODEL_CLS(int type): type(type) {}
