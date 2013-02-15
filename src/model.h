@@ -2,10 +2,12 @@
 #define MODEL_H
 
 
+#include <algorithm>
 #include <vector>
 
 #include "config.h"
 
+#include "bounding_volume.h"
 #include "material.h"
 #include "texture.h"
 
@@ -16,23 +18,47 @@ BEGIN_RAYTRACER
 // Ref: An Introduction to Ray Tracing; A.S. Glassner (1989)
 class MODEL_CLS {
   public:
-    int composite_flag;
+    int type;
+    BoundingVolume * boundingVolume;
 
-    explicit MODEL_CLS(int composite_flag): composite_flag(composite_flag) {}
+    explicit MODEL_CLS(int type): type(type) {}
+};
+
+
+class BVHNode: public MODEL_CLS {
+  public:
+    MODEL_CLS * left,
+              * right;
+
+    BVHNode(): MODEL_CLS(2) {}
+
+    BVHNode(MODEL_CLS * left, MODEL_CLS * right):
+      MODEL_CLS(2), left(left), right(right) {
+      Point3D minExtLeft, maxExtLeft, minExtRight, maxExtRight;
+      left->boundingVolume->getBox(&minExtLeft, &maxExtLeft);
+      right->boundingVolume->getBox(&minExtRight, &maxExtRight);
+
+      boundingVolume = new Box(min(minExtLeft, minExtRight),
+                               max(maxExtLeft, maxExtRight));
+    }
+
+    ~BVHNode() {
+      delete left;
+      delete right;
+    }
 };
 
 
 class Composite: public MODEL_CLS {
   public:
     char op;
-    int depth;
-    MODEL_CLS * left;
-    MODEL_CLS * right;
+    MODEL_CLS * left,
+              * right;
 
     Composite(): MODEL_CLS(1) {}
 
-    Composite(MODEL_CLS * left, MODEL_CLS * right, int depth):
-      MODEL_CLS(1), op('|'), left(left), right(right), depth(depth) {}
+    Composite(MODEL_CLS * left, MODEL_CLS * right):
+      MODEL_CLS(1), op('|'), left(left), right(right) {}
 
     ~Composite() {
       delete left;
@@ -43,18 +69,17 @@ class Composite: public MODEL_CLS {
 
 class Primitive: public MODEL_CLS {
   public:
-    BoundingVolume * boundingVolume;
     Material * material;
     Texture * texture;
 
     Primitive():
-      boundingVolume(NULL), material(NULL), texture(NULL), MODEL_CLS(0) {}
+      material(NULL), texture(NULL), MODEL_CLS(0) {}
 
     explicit Primitive(Material * material):
-      boundingVolume(NULL), material(material), texture(NULL), MODEL_CLS(0) {}
+      material(material), texture(NULL), MODEL_CLS(0) {}
 
     Primitive(Material * material, Texture * texture):
-      boundingVolume(NULL), material(material), texture(texture),
+      material(material), texture(texture),
       MODEL_CLS(0) {}
 
     virtual void getIntersect(const Point3D &point, Vector3D * normal,
@@ -80,10 +105,28 @@ class Primitive: public MODEL_CLS {
       exit(1);
     }
 
-    virtual ~Primitive() {
-      delete boundingVolume;
-    }
+    virtual ~Primitive() {}
 };
+
+
+bool compareX(MODEL_CLS * modelA, MODEL_CLS * modelB) {
+  Point3D minExtA, maxExtA, minExtB, maxExtB;
+  modelA->boundingVolume->getBox(&minExtA, &maxExtA);
+  modelB->boundingVolume->getBox(&minExtB, &maxExtB);
+  return maxExtA.x < maxExtB.x;
+}
+bool compareY(MODEL_CLS * modelA, MODEL_CLS * modelB) {
+  Point3D minExtA, maxExtA, minExtB, maxExtB;
+  modelA->boundingVolume->getBox(&minExtA, &maxExtA);
+  modelB->boundingVolume->getBox(&minExtB, &maxExtB);
+  return maxExtA.y < maxExtB.y;
+}
+bool compareZ(MODEL_CLS * modelA, MODEL_CLS * modelB) {
+  Point3D minExtA, maxExtA, minExtB, maxExtB;
+  modelA->boundingVolume->getBox(&minExtA, &maxExtA);
+  modelB->boundingVolume->getBox(&minExtB, &maxExtB);
+  return maxExtA.z < maxExtB.z;
+}
 
 
 MODEL_CLS * buildModelTreeNode(std::vector<MODEL_CLS *> modelVector,
@@ -92,20 +135,34 @@ MODEL_CLS * buildModelTreeNode(std::vector<MODEL_CLS *> modelVector,
 
   switch (size) {
     case 0:
+      printf("ERROR: Attempted to construct empty model tree\n");
+      exit(1);
       return NULL;
+
     case 1:
       return modelVector[0];
-    case 2:
-      return new Composite(modelVector[0], modelVector[1], depth);
+
     default:
+      switch (depth % 3) {
+        case 0:
+          std::sort(modelVector.begin(), modelVector.end(), compareX);
+          break;
+        case 1:
+          std::sort(modelVector.begin(), modelVector.end(), compareY);
+          break;
+        case 2:
+          std::sort(modelVector.begin(), modelVector.end(), compareZ);
+          break;
+      }
       std::vector<MODEL_CLS *>::iterator midpoint = modelVector.begin() +
                                                     (size / 2);
       std::vector<MODEL_CLS *> firstHalf(modelVector.begin(), midpoint),
                                secondHalf(midpoint, modelVector.end());
 
-      return new Composite(buildModelTreeNode(firstHalf, depth + 1),
-                           buildModelTreeNode(secondHalf, depth + 1),
-                           depth);
+      MODEL_CLS * left = buildModelTreeNode(firstHalf, depth + 1),
+                * right = buildModelTreeNode(secondHalf, depth + 1);
+
+      return new BVHNode(left, right);
   }
 }
 

@@ -81,6 +81,8 @@ class TexturedTriangle: public Triangle {
       vertexTextureCoord1 = textureCoordA;
       vertexTextureCoord2 = textureCoordB;
       vertexTextureCoord3 = textureCoordC;
+
+      buildBoundingVolume();
     }
 
     void getIntersect(const Point3D &point, Vector3D * normal,
@@ -102,6 +104,8 @@ class TrianglePatch: public Triangle {
       vertexNormal1 = normalA;
       vertexNormal2 = normalB;
       vertexNormal3 = normalC;
+
+      buildBoundingVolume();
     }
 
     void getIntersect(const Point3D &point, Vector3D * normal,
@@ -132,6 +136,8 @@ class PhongTriangle: public Triangle {
       vertexTextureCoord1 = textureCoordA;
       vertexTextureCoord2 = textureCoordB;
       vertexTextureCoord3 = textureCoordC;
+
+      buildBoundingVolume();
     }
 
     void getIntersect(const Point3D &point, Vector3D * normal,

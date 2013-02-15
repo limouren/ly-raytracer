@@ -16,22 +16,37 @@ BEGIN_RAYTRACER
 
 inline int intersect(const Ray &ray, MODEL_CLS * model, Intercept intercepts[],
                      Material * entryMat) {
-  if (model->composite_flag) {
-    Composite * composite = static_cast<Composite *>(model);
+  int hitsLeft, hitsRight;
+  Intercept interceptsLeft[MAX_INTERSECTIONS],
+            interceptsRight[MAX_INTERSECTIONS];
 
-    int hitsLeft, hitsRight;
-    Intercept interceptsLeft[MAX_INTERSECTIONS],
-              interceptsRight[MAX_INTERSECTIONS];
+  switch (model->type) {
+    case 0:  // Primitive
+      return static_cast<Primitive *>(model)->intersect(ray, intercepts,
+                                                        entryMat);
 
-    hitsLeft = intersect(ray, composite->left, interceptsLeft, entryMat);
-    hitsRight = intersect(ray, composite->right, interceptsRight, entryMat);
+    case 1:  // Composite
+      hitsLeft = intersect(ray, static_cast<Composite *>(model)->left,
+                           interceptsLeft, entryMat);
+      hitsRight = intersect(ray, static_cast<Composite *>(model)->right,
+                            interceptsRight, entryMat);
 
-    return intersectMerge(composite->op, hitsLeft, interceptsLeft,
-                              hitsRight, interceptsRight, intercepts);
-  } else {
-    Primitive * prim = static_cast<Primitive *>(model);
+      return intersectMerge(static_cast<Composite *>(model)->op, hitsLeft,
+                            interceptsLeft, hitsRight, interceptsRight,
+                            intercepts);
 
-    return (prim->intersect)(ray, intercepts, entryMat);
+    case 2:  // K-D Tree Node
+      if (!static_cast<BVHNode *>(model)->boundingVolume->intersect(ray)) {
+        return 0;
+      }
+
+      hitsLeft = intersect(ray, static_cast<BVHNode *>(model)->left,
+                           interceptsLeft, entryMat);
+      hitsRight = intersect(ray, static_cast<BVHNode *>(model)->right,
+                            interceptsRight, entryMat);
+
+      return intersectMerge('|', hitsLeft, interceptsLeft, hitsRight,
+                            interceptsRight, intercepts);
   }
 }
 
