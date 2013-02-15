@@ -76,7 +76,7 @@ inline void TriangleMesh::constructTriangles(
     }
   }
 
-  triangles = buildModelTree(triangleVector);
+  triangles = buildModelTreeNode(triangleVector, 0);
 }
 
 

@@ -192,8 +192,7 @@ void parseFill(FILE * file, Scene * scene, Material ** currentMaterial) {
 }
 
 
-void parseCone(FILE * file, vector<MODEL_CLS *> * models,
-               Material * currentMaterial) {
+void parseCone(FILE * file, Scene * scene, Material * currentMaterial) {
   Point3D apexCenter, baseCenter;
   P_FLT apexRadius, baseRadius;
   if (fscanf(file, " %f %f %f %f %f %f %f %f",
@@ -204,16 +203,15 @@ void parseCone(FILE * file, vector<MODEL_CLS *> * models,
   }
 
   if (apexRadius == baseRadius) {
-    models->push_back(new Cylinder(currentMaterial, baseCenter, apexCenter,
-                                  apexRadius));
+    scene->primitives.push_back(new Cylinder(currentMaterial, baseCenter,
+                                             apexCenter, apexRadius));
   } else {
     printf("WARNING: Skipped unimplemented cone\n");
   }
 }
 
 
-void parseSphere(FILE * file, vector<MODEL_CLS *> * models,
-                 Material * currentMaterial) {
+void parseSphere(FILE * file, Scene * scene, Material * currentMaterial) {
   P_FLT radius;
   Point3D center;
 
@@ -223,12 +221,11 @@ void parseSphere(FILE * file, vector<MODEL_CLS *> * models,
     exit(1);
   }
 
-  models->push_back(new Sphere(currentMaterial, center, radius));
+  scene->primitives.push_back(new Sphere(currentMaterial, center, radius));
 }
 
 
-void parsePoly(FILE * file, vector<MODEL_CLS *> * models,
-               Material * currentMaterial) {
+void parsePoly(FILE * file, Scene * scene, Material * currentMaterial) {
   int patch,
       vertexNum;
   Point3D  * vertex;
@@ -267,8 +264,8 @@ void parsePoly(FILE * file, vector<MODEL_CLS *> * models,
       }
     }
 
-    models->push_back(new PolygonPatch(currentMaterial, vertexNum, vertex,
-                                       normal));
+    scene->primitives.push_back(new PolygonPatch(currentMaterial, vertexNum,
+                                                 vertex, normal));
   } else {
     for (int i = 0; i < vertexNum; i++) {
       if (fscanf(file, " %f %f %f",
@@ -278,13 +275,13 @@ void parsePoly(FILE * file, vector<MODEL_CLS *> * models,
       }
     }
 
-    models->push_back(new Polygon(currentMaterial, vertexNum, vertex));
+    scene->primitives.push_back(new Polygon(currentMaterial, vertexNum,
+                                            vertex));
   }
 }
 
-void parseInclude(FILE * file, Scene * scene,
-                  Camera * camera, Screen * screen,
-                  vector<MODEL_CLS *> * models, Material ** currentMaterial) {
+void parseInclude(FILE * file, Scene * scene, Camera * camera,
+                  Screen * screen, Material ** currentMaterial) {
   char filename[80],
        filepath[1024];
   FILE * includeFile;
@@ -313,7 +310,6 @@ void parseDetailLevel(FILE * file) {
 
 
 void parseTexturedTriangle(FILE *file, Scene * scene,
-                           vector<MODEL_CLS *> * models,
                            Material * currentMaterial) {
   char filepath[1024],
        textureName[200];
@@ -362,13 +358,13 @@ void parseTexturedTriangle(FILE *file, Scene * scene,
   }
 
   if (patch) {
-    models->push_back(new PhongTriangle(
+    scene->primitives.push_back(new PhongTriangle(
       currentMaterial, texture,
       vertex[0], vertex[1], vertex[2],
       normal[0], normal[1], normal[2],
       textureCoord[0], textureCoord[1], textureCoord[2]));
   } else {
-    models->push_back(new TexturedTriangle(
+    scene->primitives.push_back(new TexturedTriangle(
       currentMaterial, texture,
       vertex[0], vertex[1], vertex[2],
       textureCoord[0], textureCoord[1], textureCoord[2]));
@@ -418,13 +414,12 @@ void parseAnimatedTriangle(FILE *file) {
 
 
 void parseTextureStuff(FILE * file, Scene * scene,
-                       vector<MODEL_CLS *> * models,
                        Material * currentMaterial) {
   char inputChar;
 
   inputChar = getc(file);
   if (inputChar =='t') {
-    parseTexturedTriangle(file, scene, models, currentMaterial);
+    parseTexturedTriangle(file, scene, currentMaterial);
   } else if (inputChar == 'p') {
     inputChar = getc(file);
     if (inputChar == 'a') {
@@ -721,8 +716,7 @@ void getTriangleDefs(FILE * file, bool hasNorms, bool hasTextures,
 }
 
 
-void parseMesh(FILE * file, Scene * scene, vector<MODEL_CLS *> * models,
-               Material * currentMaterial) {
+void parseMesh(FILE * file, Scene * scene, Material * currentMaterial) {
   char textureName[200],
        buffer[200];
   int flag;
@@ -769,8 +763,9 @@ void parseMesh(FILE * file, Scene * scene, vector<MODEL_CLS *> * models,
     exit(1);
   }
 
-  models->push_back(new TriangleMesh(currentMaterial, texture, vertex, normal,
-                                     textureCoords, triangleDefs));
+  scene->primitives.push_back(new TriangleMesh(currentMaterial, texture,
+                                               vertex, normal, textureCoords,
+                                               triangleDefs));
 }
 
 
@@ -785,8 +780,6 @@ int parseFile(const char * filename, Scene * scene, Camera * camera,
   strncpy(directoryPath, filename, 1024);
   *(strrchr(directoryPath, '/') + 1) = '\0';
 
-
-  vector<MODEL_CLS *> models;
   Material * currentMaterial = previousMaterial? *previousMaterial: NULL;
 
   char last;
@@ -816,22 +809,22 @@ int parseFile(const char * filename, Scene * scene, Camera * camera,
         parseFill(file, scene, &currentMaterial);
         break;
       case 'c':
-        parseCone(file, &models, currentMaterial);
+        parseCone(file, scene, currentMaterial);
         break;
       case 's':
-        parseSphere(file, &models, currentMaterial);
+        parseSphere(file, scene, currentMaterial);
         break;
       case 'p':
-        parsePoly(file, &models, currentMaterial);
+        parsePoly(file, scene, currentMaterial);
         break;
       case 'i':
-        parseInclude(file, scene, camera, screen, &models, &currentMaterial);
+        parseInclude(file, scene, camera, screen, &currentMaterial);
         break;
       case 'd':
         parseDetailLevel(file);
         break;
       case 't':
-        parseTextureStuff(file, scene, &models, currentMaterial);
+        parseTextureStuff(file, scene, currentMaterial);
         break;
       case 'x':
         parseXform(file);
@@ -847,7 +840,7 @@ int parseFile(const char * filename, Scene * scene, Camera * camera,
         parseKeyFrames(file);
         break;
       case 'm':
-        parseMesh(file, scene, &models, currentMaterial);
+        parseMesh(file, scene, currentMaterial);
         break;
       default:
         printf("unknown NFF primitive code: %c\n", ch);
@@ -855,11 +848,6 @@ int parseFile(const char * filename, Scene * scene, Camera * camera,
         exit(1);
     }
   }
-
-  if (scene->modelRoot != NULL) {
-    models.push_back(scene->modelRoot);
-  }
-  scene->modelRoot = buildModelTree(models);
 
   if (previousMaterial) {
     *previousMaterial = currentMaterial;

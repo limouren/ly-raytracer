@@ -25,12 +25,14 @@ class MODEL_CLS {
 class Composite: public MODEL_CLS {
   public:
     char op;
+    int depth;
     MODEL_CLS * left;
     MODEL_CLS * right;
 
     Composite(): MODEL_CLS(1) {}
-    Composite(MODEL_CLS * left, MODEL_CLS * right):
-      op('|'), left(left), right(right), MODEL_CLS(1) {}
+
+    Composite(MODEL_CLS * left, MODEL_CLS * right, int depth):
+      MODEL_CLS(1), op('|'), left(left), right(right), depth(depth) {}
 
     ~Composite() {
       delete left;
@@ -47,8 +49,10 @@ class Primitive: public MODEL_CLS {
 
     Primitive():
       boundingVolume(NULL), material(NULL), texture(NULL), MODEL_CLS(0) {}
+
     explicit Primitive(Material * material):
       boundingVolume(NULL), material(material), texture(NULL), MODEL_CLS(0) {}
+
     Primitive(Material * material, Texture * texture):
       boundingVolume(NULL), material(material), texture(texture),
       MODEL_CLS(0) {}
@@ -80,7 +84,8 @@ class Primitive: public MODEL_CLS {
 };
 
 
-MODEL_CLS * buildModelTree(std::vector<MODEL_CLS *> modelVector) {
+MODEL_CLS * buildModelTreeNode(std::vector<MODEL_CLS *> modelVector,
+                               int depth) {
   int size = modelVector.size();
 
   switch (size) {
@@ -89,15 +94,16 @@ MODEL_CLS * buildModelTree(std::vector<MODEL_CLS *> modelVector) {
     case 1:
       return modelVector[0];
     case 2:
-      return new Composite(modelVector[0], modelVector[1]);
+      return new Composite(modelVector[0], modelVector[1], depth);
     default:
       std::vector<MODEL_CLS *>::iterator midpoint = modelVector.begin() +
                                                     (size / 2);
       std::vector<MODEL_CLS *> firstHalf(modelVector.begin(), midpoint),
                                secondHalf(midpoint, modelVector.end());
 
-      return new Composite(buildModelTree(firstHalf),
-                           buildModelTree(secondHalf));
+      return new Composite(buildModelTreeNode(firstHalf, depth + 1),
+                           buildModelTreeNode(secondHalf, depth + 1),
+                           depth);
   }
 }
 

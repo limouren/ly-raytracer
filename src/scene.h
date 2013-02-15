@@ -31,6 +31,7 @@ class Scene {
     Material * medium;
     std::vector<Light * > lights;
     std::vector<Material *> materials;
+    std::vector<MODEL_CLS *> primitives;
     std::vector<Texture *> textures;
     MODEL_CLS * modelRoot;
 
@@ -49,6 +50,11 @@ class Scene {
            itr != textures.end(); itr++) {
         (*itr)->loadFromFile();
       }
+    }
+
+
+    void buildModelTree() {
+      modelRoot = buildModelTreeNode(primitives, 0);
     }
 
     // TODO(kent): Fix this eventually
