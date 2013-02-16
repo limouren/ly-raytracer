@@ -14,7 +14,7 @@ class Scene;
 class Screen;
 
 
-int parseFile(const char * filename, Scene * scene, Camera * camera,
+int parseFile(const char * filename, Scene * scene, Camera ** camera,
               Screen * screen, Material ** currentMaterial);
 
 

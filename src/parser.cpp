@@ -48,7 +48,7 @@ void parseComment(FILE *file) {
 }
 
 
-void parseViewpoint(FILE *file, Camera * camera) {
+void parseViewpoint(FILE *file, Camera ** camera) {
   Point3D target, viewpoint;
   Vector3D up;
   P_FLT angle, hither;
@@ -69,7 +69,8 @@ void parseViewpoint(FILE *file, Camera * camera) {
     exit(1);
   }
 
-  camera->init(viewpoint, target, up, angle, hither, imageWidth, imageHeight);
+  *camera = new Camera(viewpoint, target, up, angle, hither, imageWidth,
+                       imageHeight);
 }
 
 
@@ -280,7 +281,7 @@ void parsePoly(FILE * file, Scene * scene, Material * currentMaterial) {
   }
 }
 
-void parseInclude(FILE * file, Scene * scene, Camera * camera,
+void parseInclude(FILE * file, Scene * scene, Camera ** camera,
                   Screen * screen, Material ** currentMaterial) {
   char filename[80],
        filepath[1024];
@@ -769,7 +770,7 @@ void parseMesh(FILE * file, Scene * scene, Material * currentMaterial) {
 }
 
 
-int parseFile(const char * filename, Scene * scene, Camera * camera,
+int parseFile(const char * filename, Scene * scene, Camera ** camera,
               Screen * screen, Material ** previousMaterial) {
   FILE * file;
 

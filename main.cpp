@@ -26,7 +26,7 @@ BEGIN_RAYTRACER
 
 
 int main(char * inputFilename, char * outputFilename) {
-  Camera camera;
+  Camera * camera;
   Screen screen;
 
   printf("Parsing file \"%s\"...", inputFilename);
@@ -38,7 +38,7 @@ int main(char * inputFilename, char * outputFilename) {
 
   printf("Tracing...");
   fflush(stdout);
-  rayTrace(scene, camera, screen);
+  rayTrace(scene, *camera, screen);
   printf("\n");
 
   printf("Saving file to \"%s\"...", outputFilename);

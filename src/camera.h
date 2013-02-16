@@ -6,40 +6,33 @@
 
 #include "config.h"
 
-#include "point.h"
-#include "vector.h"
 
+class Point3D;
+class Vector3D;
 
 BEGIN_RAYTRACER
 
 
 class Camera {
-  private:
-    void initForward() {
-      Vector3D dir = target - viewpoint;
-      dir.normalize();
-      P_FLT dirDotUp = dotProduct(dir, up);
-
-      P_FLT root = 1.0f / sqrt(1.0f - dirDotUp * dirDotUp);
-      forward = up * dirDotUp * root + dir * root;
-    }
-
   public:
-    int imageHeight,
-        imageWidth;
-    P_FLT angle,  // y-direction view angle
+    int imageHeight, imageWidth;
+    P_FLT angle,  // horizontal view angle
           aspectRatio,
           hither;
     Point3D target,
             viewpoint;
-    Vector3D forward,
-             up;
+    Vector3D up;
 
-    Camera() {}
+    Camera(const Point3D &viewpoint, const Point3D &target,
+           const Vector3D &up, const P_FLT angle, const P_FLT hither,
+           const int imageWidth, const int imageHeight):
+      angle(angle), hither(hither), imageHeight(imageHeight),
+      imageWidth(imageWidth), target(target), up(up), viewpoint(viewpoint) {
+      aspectRatio = static_cast<P_FLT>(imageWidth) /
+                    static_cast<P_FLT>(imageHeight);
 
-    void init(const Point3D &_viewpoint, const Point3D &_target,
-              const Vector3D &_up, const P_FLT &_angle, const P_FLT &_hither,
-              const int imageWidth, const int resolutionHeight);
+      this->up.normalize();
+    }
 };
 
 
