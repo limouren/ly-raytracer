@@ -12,7 +12,6 @@
 #include "point.h"
 #include "parser.h"
 #include "scene.h"
-#include "screen.h"
 #include "shapes.h"
 #include "texture.h"
 #include "vector.h"
@@ -282,7 +281,7 @@ void parsePoly(FILE * file, Scene * scene, Material * currentMaterial) {
 }
 
 void parseInclude(FILE * file, Scene * scene, Camera ** camera,
-                  Screen * screen, Material ** currentMaterial) {
+                  Material ** currentMaterial) {
   char filename[80],
        filepath[1024];
   FILE * includeFile;
@@ -295,7 +294,7 @@ void parseInclude(FILE * file, Scene * scene, Camera ** camera,
 
   if (detailLevel <= globalDetailLevel) {
     fullFilePath(filepath, filename);
-    parseFile(filepath, scene, camera, screen, currentMaterial);
+    parseFile(filepath, scene, camera, currentMaterial);
   } else {
     printf("Skipping include file: %s\n", filename);
   }
@@ -771,7 +770,7 @@ void parseMesh(FILE * file, Scene * scene, Material * currentMaterial) {
 
 
 int parseFile(const char * filename, Scene * scene, Camera ** camera,
-              Screen * screen, Material ** previousMaterial) {
+              Material ** previousMaterial) {
   FILE * file;
 
   if (!(file = fopen(filename, "r"))) {
@@ -819,7 +818,7 @@ int parseFile(const char * filename, Scene * scene, Camera ** camera,
         parsePoly(file, scene, currentMaterial);
         break;
       case 'i':
-        parseInclude(file, scene, camera, screen, &currentMaterial);
+        parseInclude(file, scene, camera, &currentMaterial);
         break;
       case 'd':
         parseDetailLevel(file);

@@ -31,7 +31,7 @@ int main(char * inputFilename, char * outputFilename) {
 
   printf("Parsing file \"%s\"...", inputFilename);
   fflush(stdout);
-  parseFile(inputFilename, &scene, &camera, &screen, NULL);
+  parseFile(inputFilename, &scene, &camera, NULL);
   printf("completed.\n");
   scene.buildModelTree();
   scene.loadTextures();
