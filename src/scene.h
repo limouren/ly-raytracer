@@ -27,7 +27,6 @@ BEGIN_RAYTRACER
 class Scene {
   public:
     Color ambience, backgroundColor;
-    Background * background;
     Material * medium;
     std::vector<Light * > lights;
     std::vector<Material *> materials;
@@ -52,32 +51,26 @@ class Scene {
       }
     }
 
-
     void buildModelTree() {
       modelRoot = buildModelTreeNode(primitives, 0);
     }
 
-    // TODO(kent): Fix this eventually
-    // ~Scene() {
-    //   delete background;
-    //   delete medium;
-    //   while (!lights.empty()) {
-    //     delete lights.back();
-    //     lights.pop_back();
-    //   }
-    //   while (!materials.empty()) {
-    //     delete materials.back();
-    //     materials.pop_back();
-    //   }
-    //   for (std::map<const char *, Texture *>::iterator itr =
-    //          textures.begin();
-    //        itr != textures.end(); itr++) {
-    //     delete itr->first;
-    //     delete itr->second;
-    //   }
-    //   textures.clear();
-    //   delete modelRoot;
-    // }
+    ~Scene() {
+      delete medium;
+      for (std::vector<Light *>::iterator itr = lights.begin();
+           itr != lights.end(); itr++) {
+        delete (*itr);
+      }
+      for (std::vector<Material *>::iterator itr = materials.begin();
+           itr != materials.end(); itr++) {
+        delete (*itr);
+      }
+      for (std::vector<Texture *>::iterator itr = textures.begin();
+           itr != textures.end(); itr++) {
+        delete (*itr);
+      }
+      delete modelRoot;
+    }
 } scene;
 
 
