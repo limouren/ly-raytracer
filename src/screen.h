@@ -24,6 +24,7 @@ class PixelTracer {
   private:
     Color * pixel;
     Vector3D rayDir;
+
   public:
     PixelTracer(Color * pixel, const Vector3D &rayDir):
       pixel(pixel), rayDir(rayDir) {}

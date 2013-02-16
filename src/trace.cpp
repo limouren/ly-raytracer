@@ -66,12 +66,11 @@ inline int intersectMerge(const int op,
     if (interceptsLeft[leftIndex].t < interceptsRight[rightIndex].t) {
       merged[index] = interceptsLeft[leftIndex];
       leftIndex++;
-      index++;
     } else {
       merged[index] = interceptsRight[rightIndex];
       rightIndex++;
-      index++;
     }
+    index++;
 
     if (index == MAX_INTERSECTIONS) {
       return MAX_INTERSECTIONS;

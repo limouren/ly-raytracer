@@ -42,7 +42,7 @@ class Box: public BoundingVolume {
     }
 
 
-    const bool intersect(const Ray &ray) const;
+    inline const bool intersect(const Ray &ray) const;
 };
 
 
