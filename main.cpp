@@ -27,7 +27,6 @@ BEGIN_RAYTRACER
 
 int main(char * inputFilename, char * outputFilename) {
   Camera * camera;
-  Screen screen;
 
   printf("Parsing file \"%s\"...", inputFilename);
   fflush(stdout);
@@ -36,10 +35,8 @@ int main(char * inputFilename, char * outputFilename) {
   scene.buildModelTree();
   scene.loadTextures();
 
-  printf("Tracing...");
-  fflush(stdout);
-  rayTrace(scene, *camera, screen);
-  printf("\n");
+  Screen screen(camera);
+  screen.rayTrace(scene, camera);
 
   printf("Saving file to \"%s\"...", outputFilename);
   fflush(stdout);
@@ -61,6 +58,8 @@ int main(int argc, char * argv[]) {
     printf("Usage: raytracer <input filename> <output filename>\n");
     return 1;
   }
+
+  // TODO(kent): Modify aaLevel, threadNum with command line params
 
   RAYTRACER_NAMESPACE::main(argv[1], argv[2]);
   return 0;

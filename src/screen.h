@@ -3,6 +3,7 @@
 
 
 #include <algorithm>
+#include <vector>
 #include <pthread.h>
 
 #include "config.h"
@@ -19,86 +20,98 @@
 BEGIN_RAYTRACER
 
 
-class PixelTask {
+class PixelTracer {
+  private:
+    Color * pixel;
+    Vector3D rayDir;
   public:
-    Color * color;
-    Ray ray;
+    PixelTracer(Color * pixel, const Vector3D &rayDir):
+      pixel(pixel), rayDir(rayDir) {}
 
-    PixelTask() {}
-    PixelTask(Color * color, const Ray &ray): color(color), ray(ray) {}
-
-    int run() {
-      return trace(0, 1.0f, ray, color, scene.medium);  // Assume outside
+    inline int run(const Point3D &rayOrig) {
+      Ray ray(rayOrig, rayDir);
+      return trace(0, 1.0f, ray, pixel, scene.medium);
     }
 };
 
 
-class PixelTasks {
+class ScreenTracer {
   private:
-    int totalTasks;
+    int taskCount;
+    std::vector<PixelTracer *> tasks;
     pthread_mutex_t tasksMutex;
-    std::vector<PixelTask> tasks;
+    Point3D rayOrig;
 
   public:
-    PixelTasks() {
+    ScreenTracer() {
       pthread_mutex_init(&tasksMutex, NULL);
     }
 
-    void insertTask(const PixelTask &pixelTask) {
-      tasks.push_back(pixelTask);
+    void addTask(Color * pixel, const Vector3D &rayDir) {
+      tasks.push_back(new PixelTracer(pixel, rayDir));
     }
 
-    void prepare() {
-      totalTasks = tasks.size();
+    void init(const Point3D &rayOrig) {
+      this->rayOrig = rayOrig;
+      taskCount = tasks.size();
+      // The magic behind steady progress printing...
       std::random_shuffle(tasks.begin(), tasks.end());
     }
 
-    void run() {
-      int taskNum,
-          thousandth = totalTasks / 10000;
-      double progress;
-      PixelTask currentTask;
+    inline void run() {
+      int index,
+          thousandth = taskCount / 1000;
+      float progress,
+            progressPercent = 100.0f / static_cast<float>(taskCount);
+      PixelTracer * pixelTracer;
 
       pthread_mutex_lock(&tasksMutex);
-      taskNum = tasks.size();
-      while (taskNum > 0) {
-        currentTask = tasks.back();
+      index = tasks.size();
+      while (index > 0) {
+        pixelTracer = tasks.back();
         tasks.pop_back();
         pthread_mutex_unlock(&tasksMutex);
 
-        if (taskNum % thousandth == 0) {
-          progress = 100.0f * static_cast<double>(totalTasks - taskNum) /
-                     static_cast<double>(totalTasks);
-          printf("\rTracing...%.2f%% complete", progress);
+        if (index % thousandth == 0) {
+          progress = static_cast<float>(taskCount - index) * progressPercent;
+          printf("\rTracing image...%.1f%% completed.", progress);
+          fflush(stdout);
         }
-        currentTask.run();
+        pixelTracer->run(rayOrig);
+        delete pixelTracer;
 
         pthread_mutex_lock(&tasksMutex);
-        taskNum = tasks.size();
+        index = tasks.size();
       }
       pthread_mutex_unlock(&tasksMutex);
     }
 };
 
 
+// This is a proxy function for pthreads to run ScreenTracer->trace()
+void * runScreenTracer(void * context) {
+  static_cast<ScreenTracer *>(context)->run();
+}
+
+
 class Screen {
   public:
     int height, width;
-
     Color * pixels;
 
-    Screen() {}
+    explicit Screen(const Camera * camera):
+      height(camera->imageHeight), width(camera->imageWidth) {
+      pixels = new Color[height * width];
+    }
 
     ~Screen() {
       delete [] pixels;
     }
 
     void calibrate();
+    void rayTrace(const Scene &scene, const Camera * camera);
     void saveBmp(char * outputFilename) const;
 };
-
-
-void rayTrace(const Scene &scene, const Camera &camera, Screen &screen);
 
 
 END_RAYTRACER

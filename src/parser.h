@@ -11,7 +11,6 @@ BEGIN_RAYTRACER
 class Camera;
 class Material;
 class Scene;
-class Screen;
 
 
 int parseFile(const char * filename, Scene * scene, Camera ** camera,

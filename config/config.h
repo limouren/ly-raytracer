@@ -2,7 +2,7 @@
 #define CONFIG_H
 
 
-#define DEBUG 1
+#define DEBUG (1)
 
 #define THREAD_NUM (8)
 
@@ -35,7 +35,7 @@
 
 #define MODEL_CLS Model
 // Internal resolution factor for sampling
-#define INT_RES_FACTOR (1)
+#define DEFAULT_ANTIALIASING_LEVEL (0)
 
 
 BEGIN_RAYTRACER
@@ -46,6 +46,10 @@ typedef float C_FLT;
 
 // Double precision position
 typedef float P_FLT;
+
+
+int aaLevel = DEFAULT_ANTIALIASING_LEVEL;
+int threadNum = THREAD_NUM;
 
 
 END_RAYTRACER
