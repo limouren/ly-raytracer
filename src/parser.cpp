@@ -332,8 +332,7 @@ void parseTexturedTriangle(FILE *file, Scene * scene,
   }
 
   fullFilePath(filepath, textureName);
-  Texture * texture = new Texture(filepath);
-  scene->textures.push_back(texture);
+  Texture * texture = scene->getOrCreateTexture(filepath);
 
   for (int i = 0; i < 3; i++) {
     if (fscanf(file, " %f %f %f", &x, &y, &z) != 3) {
@@ -749,8 +748,7 @@ void parseMesh(FILE * file, Scene * scene, Material * currentMaterial) {
 
     char filepath[1024];
     fullFilePath(filepath, textureName);
-    texture = new Texture(filepath);
-    scene->textures.push_back(texture);
+    texture = scene->getOrCreateTexture(filepath);
 
     flag = fscanf(file, "%s", buffer);
   }

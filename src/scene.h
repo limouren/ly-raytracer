@@ -44,6 +44,19 @@ class Scene {
                             0.0f);
     }
 
+    Texture * getOrCreateTexture(char * filepath) {
+      for (std::vector<Texture *>::iterator itr = textures.begin();
+           itr != textures.end(); itr++) {
+        if (strncmp(filepath, (*itr)->filepath, strlen(filepath) + 1) == 0) {
+          return *itr;
+        }
+      }
+
+      Texture * newTexture = new Texture(filepath);
+      textures.push_back(newTexture);
+      return newTexture;
+    }
+
     void loadTextures() {
       for (std::vector<Texture *>::iterator itr = textures.begin();
            itr != textures.end(); itr++) {
