@@ -16,37 +16,40 @@ BEGIN_RAYTRACER
 
 inline int intersect(const Ray &ray, MODEL_CLS * model, Intercept intercepts[],
                      Material * entryMat) {
-  int hitsLeft, hitsRight;
-  Intercept interceptsLeft[MAX_INTERSECTIONS],
-            interceptsRight[MAX_INTERSECTIONS];
-
   switch (model->type) {
     case 0:  // Primitive
       return static_cast<Primitive *>(model)->intersect(ray, intercepts,
                                                         entryMat);
 
-    case 1:  // Composite
-      hitsLeft = intersect(ray, static_cast<Composite *>(model)->left,
-                           interceptsLeft, entryMat);
-      hitsRight = intersect(ray, static_cast<Composite *>(model)->right,
-                            interceptsRight, entryMat);
+    case 1: {  // Composite
+      Composite * composite = static_cast<Composite *>(model);
+      int hitsLeft, hitsRight;
+      Intercept interceptsLeft[MAX_INTERSECTIONS],
+                interceptsRight[MAX_INTERSECTIONS];
 
-      return intersectMerge(static_cast<Composite *>(model)->op, hitsLeft,
-                            interceptsLeft, hitsRight, interceptsRight,
-                            intercepts);
+      hitsLeft = intersect(ray, composite->left, interceptsLeft, entryMat);
+      hitsRight = intersect(ray, composite->right, interceptsRight, entryMat);
 
-    case 2:  // K-D Tree Node
-      if (!static_cast<BVHNode *>(model)->boundingVolume->intersect(ray)) {
+      return intersectMerge(composite->op, hitsLeft, interceptsLeft, hitsRight,
+                            interceptsRight, intercepts);
+    }
+
+    case 2: {  // K-D Tree Node
+      BVHNode * bvhNode = static_cast<BVHNode *>(model);
+      int hitsLeft, hitsRight;
+      Intercept interceptsLeft[MAX_INTERSECTIONS],
+                interceptsRight[MAX_INTERSECTIONS];
+
+      if (!bvhNode->boundingVolume->intersect(ray)) {
         return 0;
       }
 
-      hitsLeft = intersect(ray, static_cast<BVHNode *>(model)->left,
-                           interceptsLeft, entryMat);
-      hitsRight = intersect(ray, static_cast<BVHNode *>(model)->right,
-                            interceptsRight, entryMat);
+      hitsLeft = intersect(ray, bvhNode->left, interceptsLeft, entryMat);
+      hitsRight = intersect(ray, bvhNode->right, interceptsRight, entryMat);
 
       return intersectMerge('|', hitsLeft, interceptsLeft, hitsRight,
                             interceptsRight, intercepts);
+    }
   }
 }
 
