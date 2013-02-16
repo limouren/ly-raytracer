@@ -34,8 +34,10 @@
 
 
 #define MODEL_CLS Model
-// Internal resolution factor for sampling
-#define DEFAULT_ANTIALIASING_LEVEL (0)
+
+// Levels of recursion in adaptive supersampling
+#define DEFAULT_AA_LEVEL (2)
+#define AA_COLOR_THRESHOLD (0.1f)
 
 
 BEGIN_RAYTRACER
@@ -48,7 +50,7 @@ typedef float C_FLT;
 typedef float P_FLT;
 
 
-int aaLevel = DEFAULT_ANTIALIASING_LEVEL;
+int aaLevel = DEFAULT_AA_LEVEL;
 int threadNum = THREAD_NUM;
 
 

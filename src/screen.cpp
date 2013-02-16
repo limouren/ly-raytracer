@@ -87,24 +87,24 @@ void Screen::rayTrace(const Scene &scene, const Camera * camera) {
   Point3D center = camera->viewpoint + dir,
           topLeft = center + top + left;
 
-  Vector3D iStep = -left / static_cast<P_FLT>(width / 2),
-           jStep = -top / static_cast<P_FLT>(height / 2);
+  Vector3D pixelHor = -left / static_cast<P_FLT>(width / 2),
+           pixelVert = -top / static_cast<P_FLT>(height / 2);
 
   Vector3D topLeftPixel = topLeft - camera->viewpoint +
-                          (iStep * 0.5f) + (jStep * 0.5f);
+                          (pixelHor * 0.5f) + (pixelVert * 0.5f);
 
   ScreenTracer * screenTracer = new ScreenTracer();
   for (int i = 0; i < width; i++) {
     for (int j = 0; j < height; j++) {
       Vector3D rayDir = topLeftPixel +
-                        iStep * static_cast<P_FLT>(i) +
-                        jStep * static_cast<P_FLT>(j);
+                        pixelHor * static_cast<P_FLT>(i) +
+                        pixelVert * static_cast<P_FLT>(j);
       rayDir.normalize();
 
       screenTracer->addTask(&pixels[j * width + i], rayDir);
     }
   }
-  screenTracer->init(camera->viewpoint);
+  screenTracer->init(camera->viewpoint, pixelHor, pixelVert);
 
   pthread_t * threads = new pthread_t[threadNum];
   for (int i = 0; i < threadNum; i++) {
