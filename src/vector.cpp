@@ -61,7 +61,6 @@ inline const Vector2D Vector2D::operator *(const P_FLT scalar) const {
 
 
 inline const Vector2D Vector2D::operator /(const P_FLT scalar) const {
-  // TODO(kent): Divison by zero?
   Vector2D result = *this;
   result /= scalar;
 
@@ -78,7 +77,6 @@ inline Vector2D Vector2D::operator *=(const P_FLT scalar) {
 
 
 inline Vector2D Vector2D::operator /=(const P_FLT scalar) {
-  // TODO(kent): Divison by zero?
   x /= scalar;
   y /= scalar;
 
@@ -97,11 +95,8 @@ inline const P_FLT Vector2D::lengthSqr() const {
 
 
 inline const P_FLT Vector2D::normalize() {
-  // TODO(kent): See if we can use inv. sqrt hack
   P_FLT len = length();
-  if (len != 0.0f) {
-    *this *= (1.0f / len);
-  }
+  *this /= len;
 
   return len;
 }
@@ -169,7 +164,6 @@ inline const Vector3D Vector3D::operator *(const P_FLT scalar) const {
 
 
 inline const Vector3D Vector3D::operator /(const P_FLT scalar) const {
-  // TODO(kent): Divison by zero?
   Vector3D result = *this;
   result /= scalar;
 
@@ -187,7 +181,6 @@ inline Vector3D Vector3D::operator *=(const P_FLT scalar) {
 
 
 inline Vector3D Vector3D::operator /=(const P_FLT scalar) {
-  // TODO(kent): Divison by zero?
   x /= scalar;
   y /= scalar;
   z /= scalar;
@@ -238,11 +231,8 @@ inline const P_FLT Vector3D::lengthSqr() const {
 
 
 inline const P_FLT Vector3D::normalize() {
-  // TODO(kent): See if we can use inv. sqrt hack
   P_FLT len = length();
-  if (len != 0.0f) {
-    *this *= (1.0f / len);
-  }
+  *this /= len;
 
   return len;
 }
