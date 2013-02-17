@@ -79,7 +79,9 @@ class TriangleMesh: public Primitive {
       delete [] points;
       delete [] textureCoords;
 
-      delete triangleTree;
+      if (triangleTree != NULL && triangleTree->type != 0) {
+        delete triangleTree;
+      }
       while (!triangles.empty()) {
         delete triangles.back();
         triangles.pop_back();

@@ -83,7 +83,10 @@ class Scene {
         textures.pop_back();
       }
 
-      delete modelRoot;
+      // Check for empty or single element scene
+      if (modelRoot != NULL && modelRoot->type != 0) {
+        delete modelRoot;
+      }
       while (!primitives.empty()) {
         delete primitives.back();
         primitives.pop_back();
