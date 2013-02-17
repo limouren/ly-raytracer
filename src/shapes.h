@@ -33,6 +33,8 @@ class Plane: public Primitive {
       d = - dotProduct(point, normal);
     }
 
+    virtual ~Plane() {}
+
     virtual const int intersect(const Ray &ray, Intercept intercepts[],
                                 Material * entryMat) const;
     virtual void getIntersect(const Point3D &point, Vector3D * normal,
@@ -77,8 +79,9 @@ class Polygon: public Plane {
       buildBoundingVolume();
     };
 
-    ~Polygon() {
+    virtual ~Polygon() {
       delete [] vertex;
+      delete boundingVolume;
     }
 
     inline void buildBoundingVolume();
@@ -132,6 +135,10 @@ class Cylinder: public Primitive {
       buildBoundingVolume();
     }
 
+    ~Cylinder() {
+      delete boundingVolume;
+    }
+
     inline void buildBoundingVolume();
     const int intersect(const Ray &ray, Intercept intercepts[],
                         Material * entryMat) const;
@@ -151,6 +158,10 @@ class Sphere: public Primitive {
       Primitive(material), insideOut(radius < 0.0), center(center),
       radius(fabs(radius)) {
       buildBoundingVolume();
+    }
+
+    ~Sphere() {
+      delete boundingVolume;
     }
 
     inline void buildBoundingVolume();

@@ -26,11 +26,10 @@ inline void TriangleMesh::buildBoundingVolume() {
 
 inline void TriangleMesh::constructTriangles(
   const std::vector<int *> &triangleDefs) {
-  std::vector<MODEL_CLS *> triangleVector;
   std::vector<int *>::const_iterator itr;
   if (normalNum == 0 && textureCoordNum == 0) {
     for (itr = triangleDefs.begin(); itr != triangleDefs.end(); itr++) {
-      triangleVector.push_back(
+      triangles.push_back(
         new Triangle(material,
                      &points[(*itr)[0]],
                      &points[(*itr)[1]],
@@ -38,7 +37,7 @@ inline void TriangleMesh::constructTriangles(
     }
   } else if (textureCoordNum == 0) {
     for (itr = triangleDefs.begin(); itr != triangleDefs.end(); itr++) {
-      triangleVector.push_back(
+      triangles.push_back(
         new TrianglePatch(material,
                           &points[(*itr)[0]],
                           &points[(*itr)[1]],
@@ -49,7 +48,7 @@ inline void TriangleMesh::constructTriangles(
     }
   } else if (normalNum == 0) {
     for (itr = triangleDefs.begin(); itr != triangleDefs.end(); itr++) {
-      triangleVector.push_back(
+      triangles.push_back(
         new TexturedTriangle(material,
                              texture,
                              &points[(*itr)[0]],
@@ -61,7 +60,7 @@ inline void TriangleMesh::constructTriangles(
     }
   } else {
     for (itr = triangleDefs.begin(); itr != triangleDefs.end(); itr++) {
-      triangleVector.push_back(
+      triangles.push_back(
         new PhongTriangle(material,
                           texture,
                           &points[(*itr)[0]],
@@ -76,7 +75,7 @@ inline void TriangleMesh::constructTriangles(
     }
   }
 
-  triangles = buildModelTreeNode(triangleVector, 0);
+  triangleTree = buildModelTreeNode(triangles, 0);
 }
 
 
@@ -86,7 +85,8 @@ const int TriangleMesh::intersect(const Ray &ray, Intercept intercepts[],
     return 0;
   }
 
-  return RAYTRACER_NAMESPACE::intersect(ray, triangles, intercepts, entryMat);
+  return RAYTRACER_NAMESPACE::intersect(ray, triangleTree, intercepts,
+                                        entryMat);
 }
 
 

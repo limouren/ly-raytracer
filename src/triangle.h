@@ -60,6 +60,10 @@ class Triangle: public Plane {
       buildBoundingVolume();
     };
 
+    virtual ~Triangle() {
+      delete boundingVolume;
+    }
+
     void buildBoundingVolume();
     const int intersect(const Ray &ray, Intercept intercepts[],
                         Material * entryMat) const;
@@ -81,9 +85,9 @@ class TexturedTriangle: public Triangle {
       vertexTextureCoord1 = textureCoordA;
       vertexTextureCoord2 = textureCoordB;
       vertexTextureCoord3 = textureCoordC;
-
-      buildBoundingVolume();
     }
+
+    ~TexturedTriangle() {}
 
     void getIntersect(const Point3D &point, Vector3D * normal,
                       std::vector<P_FLT> * mapping) const;
@@ -104,9 +108,9 @@ class TrianglePatch: public Triangle {
       vertexNormal1 = normalA;
       vertexNormal2 = normalB;
       vertexNormal3 = normalC;
-
-      buildBoundingVolume();
     }
+
+    ~TrianglePatch() {}
 
     void getIntersect(const Point3D &point, Vector3D * normal,
                       std::vector<P_FLT> * mapping) const;
@@ -136,9 +140,9 @@ class PhongTriangle: public Triangle {
       vertexTextureCoord1 = textureCoordA;
       vertexTextureCoord2 = textureCoordB;
       vertexTextureCoord3 = textureCoordC;
-
-      buildBoundingVolume();
     }
+
+    ~PhongTriangle() {}
 
     void getIntersect(const Point3D &point, Vector3D * normal,
                       std::vector<P_FLT> * mapping) const;

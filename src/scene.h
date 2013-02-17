@@ -70,19 +70,24 @@ class Scene {
 
     ~Scene() {
       delete medium;
-      for (std::vector<Light *>::iterator itr = lights.begin();
-           itr != lights.end(); itr++) {
-        delete (*itr);
+      while (!lights.empty()) {
+        delete lights.back();
+        lights.pop_back();
       }
-      for (std::vector<Material *>::iterator itr = materials.begin();
-           itr != materials.end(); itr++) {
-        delete (*itr);
+      while (!materials.empty()) {
+        delete materials.back();
+        materials.pop_back();
       }
-      for (std::vector<Texture *>::iterator itr = textures.begin();
-           itr != textures.end(); itr++) {
-        delete (*itr);
+      while (!textures.empty()) {
+        delete textures.back();
+        textures.pop_back();
       }
+
       delete modelRoot;
+      while (!primitives.empty()) {
+        delete primitives.back();
+        primitives.pop_back();
+      }
     }
 } scene;
 

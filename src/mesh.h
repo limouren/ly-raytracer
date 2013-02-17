@@ -23,11 +23,12 @@ class Intercept;
 
 class TriangleMesh: public Primitive {
   private:
-    MODEL_CLS * triangles;
+    MODEL_CLS * triangleTree;
     int pointNum, normalNum, textureCoordNum;
     Point3D * points;
     Vector3D * normals;
     Vector2D * textureCoords;
+    std::vector<MODEL_CLS *> triangles;
 
   public:
     // This constructor designed according to BART specifications
@@ -73,10 +74,16 @@ class TriangleMesh: public Primitive {
     }
 
     ~TriangleMesh() {
-      delete triangles;
+      delete boundingVolume;
       delete [] normals;
       delete [] points;
       delete [] textureCoords;
+
+      delete triangleTree;
+      while (!triangles.empty()) {
+        delete triangles.back();
+        triangles.pop_back();
+      }
     }
 };
 

@@ -21,7 +21,9 @@ class MODEL_CLS {
     unsigned char type;
     BoundingVolume * boundingVolume;
 
-    explicit MODEL_CLS(int type): type(type) {}
+    explicit MODEL_CLS(const unsigned char type): type(type) {}
+
+    virtual ~MODEL_CLS() {}
 };
 
 
@@ -43,8 +45,14 @@ class BVHNode: public MODEL_CLS {
     }
 
     ~BVHNode() {
-      delete left;
-      delete right;
+      delete boundingVolume;
+
+      if (left->type != 0) {
+        delete left;
+      }
+      if (right->type != 0) {
+        delete right;
+      }
     }
 };
 
@@ -61,8 +69,12 @@ class Composite: public MODEL_CLS {
       MODEL_CLS(1), op('|'), left(left), right(right) {}
 
     ~Composite() {
-      delete left;
-      delete right;
+      if (left->type != 0) {
+        delete left;
+      }
+      if (right->type != 0) {
+        delete right;
+      }
     }
 };
 
@@ -73,14 +85,13 @@ class Primitive: public MODEL_CLS {
     Texture * texture;
 
     Primitive():
-      material(NULL), texture(NULL), MODEL_CLS(0) {}
+      MODEL_CLS(0), material(NULL), texture(NULL) {}
 
     explicit Primitive(Material * material):
-      material(material), texture(NULL), MODEL_CLS(0) {}
+      MODEL_CLS(0), material(material), texture(NULL) {}
 
     Primitive(Material * material, Texture * texture):
-      material(material), texture(texture),
-      MODEL_CLS(0) {}
+      MODEL_CLS(0), material(material), texture(texture) {}
 
     virtual void getIntersect(const Point3D &point, Vector3D * normal,
                               std::vector<P_FLT> * mapping) const {
@@ -130,7 +141,7 @@ bool compareZ(MODEL_CLS * modelA, MODEL_CLS * modelB) {
 
 
 MODEL_CLS * buildModelTreeNode(std::vector<MODEL_CLS *> modelVector,
-                               int depth) {
+                               const int depth) {
   int size = modelVector.size();
 
   switch (size) {
