@@ -21,6 +21,7 @@
 #include "shapes.cpp"
 #include "texture.cpp"
 #include "trace.cpp"
+#include "transform.cpp"
 #include "triangle.cpp"
 #include "vector.cpp"
 
