@@ -25,7 +25,7 @@ class Background {
     Background() {}
 
 
-    const Color interpolateBackground(const P_FLT x, const P_FLT y) const {
+    Color interpolateBackground(const P_FLT x, const P_FLT y) const {
       P_FLT ratio_x, ratio_y,
             x_floor = floor(x),
             y_floor = floor(y);

@@ -29,7 +29,7 @@ class Ray {
       return *this;
     }
 
-    inline const Point3D rayPoint(P_FLT t) const {
+    inline Point3D rayPoint(P_FLT t) const {
       return orig + (dir * t);
     }
 };

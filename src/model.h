@@ -99,13 +99,13 @@ class Primitive: public MODEL_CLS {
       exit(1);
     }
 
-    virtual const Color getTextureColor(const std::vector<P_FLT> mapping)
+    virtual Color getTextureColor(const std::vector<P_FLT> mapping)
       const {
       printf("ERROR: Unimplemented Primitive::getTextureCoord stub invoked\n");
       exit(1);
     }
 
-    virtual const int intersect(const Ray &ray, Intercept intercepts[],
+    virtual int intersect(const Ray &ray, Intercept intercepts[],
                                 Material * entryMat) const {
       printf("ERROR: Unimplemented Primitive::intersect stub invoked\n");
       exit(1);

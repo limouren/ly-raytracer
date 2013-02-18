@@ -19,7 +19,7 @@ inline Color& Color::operator =(const Color &color) {
 }
 
 
-inline const Color Color::operator +(const Color color) const {
+inline Color Color::operator +(const Color color) const {
   Color result = *this;
   result += color;
 
@@ -36,7 +36,7 @@ inline Color Color::operator +=(const Color color) {
 }
 
 
-inline const Color Color::operator *(const Color color) const {
+inline Color Color::operator *(const Color color) const {
   Color result = *this;
   result *= color;
 
@@ -53,7 +53,7 @@ inline Color Color::operator *=(const Color color) {
 }
 
 
-inline const Color Color::operator *(const C_FLT scalar) const {
+inline Color Color::operator *(const C_FLT scalar) const {
   Color result = *this;
   result *= scalar;
 
@@ -71,7 +71,7 @@ inline Color Color::operator *=(const C_FLT scalar) {
 
 
 #define INV_255 0.00392156862f
-inline const Color RGBColor::toColor() const {
+inline Color RGBColor::toColor() const {
   return Color(static_cast<C_FLT>(r) * INV_255,
                static_cast<C_FLT>(g) * INV_255,
                static_cast<C_FLT>(b) * INV_255);

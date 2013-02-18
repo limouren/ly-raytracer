@@ -18,7 +18,9 @@ class BoundingVolume {
     BoundingVolume() {}
 
     virtual void getBox(Point3D * minExt, Point3D * maxExt) const {}
-    virtual const bool intersect(const Ray &ray) const {}
+    virtual bool intersect(const Ray &ray) const {
+      return true;
+    }
 
     virtual ~BoundingVolume() {}
 };
@@ -42,7 +44,7 @@ class Box: public BoundingVolume {
     }
 
 
-    inline const bool intersect(const Ray &ray) const;
+    inline bool intersect(const Ray &ray) const;
 };
 
 

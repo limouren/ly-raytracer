@@ -17,7 +17,7 @@ using namespace std;
 
 
 // Ref: Glassner -An Introduction to Ray Tracing - P.65-66
-inline const bool Box::intersect(const Ray &ray) const {
+inline bool Box::intersect(const Ray &ray) const {
   P_FLT inv, t1, t2, tNear, tFar;
 
   tNear = -P_FLT_MAX;

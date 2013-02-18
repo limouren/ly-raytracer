@@ -65,9 +65,10 @@ class TriangleMesh: public Primitive {
 
     inline void constructTriangles(const std::vector<int *> &triangleDefs);
 
-    const int intersect(const Ray &ray, Intercept intercepts[],
-                        Material * entryMat) const;
-    const Vector3D normalAt(const Point3D &point) {
+    int intersect(const Ray &ray, Intercept intercepts[],
+                  Material * entryMat) const;
+
+    Vector3D normalAt(const Point3D &point) {
       // This shouldn't be getting called.
       printf("ERROR: Calling unimplemented TriangleMesh normalAt.\n");
       exit(1);

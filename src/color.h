@@ -28,16 +28,16 @@ class Color {
 
     inline Color& operator =(const Color &color);
 
-    inline const Color operator +(const Color color) const;
+    inline Color operator +(const Color color) const;
     inline Color operator +=(const Color color);
 
-    inline const Color operator *(const Color color) const;
+    inline Color operator *(const Color color) const;
     inline Color operator *=(const Color color);
 
-    inline const Color operator *(const C_FLT scalar) const;
+    inline Color operator *(const C_FLT scalar) const;
     inline Color operator *=(const C_FLT scalar);
 
-    inline const Color exp(P_FLT exponent) {
+    inline Color exp(P_FLT exponent) {
       Color result(pow(r, exponent),
                    pow(g, exponent),
                    pow(b, exponent));
@@ -68,7 +68,7 @@ class RGBColor {
       b = static_cast<int>(*(mRGB + 2));
     }
 
-    inline const Color toColor() const;
+    inline Color toColor() const;
 };
 
 

@@ -65,7 +65,7 @@ class Triangle: public Plane {
     }
 
     void buildBoundingVolume();
-    const int intersect(const Ray &ray, Intercept intercepts[],
+    int intersect(const Ray &ray, Intercept intercepts[],
                         Material * entryMat) const;
     std::vector<P_FLT> inverseMap(const Point3D &point) const;
 };
@@ -91,7 +91,7 @@ class TexturedTriangle: public Triangle {
 
     void getIntersect(const Point3D &point, Vector3D * normal,
                       std::vector<P_FLT> * mapping) const;
-    const Color getTextureColor(const std::vector<P_FLT> mapping) const;
+    Color getTextureColor(const std::vector<P_FLT> mapping) const;
 };
 
 
@@ -146,7 +146,7 @@ class PhongTriangle: public Triangle {
 
     void getIntersect(const Point3D &point, Vector3D * normal,
                       std::vector<P_FLT> * mapping) const;
-    const Color getTextureColor(const std::vector<P_FLT> mapping) const;
+    Color getTextureColor(const std::vector<P_FLT> mapping) const;
 };
 
 

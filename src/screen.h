@@ -62,7 +62,7 @@ class PixelTracer {
       *center = (samples[0] + samples[1] + samples[2] + samples[3]) * 0.25f;
     }
 
-    inline int run(const Point3D &rayOrig, const Vector3D &pixelHor,
+    inline void run(const Point3D &rayOrig, const Vector3D &pixelHor,
                    const Vector3D &pixelVert) {
       Ray ray(rayOrig, rayDir);
       trace(0, 1.0f, ray, pixel, scene.medium);
@@ -135,6 +135,7 @@ class ScreenTracer {
 // This is a proxy function for pthreads to run ScreenTracer->trace()
 void * runScreenTracer(void * context) {
   static_cast<ScreenTracer *>(context)->run();
+  return NULL;
 }
 
 

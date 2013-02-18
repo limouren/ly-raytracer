@@ -35,8 +35,8 @@ class Plane: public Primitive {
 
     virtual ~Plane() {}
 
-    virtual const int intersect(const Ray &ray, Intercept intercepts[],
-                                Material * entryMat) const;
+    virtual int intersect(const Ray &ray, Intercept intercepts[],
+                          Material * entryMat) const;
     virtual void getIntersect(const Point3D &point, Vector3D * normal,
                               std::vector<P_FLT> * mapping) const {
       *normal = this->normal;
@@ -53,8 +53,8 @@ class Plane: public Primitive {
            const Vector3D &normal):
       Plane(material), center(center), radius(radius), normal(normal) {}
 
-    const int intersect(const Ray &ray, Intercept intercepts[],
-                        Material * entrymat) const;
+    int intersect(const Ray &ray, Intercept intercepts[],
+                  Material * entrymat) const;
 } */
 
 
@@ -85,8 +85,8 @@ class Polygon: public Plane {
     }
 
     inline void buildBoundingVolume();
-    const int intersect(const Ray &ray, Intercept intercepts[],
-                        Material * entryMat) const;
+    int intersect(const Ray &ray, Intercept intercepts[],
+                  Material * entryMat) const;
 };
 
 
@@ -140,8 +140,8 @@ class Cylinder: public Primitive {
     }
 
     inline void buildBoundingVolume();
-    const int intersect(const Ray &ray, Intercept intercepts[],
-                        Material * entryMat) const;
+    int intersect(const Ray &ray, Intercept intercepts[],
+                  Material * entryMat) const;
     void getIntersect(const Point3D &point, Vector3D * normal,
                       std::vector<P_FLT> * mapping) const;
 };
@@ -165,8 +165,8 @@ class Sphere: public Primitive {
     }
 
     inline void buildBoundingVolume();
-    const int intersect(const Ray &ray, Intercept intercepts[],
-                        Material * entryMat) const;
+    int intersect(const Ray &ray, Intercept intercepts[],
+                  Material * entryMat) const;
     void getIntersect(const Point3D &point, Vector3D * normal,
                       std::vector<P_FLT> * mapping) const;
 };

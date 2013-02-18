@@ -79,7 +79,7 @@ inline void TriangleMesh::constructTriangles(
 }
 
 
-const int TriangleMesh::intersect(const Ray &ray, Intercept intercepts[],
+int TriangleMesh::intersect(const Ray &ray, Intercept intercepts[],
                                   Material * entryMat) const {
   if (!(boundingVolume->intersect)(ray)) {
     return 0;

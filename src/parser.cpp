@@ -35,7 +35,7 @@ char directoryPath[1024];
 int globalDetailLevel = 0;
 
 
-const void fullFilePath(char * filepath, char * filename) {
+void fullFilePath(char * filepath, char * filename) {
   strncpy(filepath, directoryPath, strlen(directoryPath) + 1);
   strncat(filepath, filename, strlen(filename));
 }
@@ -288,7 +288,7 @@ void parseInclude(FILE * file, Scene * scene, Camera ** camera,
   int detailLevel;
 
   if (fscanf(file, "%d %s", &detailLevel, filename) != 2) {
-    printf("could not parse include file\n", filename);
+    printf("could not parse include file: %s\n", filename);
     exit(0);
   }
 
@@ -648,7 +648,7 @@ void getTextureCoordinates(FILE * file, const char * type, char * textureName,
     exit(1);
   }
   if (fscanf(file, "%s", textureName) != 1) {
-    printf("Error: could not parse texture name.\n", type);
+    printf("Error: could not parse texture name.\n");
     exit(1);
   }
 

@@ -20,7 +20,7 @@ inline Vector2D Vector2D::operator =(const Vector2D &vector) {
 }
 
 
-inline const Vector2D Vector2D::operator +(const Vector2D &vector) const {
+inline Vector2D Vector2D::operator +(const Vector2D &vector) const {
   Vector2D result = *this;
   result += vector;
 
@@ -28,7 +28,7 @@ inline const Vector2D Vector2D::operator +(const Vector2D &vector) const {
 }
 
 
-inline const Vector2D Vector2D::operator -(const Vector2D &vector) const {
+inline Vector2D Vector2D::operator -(const Vector2D &vector) const {
   Vector2D result = *this;
   result -= vector;
 
@@ -52,7 +52,7 @@ inline Vector2D Vector2D::operator -=(const Vector2D &vector) {
 }
 
 
-inline const Vector2D Vector2D::operator *(const P_FLT scalar) const {
+inline Vector2D Vector2D::operator *(const P_FLT scalar) const {
   Vector2D result = *this;
   result *= scalar;
 
@@ -60,7 +60,7 @@ inline const Vector2D Vector2D::operator *(const P_FLT scalar) const {
 }
 
 
-inline const Vector2D Vector2D::operator /(const P_FLT scalar) const {
+inline Vector2D Vector2D::operator /(const P_FLT scalar) const {
   Vector2D result = *this;
   result /= scalar;
 
@@ -84,17 +84,17 @@ inline Vector2D Vector2D::operator /=(const P_FLT scalar) {
 }
 
 
-inline const P_FLT Vector2D::length() const {
+inline P_FLT Vector2D::length() const {
   return sqrt(lengthSqr());
 }
 
 
-inline const P_FLT Vector2D::lengthSqr() const {
+inline P_FLT Vector2D::lengthSqr() const {
   return x * x + y * y;
 }
 
 
-inline const P_FLT Vector2D::normalize() {
+inline P_FLT Vector2D::normalize() {
   P_FLT len = length();
   *this /= len;
 
@@ -102,9 +102,11 @@ inline const P_FLT Vector2D::normalize() {
 }
 
 
-inline const Vector2D Vector2D::negate() {
+inline Vector2D Vector2D::negate() {
   x = -x;
   y = -y;
+
+  return *this;
 }
 
 
@@ -121,7 +123,7 @@ inline Vector3D Vector3D::operator =(const Vector3D &vector) {
 }
 
 
-inline const Vector3D Vector3D::operator +(const Vector3D &vector) const {
+inline Vector3D Vector3D::operator +(const Vector3D &vector) const {
   Vector3D result = *this;
   result += vector;
 
@@ -129,7 +131,7 @@ inline const Vector3D Vector3D::operator +(const Vector3D &vector) const {
 }
 
 
-inline const Vector3D Vector3D::operator -(const Vector3D &vector) const {
+inline Vector3D Vector3D::operator -(const Vector3D &vector) const {
   Vector3D result = *this;
   result -= vector;
 
@@ -155,7 +157,7 @@ inline Vector3D Vector3D::operator -=(const Vector3D &vector) {
 }
 
 
-inline const Vector3D Vector3D::operator *(const P_FLT scalar) const {
+inline Vector3D Vector3D::operator *(const P_FLT scalar) const {
   Vector3D result = *this;
   result *= scalar;
 
@@ -163,7 +165,7 @@ inline const Vector3D Vector3D::operator *(const P_FLT scalar) const {
 }
 
 
-inline const Vector3D Vector3D::operator /(const P_FLT scalar) const {
+inline Vector3D Vector3D::operator /(const P_FLT scalar) const {
   Vector3D result = *this;
   result /= scalar;
 
@@ -189,7 +191,7 @@ inline Vector3D Vector3D::operator /=(const P_FLT scalar) {
 }
 
 
-inline const Vector2D Vector3D::dropIndex(const int index) const {
+inline Vector2D Vector3D::dropIndex(const int index) const {
   if (index == 0) {
     return Vector2D(y, z);
   } else if (index == 1)  {
@@ -200,7 +202,7 @@ inline const Vector2D Vector3D::dropIndex(const int index) const {
 }
 
 
-inline const int Vector3D::dominantIndex() const {
+inline int Vector3D::dominantIndex() const {
   P_FLT abs_x = fabs(x),
         abs_y = fabs(y),
         abs_z = fabs(z);
@@ -220,17 +222,17 @@ inline const int Vector3D::dominantIndex() const {
 }
 
 
-inline const P_FLT Vector3D::length() const {
+inline P_FLT Vector3D::length() const {
   return sqrt(lengthSqr());
 }
 
 
-inline const P_FLT Vector3D::lengthSqr() const {
+inline P_FLT Vector3D::lengthSqr() const {
   return x * x + y * y + z * z;
 }
 
 
-inline const P_FLT Vector3D::normalize() {
+inline P_FLT Vector3D::normalize() {
   P_FLT len = length();
   *this /= len;
 
@@ -238,10 +240,12 @@ inline const P_FLT Vector3D::normalize() {
 }
 
 
-inline const Vector3D Vector3D::negate() {
+inline Vector3D Vector3D::negate() {
   x = -x;
   y = -y;
   z = -z;
+
+  return *this;
 }
 
 

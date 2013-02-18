@@ -13,8 +13,8 @@
 BEGIN_RAYTRACER
 
 
-const int Plane::intersect(const Ray &ray, Intercept intercepts[],
-                           Material * entryMat) const {
+int Plane::intersect(const Ray &ray, Intercept intercepts[],
+                     Material * entryMat) const {
   P_FLT lightDotNorm, t;
 
   lightDotNorm = dotProduct(normal, ray.dir);
@@ -60,7 +60,7 @@ inline void Polygon::buildBoundingVolume() {
 
 
 // Ref: Glassner -An Introduction to Ray Tracing - P.53-59
-const int Polygon::intersect(const Ray &ray, Intercept intercepts[],
+int Polygon::intersect(const Ray &ray, Intercept intercepts[],
                              Material * entryMat) const {
   if (!boundingVolume->intersect(ray) ||
       Plane::intersect(ray, intercepts, entryMat) == 0) {
@@ -127,7 +127,7 @@ void PolygonPatch::getIntersect(const Point3D &point, Vector3D * normal,
 
 
 /* TODO(kent): Use this when Cone is implemented
-const int Cone::buildBoundingVolume() {
+int Cone::buildBoundingVolume() {
   // Square means it doesn't matter which normal is which
   Vector3D apexExtend(sqrt(1 - apex.normal.x * apex.normal.x) * apex.radius,
                       sqrt(1 - apex.normal.y * apex.normal.y) * apex.radius,
@@ -145,7 +145,7 @@ const int Cone::buildBoundingVolume() {
 
 
 ref: www.geometrictools.com/LibMathematics/Intersection/Intersection.html
-const int Cone::intersectQuadric() const {} */
+int Cone::intersectQuadric() const {} */
 
 
 void Cylinder::buildBoundingVolume() {
@@ -180,7 +180,7 @@ void Cylinder::getIntersect(const Point3D &point, Vector3D * normal,
 }
 
 
-const int Cylinder::intersect(const Ray &ray, Intercept intercepts[],
+int Cylinder::intersect(const Ray &ray, Intercept intercepts[],
                               Material * entryMat) const {
   if (!boundingVolume->intersect(ray)) {
     return 0;
@@ -368,7 +368,7 @@ void Sphere::getIntersect(const Point3D &point, Vector3D * normal,
 }
 
 
-const int Sphere::intersect(const Ray &ray, Intercept intercepts[],
+int Sphere::intersect(const Ray &ray, Intercept intercepts[],
                             Material * entryMat) const {
   if (!boundingVolume->intersect(ray)) {
     return 0;

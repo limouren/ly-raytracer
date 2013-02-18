@@ -51,6 +51,8 @@ inline int intersect(const Ray &ray, MODEL_CLS * model, Intercept intercepts[],
                             interceptsRight, intercepts);
     }
   }
+
+  return 0;
 }
 
 

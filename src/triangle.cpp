@@ -23,7 +23,7 @@ void Triangle::buildBoundingVolume() {
 
 
 // Ref: Glassner -An Introduction to Ray Tracing - P.53-59
-const int Triangle::intersect(const Ray &ray, Intercept intercepts[],
+int Triangle::intersect(const Ray &ray, Intercept intercepts[],
                               Material * entryMat) const {
   P_FLT normalDotOrig, normalDotDir,
         t, u, v;
@@ -189,7 +189,7 @@ void TexturedTriangle::getIntersect(const Point3D &point, Vector3D * normal,
 }
 
 
-const Color TexturedTriangle::getTextureColor(
+Color TexturedTriangle::getTextureColor(
   const std::vector<P_FLT> mapping) const {
   Vector2D textureCoord = *vertexTextureCoord1 * mapping[0] +
                           *vertexTextureCoord2 * mapping[1] +
@@ -217,7 +217,7 @@ void PhongTriangle::getIntersect(const Point3D &point, Vector3D * normal,
 }
 
 
-const Color PhongTriangle::getTextureColor(
+Color PhongTriangle::getTextureColor(
   const std::vector<P_FLT> mapping) const {
   Vector2D textureCoord = *vertexTextureCoord1 * mapping[0] +
                           *vertexTextureCoord2 * mapping[1] +
