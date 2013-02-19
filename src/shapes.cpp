@@ -15,18 +15,18 @@ BEGIN_RAYTRACER
 
 int Plane::intersect(const Ray &ray, Intercept intercepts[],
                      Material * entryMat) const {
-  P_FLT lightDotNorm, t;
+  P_FLT rayDotNorm, t;
 
-  lightDotNorm = dotProduct(normal, ray.dir);
+  rayDotNorm = dotProduct(normal, ray.dir);
 
-  if (fIsZero(lightDotNorm)) {
+  if (fIsZero(rayDotNorm)) {
     return 0;
   }
 
-  t = -(dotProduct(normal, ray.orig) + d) / lightDotNorm;
+  t = -(dotProduct(normal, ray.orig) + d) / rayDotNorm;
 
   if (fGreaterZero(t)) {
-    intercepts[0] = Intercept(t, lightDotNorm < 0.0f, entryMat, this);
+    intercepts[0] = Intercept(t, rayDotNorm < 0.0f, entryMat, this);
     return 1;
   }
 
