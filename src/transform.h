@@ -59,88 +59,84 @@ class Matrix4 {
 
 class Transform {
   protected:
-    P_FLT xScale, yScale, zScale,
-          xRotate, yRotate, zRotate,
-          xTranslate, yTranslate, zTranslate;
+    P_FLT xScale, yScale, zScale, radians;
+    Vector3D rotateAxis, translate;
 
     Matrix4 * matrix,
             * inverse;
 
   public:
     Transform() {}
-    Transform(P_FLT xScale, P_FLT yScale, P_FLT zScale,
-              P_FLT xRotate, P_FLT yRotate, P_FLT zRotate,
-              P_FLT xTranslate, P_FLT yTranslate, P_FLT zTranslate):
-      xScale(xScale), yScale(yScale), zScale(zScale),
-      xRotate(xRotate), yRotate(yRotate), zRotate(zRotate),
-      xTranslate(xTranslate), yTranslate(yTranslate), zTranslate(zTranslate),
+    Transform(const P_FLT xScale, const P_FLT yScale, const P_FLT zScale,
+              const P_FLT radians, const Vector3D &rotateAxis,
+              const Vector3D &translate):
+      xScale(xScale), yScale(yScale), zScale(zScale), radians(radians),
+      rotateAxis(rotateAxis), translate(translate),
       matrix(new Matrix4()), inverse(new Matrix4()) {
       Matrix4 scale(xScale, 0.0f, 0.0f, 0.0f,
                     0.0f, yScale, 0.0f, 0.0f,
                     0.0f, 0.0f, zScale, 0.0f,
                     0.0f, 0.0f, 0.0f, 1.0f);
 
-      P_FLT cosXRot = cos(xRotate),
-            sinXRot = sin(xRotate),
-            cosYRot = cos(yRotate),
-            sinYRot = sin(yRotate),
-            cosZRot = cos(zRotate),
-            sinZRot = sin(zRotate);
-      Matrix4 rotate(cosYRot * cosZRot,
-                     sinXRot * sinYRot * sinZRot - cosXRot * sinZRot,
-                     sinXRot * sinZRot + cosXRot * sinYRot * cosZRot,
+      this->rotateAxis.normalize();
+      P_FLT x = this->rotateAxis.x,
+            y = this->rotateAxis.y,
+            z = this->rotateAxis.z,
+            cosine = cos(radians),
+            sine = sin(radians);
+
+      Matrix4 rotate(cosine + x * x * (1 - cosine),
+                     x * y * (1 - cosine) - z * sine,
+                     x * z * (1 - cosine) + y * sine,
                      0.0f,
 
-                     cosYRot * sinZRot,
-                     cosXRot * cosZRot + sinXRot * sinYRot * sinZRot,
-                     cosXRot * sinYRot * sinZRot - sinXRot * cosZRot,
+                     x * y * (1 - cosine) + z * sine,
+                     cosine + y * y * (1 - cosine),
+                     y * z * (1 - cosine) - x * sine,
                      0.0f,
 
-                     -sinYRot,
-                     sinXRot * cosYRot,
-                     cosXRot * cosYRot,
+                     x * z * (1 - cosine) - y * sine,
+                     y * z * (1 - cosine) + x * sine,
+                     cosine + z * z * (1 - cosine),
                      0.0f,
 
                      0.0f, 0.0f, 0.0f, 1.0f);
 
-      Matrix4 translate(1.0f, 0.0f, 0.0f, xTranslate,
-                        0.0f, 1.0f, 0.0f, yTranslate,
-                        0.0f, 0.0f, 1.0f, zTranslate,
-                        0.0f, 0.0f, 0.0f, 1.0f);
+      Matrix4 translation(1.0f, 0.0f, 0.0f, translate.x,
+                          0.0f, 1.0f, 0.0f, translate.y,
+                          0.0f, 0.0f, 1.0f, translate.z,
+                          0.0f, 0.0f, 0.0f, 1.0f);
 
-      *matrix = translate * rotate * scale;
+      *matrix = translation * rotate * scale;
 
       Matrix4 invScale(1.0f / xScale, 0.0f, 0.0f, 0.0f,
                        0.0f, 1.0f / yScale, 0.0f, 0.0f,
                        0.0f, 0.0f, 1.0f / zScale, 0.0f,
                        0.0f, 0.0f, 0.0f, 1.0f);
 
-      sinXRot = -sinXRot;
-      sinYRot = -sinYRot;
-      sinZRot = -sinZRot;
-      Matrix4 invRotate(cosYRot * cosZRot,
-                        sinXRot * sinYRot * sinZRot - cosXRot * sinZRot,
-                        sinXRot * sinZRot + cosXRot * sinYRot * cosZRot,
+      Matrix4 invRotate(cosine + x * x * (1 - cosine),
+                        x * y * (1 - cosine) + z * sine,
+                        x * z * (1 - cosine) - y * sine,
                         0.0f,
 
-                        cosYRot * sinZRot,
-                        cosXRot * cosZRot + sinXRot * sinYRot * sinZRot,
-                        cosXRot * sinYRot * sinZRot - sinXRot * cosZRot,
+                        x * y * (1 - cosine) - z * sine,
+                        cosine + y * y * (1 - cosine),
+                        y * z * (1 - cosine) + x * sine,
                         0.0f,
 
-                        -sinYRot,
-                        sinXRot * cosYRot,
-                        cosXRot * cosYRot,
+                        x * z * (1 - cosine) + y * sine,
+                        y * z * (1 - cosine) - x * sine,
+                        cosine + z * z * (1 - cosine),
                         0.0f,
 
                         0.0f, 0.0f, 0.0f, 1.0f);
 
-      Matrix4 invTranslate(1.0f, 0.0f, 0.0f, -xTranslate,
-                           0.0f, 1.0f, 0.0f, -yTranslate,
-                           0.0f, 0.0f, 1.0f, -zTranslate,
-                           0.0f, 0.0f, 0.0f, 1.0f);
+      Matrix4 invTranslation(1.0f, 0.0f, 0.0f, -translate.x,
+                             0.0f, 1.0f, 0.0f, -translate.y,
+                             0.0f, 0.0f, 1.0f, -translate.z,
+                             0.0f, 0.0f, 0.0f, 1.0f);
 
-      *inverse = invScale * invRotate * invTranslate;
+      *inverse = invScale * invRotate * invTranslation;
     }
 
     ~Transform() {
