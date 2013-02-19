@@ -35,12 +35,13 @@ class Plane: public Primitive {
 
     virtual ~Plane() {}
 
-    virtual int intersect(const Ray &ray, Intercept intercepts[],
-                          Material * entryMat) const;
     virtual void getIntersect(const Point3D &point, Vector3D * normal,
                               std::vector<P_FLT> * mapping) const {
       *normal = this->normal;
     }
+    virtual int intersect(const Ray &ray, Intercept intercepts[],
+                          Material * entryMat) const;
+    void transform(Transform * transform);
 };
 
 
@@ -70,8 +71,7 @@ class Polygon: public Plane {
         vertex[i] = points[i];
       }
 
-      normal = crossProduct(points[1] - points[0],
-                            points[2] - points[0]);
+      normal = crossProduct(vertex[1] - vertex[0], vertex[2] - vertex[0]);
       normal.normalize();
       dominantIndex = normal.dominantIndex();
 
@@ -85,9 +85,10 @@ class Polygon: public Plane {
       delete boundingVolume;
     }
 
-    inline void buildBoundingVolume();
+    void buildBoundingVolume();
     int intersect(const Ray &ray, Intercept intercepts[],
                   Material * entryMat) const;
+    void transform(Transform * transform);
 };
 
 
@@ -110,6 +111,7 @@ class PolygonPatch: public Polygon {
 
     virtual void getIntersect(const Point3D &point, Vector3D * normal,
                               std::vector<P_FLT> * mapping) const;
+    void transform(Transform * transform);
 };
 
 

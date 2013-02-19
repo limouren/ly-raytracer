@@ -34,6 +34,13 @@ int Plane::intersect(const Ray &ray, Intercept intercepts[],
 }
 
 
+void Plane::transform(Transform * transform) {
+  // TODO(kent): Fill this in later
+  printf("ERROR: Unimplemented plane transformation\n");
+  exit(1);
+}
+
+
 /* const int Circle::intersect(const Ray &ray, Intercept intercepts[],
                             Material * entryMat) const {
   if (Plane::intersect(ray, intercepts, entryMat) == 0) {
@@ -103,6 +110,21 @@ int Polygon::intersect(const Ray &ray, Intercept intercepts[],
 }
 
 
+void Polygon::transform(Transform * transform) {
+  for (int i = 0; i < vertexNum; i++) {
+    transform->transformPoint(&vertex[i]);
+  }
+
+  transform->transformVector(&normal);
+  normal.normalize();
+  dominantIndex = normal.dominantIndex();
+
+  d = -dotProduct(vertex[0], normal);
+
+  buildBoundingVolume();
+}
+
+
 void PolygonPatch::getIntersect(const Point3D &point, Vector3D * normal,
                                 std::vector<P_FLT> * mapping) const {
   // TODO(kent): True interpolation
@@ -122,6 +144,14 @@ void PolygonPatch::getIntersect(const Point3D &point, Vector3D * normal,
 
   delete [] weights;
   normal->normalize();
+}
+
+
+void PolygonPatch::transform(Transform * transform) {
+  Polygon::transform(transform);
+  for (int i = 0; i < vertexNum; i++) {
+    transform->transformVector(&vertexNormal[i]);
+  }
 }
 
 
