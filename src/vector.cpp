@@ -192,12 +192,15 @@ inline Vector3D Vector3D::operator /=(const P_FLT scalar) {
 
 
 inline Vector2D Vector3D::dropIndex(const int index) const {
-  if (index == 0) {
-    return Vector2D(y, z);
-  } else if (index == 1)  {
-    return Vector2D(x, z);
-  } else {
-    return Vector2D(x, y);
+  switch (index) {
+    case 0:
+    case 3:
+      return Vector2D(y, z);
+    case 1:
+    case 4:
+      return Vector2D(x, z);
+    default:
+      return Vector2D(x, y);
   }
 }
 

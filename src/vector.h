@@ -116,8 +116,8 @@ inline Vector3D operator -(const Vector3D &vector) {
 
 inline Vector3D crossProduct(const Vector3D &u, const Vector3D &v) {
   return Vector3D(u.y * v.z - u.z * v.y,
-                u.z * v.x - u.x * v.z,
-                u.x * v.y - u.y * v.x);
+                  u.z * v.x - u.x * v.z,
+                  u.x * v.y - u.y * v.x);
 }
 
 
