@@ -8,6 +8,7 @@
 #include "model.h"
 #include "point.h"
 #include "shapes.h"
+#include "transform.h"
 
 
 BEGIN_RAYTRACER

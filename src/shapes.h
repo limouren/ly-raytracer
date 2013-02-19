@@ -4,14 +4,17 @@
 
 #include "config.h"
 
-#include "intercept.h"
 #include "model.h"
 #include "point.h"
-#include "ray.h"
 #include "vector.h"
 
 
 BEGIN_RAYTRACER
+
+
+class Intercept;
+class Ray;
+class Transform;
 
 
 // Planes
