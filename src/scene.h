@@ -18,6 +18,7 @@
 #include "model.h"
 #include "shapes.h"
 #include "texture.h"
+#include "transform.h"
 #include "triangle.h"
 
 
@@ -32,6 +33,7 @@ class Scene {
     std::vector<Material *> materials;
     std::vector<MODEL_CLS *> primitives;
     std::vector<Texture *> textures;
+    std::vector<Transform *> transforms;
     MODEL_CLS * modelRoot;
 
     Scene(): modelRoot(NULL) {
@@ -42,30 +44,6 @@ class Scene {
                             Color(1.0f, 1.0f, 1.0f),
                             1.0f,
                             0.0f);
-    }
-
-    Texture * getOrCreateTexture(char * filepath) {
-      for (std::vector<Texture *>::iterator itr = textures.begin();
-           itr != textures.end(); itr++) {
-        if (strncmp(filepath, (*itr)->filepath, strlen(filepath) + 1) == 0) {
-          return *itr;
-        }
-      }
-
-      Texture * newTexture = new Texture(filepath);
-      textures.push_back(newTexture);
-      return newTexture;
-    }
-
-    void loadTextures() {
-      for (std::vector<Texture *>::iterator itr = textures.begin();
-           itr != textures.end(); itr++) {
-        (*itr)->loadFromFile();
-      }
-    }
-
-    void buildModelTree() {
-      modelRoot = buildModelTreeNode(primitives, 0);
     }
 
     ~Scene() {
@@ -90,6 +68,47 @@ class Scene {
       while (!primitives.empty()) {
         delete primitives.back();
         primitives.pop_back();
+      }
+    }
+
+    void addPrimitive(Primitive * primitive, Transform * staticTransform) {
+      if (staticTransform) {
+        primitive->transform(staticTransform);
+      }
+
+      primitives.push_back(primitive);
+    }
+
+    void buildModelTree() {
+      modelRoot = buildModelTreeNode(primitives, 0);
+    }
+
+    Material * latestMat() {
+      if (materials.empty()) {
+        printf("ERROR: Cannot create primitive with no material\n");
+        exit(1);
+      }
+
+      return materials.back();
+    }
+
+    Texture * getOrCreateTexture(char * filepath) {
+      for (std::vector<Texture *>::iterator itr = textures.begin();
+           itr != textures.end(); itr++) {
+        if (strncmp(filepath, (*itr)->filepath, strlen(filepath) + 1) == 0) {
+          return *itr;
+        }
+      }
+
+      Texture * newTexture = new Texture(filepath);
+      textures.push_back(newTexture);
+      return newTexture;
+    }
+
+    void loadTextures() {
+      for (std::vector<Texture *>::iterator itr = textures.begin();
+           itr != textures.end(); itr++) {
+        (*itr)->loadFromFile();
       }
     }
 } scene;

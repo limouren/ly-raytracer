@@ -14,8 +14,10 @@
 #include "scene.h"
 #include "shapes.h"
 #include "texture.h"
+#include "transform.h"
 #include "vector.h"
 
+#define PI_DIV_180 0.01745329251994329576923690768489f
 
 // TODO(kent): Get rid of these
 #define X 0
@@ -31,6 +33,7 @@ using namespace std;
 BEGIN_RAYTRACER
 
 
+Transform * currentTransform;
 char directoryPath[1024];
 int globalDetailLevel = 0;
 
@@ -38,6 +41,10 @@ int globalDetailLevel = 0;
 void fullFilePath(char * filepath, char * filename) {
   strncpy(filepath, directoryPath, strlen(directoryPath) + 1);
   strncat(filepath, filename, strlen(filename));
+}
+
+P_FLT degreesToRadians(const P_FLT degrees) {
+  return degrees * PI_DIV_180;
 }
 
 
@@ -120,7 +127,7 @@ void parseBackground(FILE * file, Scene * scene) {
 }
 
 
-void parseFill(FILE * file, Scene * scene, Material ** currentMaterial) {
+void parseFill(FILE * file, Scene * scene) {
   C_FLT shine, transmittance, refraction;
   Color ambience, diffuse, specular;
   int moreparams;
@@ -187,12 +194,10 @@ void parseFill(FILE * file, Scene * scene, Material ** currentMaterial) {
                                shine);
     scene->materials.push_back(newMaterial);
   }
-
-  *currentMaterial = newMaterial;
 }
 
 
-void parseCone(FILE * file, Scene * scene, Material * currentMaterial) {
+void parseCone(FILE * file, Scene * scene) {
   Point3D apexCenter, baseCenter;
   P_FLT apexRadius, baseRadius;
   if (fscanf(file, " %f %f %f %f %f %f %f %f",
@@ -203,15 +208,16 @@ void parseCone(FILE * file, Scene * scene, Material * currentMaterial) {
   }
 
   if (apexRadius == baseRadius) {
-    scene->primitives.push_back(new Cylinder(currentMaterial, baseCenter,
-                                             apexCenter, apexRadius));
+    scene->addPrimitive(new Cylinder(scene->latestMat(), baseCenter,
+                                     apexCenter, apexRadius),
+                        currentTransform);
   } else {
     printf("WARNING: Skipped unimplemented cone\n");
   }
 }
 
 
-void parseSphere(FILE * file, Scene * scene, Material * currentMaterial) {
+void parseSphere(FILE * file, Scene * scene) {
   P_FLT radius;
   Point3D center;
 
@@ -221,11 +227,12 @@ void parseSphere(FILE * file, Scene * scene, Material * currentMaterial) {
     exit(1);
   }
 
-  scene->primitives.push_back(new Sphere(currentMaterial, center, radius));
+  scene->addPrimitive(new Sphere(scene->latestMat(), center, radius),
+                      currentTransform);
 }
 
 
-void parsePoly(FILE * file, Scene * scene, Material * currentMaterial) {
+void parsePoly(FILE * file, Scene * scene) {
   int patch,
       vertexNum;
   Point3D  * vertex;
@@ -264,8 +271,9 @@ void parsePoly(FILE * file, Scene * scene, Material * currentMaterial) {
       }
     }
 
-    scene->primitives.push_back(new PolygonPatch(currentMaterial, vertexNum,
-                                                 vertex, normal));
+    scene->addPrimitive(new PolygonPatch(scene->latestMat(), vertexNum, vertex,
+                                         normal),
+                        currentTransform);
   } else {
     for (int i = 0; i < vertexNum; i++) {
       if (fscanf(file, " %f %f %f",
@@ -275,13 +283,13 @@ void parsePoly(FILE * file, Scene * scene, Material * currentMaterial) {
       }
     }
 
-    scene->primitives.push_back(new Polygon(currentMaterial, vertexNum,
-                                            vertex));
+    scene->addPrimitive(new Polygon(scene->latestMat(), vertexNum, vertex),
+                        currentTransform);
   }
 }
 
 void parseInclude(FILE * file, Scene * scene, Camera ** camera,
-                  Material ** currentMaterial) {
+                  Transform ** currentTransform) {
   char filename[80],
        filepath[1024];
   FILE * includeFile;
@@ -294,7 +302,7 @@ void parseInclude(FILE * file, Scene * scene, Camera ** camera,
 
   if (detailLevel <= globalDetailLevel) {
     fullFilePath(filepath, filename);
-    parseFile(filepath, scene, camera, currentMaterial);
+    parseFile(filepath, scene, camera, currentTransform);
   } else {
     printf("Skipping include file: %s\n", filename);
   }
@@ -309,8 +317,7 @@ void parseDetailLevel(FILE * file) {
 }
 
 
-void parseTexturedTriangle(FILE *file, Scene * scene,
-                           Material * currentMaterial) {
+void parseTexturedTriangle(FILE *file, Scene * scene) {
   char filepath[1024],
        textureName[200];
   int patch;
@@ -357,16 +364,18 @@ void parseTexturedTriangle(FILE *file, Scene * scene,
   }
 
   if (patch) {
-    scene->primitives.push_back(new PhongTriangle(
-      currentMaterial, texture,
-      vertex[0], vertex[1], vertex[2],
-      normal[0], normal[1], normal[2],
-      textureCoord[0], textureCoord[1], textureCoord[2]));
+    scene->addPrimitive(new PhongTriangle(
+        scene->latestMat(), texture,
+        vertex[0], vertex[1], vertex[2],
+        normal[0], normal[1], normal[2],
+        textureCoord[0], textureCoord[1], textureCoord[2]),
+      currentTransform);
   } else {
-    scene->primitives.push_back(new TexturedTriangle(
-      currentMaterial, texture,
-      vertex[0], vertex[1], vertex[2],
-      textureCoord[0], textureCoord[1], textureCoord[2]));
+    scene->addPrimitive(new TexturedTriangle(
+        scene->latestMat(), texture,
+        vertex[0], vertex[1], vertex[2],
+        textureCoord[0], textureCoord[1], textureCoord[2]),
+      currentTransform);
   }
 }
 
@@ -412,13 +421,12 @@ void parseAnimatedTriangle(FILE *file) {
 }
 
 
-void parseTextureStuff(FILE * file, Scene * scene,
-                       Material * currentMaterial) {
+void parseTextureStuff(FILE * file, Scene * scene) {
   char inputChar;
 
   inputChar = getc(file);
   if (inputChar =='t') {
-    parseTexturedTriangle(file, scene, currentMaterial);
+    parseTexturedTriangle(file, scene);
   } else if (inputChar == 'p') {
     inputChar = getc(file);
     if (inputChar == 'a') {
@@ -522,33 +530,12 @@ void parseKeyFrames(FILE *file) {
 
 void parseXform(FILE * f) {
   char name[100];
-  char ch;
-  int is_static;
+  char ch, isStatic;
 
-  is_static = getc(f);
-  if (is_static != 's') {
-     ungetc(is_static, f);
-     is_static = 0;
-  }
+  ch = getc(f);
+  if (ch != 's') {
+     ungetc(ch, f);
 
-  if (is_static) {
-    Vec3f scale, trans, rot;
-    float deg;
-
-    if (fscanf(f, " %f %f %f %f %f %f %f %f %f %f",
-               &scale[0], &scale[1], &scale[2],
-               &rot[0], &rot[1], &rot[2], &deg,
-               &trans[0], &trans[1], &trans[2]) != 10) {
-     printf("Error: could not read static transform.\n");
-     exit(1);
-    }
-    eatWhitespace(f);
-    ch = getc(f);
-    if (ch != '{') {
-      printf("Error: { expected.\n");
-      exit(1);
-    }
-  } else {
     if (fscanf(f, "%s", name) != 1) {
       printf("Error: could not read transform name.\n");
       exit(1);
@@ -559,6 +546,30 @@ void parseXform(FILE * f) {
       printf("Error: { expected.\n");
       exit(1);
     }
+
+    // TODO(kent): Implement animation transforms
+  } else {
+    P_FLT xScale, yScale, zScale, degrees;
+    Vector3D rotateAxis, translate;
+
+    if (fscanf(f, " %f %f %f %f %f %f %f %f %f %f",
+               &xScale, &yScale, &zScale,
+               &rotateAxis.x, &rotateAxis.y, &rotateAxis.z, &degrees,
+               &translate.x, &translate.y, &translate.z) != 10) {
+     printf("Error: could not read static transform.\n");
+     exit(1);
+    }
+
+    eatWhitespace(f);
+    ch = getc(f);
+    if (ch != '{') {
+      printf("Error: { expected.\n");
+      exit(1);
+    }
+
+    currentTransform = new Transform(xScale, yScale, zScale,
+                                     degreesToRadians(degrees),
+                                     rotateAxis, translate);
   }
 }
 
@@ -715,7 +726,7 @@ void getTriangleDefs(FILE * file, bool hasNorms, bool hasTextures,
 }
 
 
-void parseMesh(FILE * file, Scene * scene, Material * currentMaterial) {
+void parseMesh(FILE * file, Scene * scene) {
   char textureName[200],
        buffer[200];
   int flag;
@@ -761,14 +772,14 @@ void parseMesh(FILE * file, Scene * scene, Material * currentMaterial) {
     exit(1);
   }
 
-  scene->primitives.push_back(new TriangleMesh(currentMaterial, texture,
-                                               vertex, normal, textureCoords,
-                                               triangleDefs));
+  scene->addPrimitive(new TriangleMesh(scene->latestMat(), texture, vertex,
+                                       normal, textureCoords, triangleDefs),
+                      currentTransform);
 }
 
 
 int parseFile(const char * filename, Scene * scene, Camera ** camera,
-              Material ** previousMaterial) {
+              Transform ** previousTransform) {
   FILE * file;
 
   if (!(file = fopen(filename, "r"))) {
@@ -778,7 +789,7 @@ int parseFile(const char * filename, Scene * scene, Camera ** camera,
   strncpy(directoryPath, filename, 1024);
   *(strrchr(directoryPath, '/') + 1) = '\0';
 
-  Material * currentMaterial = previousMaterial? *previousMaterial: NULL;
+  currentTransform = previousTransform? *previousTransform: NULL;
 
   char last;
   int ch;
@@ -804,32 +815,31 @@ int parseFile(const char * filename, Scene * scene, Camera ** camera,
         parseBackground(file, scene);
         break;
       case 'f':
-        parseFill(file, scene, &currentMaterial);
+        parseFill(file, scene);
         break;
       case 'c':
-        parseCone(file, scene, currentMaterial);
+        parseCone(file, scene);
         break;
       case 's':
-        parseSphere(file, scene, currentMaterial);
+        parseSphere(file, scene);
         break;
       case 'p':
-        parsePoly(file, scene, currentMaterial);
+        parsePoly(file, scene);
         break;
       case 'i':
-        parseInclude(file, scene, camera, &currentMaterial);
+        parseInclude(file, scene, camera, &currentTransform);
         break;
       case 'd':
         parseDetailLevel(file);
         break;
       case 't':
-        parseTextureStuff(file, scene, currentMaterial);
+        parseTextureStuff(file, scene);
         break;
       case 'x':
         parseXform(file);
         break;
       case '}':
-        // TODO(Kent): WTF is this?
-        // viEndXform();
+        currentTransform = NULL;
         break;
       case 'a':
         parseA(file, scene);
@@ -838,7 +848,7 @@ int parseFile(const char * filename, Scene * scene, Camera ** camera,
         parseKeyFrames(file);
         break;
       case 'm':
-        parseMesh(file, scene, currentMaterial);
+        parseMesh(file, scene);
         break;
       default:
         printf("unknown NFF primitive code: %c\n", ch);
@@ -847,9 +857,10 @@ int parseFile(const char * filename, Scene * scene, Camera ** camera,
     }
   }
 
-  if (previousMaterial) {
-    *previousMaterial = currentMaterial;
+  if (previousTransform) {
+    *previousTransform = currentTransform;
   }
+
   return 0;
 }
 

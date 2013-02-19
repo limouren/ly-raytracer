@@ -10,6 +10,7 @@
 #include "bounding_volume.h"
 #include "material.h"
 #include "texture.h"
+#include "transform.h"
 
 
 BEGIN_RAYTRACER
@@ -86,12 +87,12 @@ class Primitive: public MODEL_CLS {
 
     Primitive():
       MODEL_CLS(0), material(NULL), texture(NULL) {}
-
     explicit Primitive(Material * material):
       MODEL_CLS(0), material(material), texture(NULL) {}
-
     Primitive(Material * material, Texture * texture):
       MODEL_CLS(0), material(material), texture(texture) {}
+
+    virtual ~Primitive() {}
 
     virtual void getIntersect(const Point3D &point, Vector3D * normal,
                               std::vector<P_FLT> * mapping) const {
@@ -116,7 +117,9 @@ class Primitive: public MODEL_CLS {
       exit(1);
     }
 
-    virtual ~Primitive() {}
+    virtual void transform(Transform * transform) {
+      // TODO(kent): Implement individual transform methods
+    }
 };
 
 

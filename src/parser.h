@@ -11,10 +11,11 @@ BEGIN_RAYTRACER
 class Camera;
 class Material;
 class Scene;
+class Transform;
 
 
 int parseFile(const char * filename, Scene * scene, Camera ** camera,
-              Material ** currentMaterial);
+              Transform ** previousTransform);
 
 
 END_RAYTRACER
