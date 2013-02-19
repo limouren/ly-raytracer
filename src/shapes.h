@@ -60,7 +60,7 @@ class Plane: public Primitive {
 
 class Polygon: public Plane {
   public:
-    int vertexNum;
+    int dominantIndex, vertexNum;
     Point3D * vertex;
 
     Polygon(Material * material, int pointNum, Point3D * points):
@@ -73,6 +73,7 @@ class Polygon: public Plane {
       normal = crossProduct(points[1] - points[0],
                             points[2] - points[0]);
       normal.normalize();
+      dominantIndex = normal.dominantIndex();
 
       d = -dotProduct(vertex[0], normal);
 

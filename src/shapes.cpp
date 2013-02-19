@@ -68,7 +68,6 @@ int Polygon::intersect(const Ray &ray, Intercept intercepts[],
   }
 
   Point3D intercept3D = ray.rayPoint(intercepts[0].t);
-  int dominantIndex = normal.dominantIndex();
 
   Vector2D intercept2D = intercept3D.dropIndex(dominantIndex);
   Vector2D * vertex2D = new Vector2D[vertexNum];
