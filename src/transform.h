@@ -12,6 +12,7 @@
 BEGIN_RAYTRACER
 
 
+// TODO(kent): Optimize this class
 class Matrix4 {
   protected:
     P_FLT data[4][4];
@@ -34,6 +35,7 @@ class Matrix4 {
     }
 
     Matrix4 inverse() {
+      // TODO(kent): Implement fast gaussian elimination
     }
 
     friend Vector3D operator *(const Vector3D &vector);
@@ -63,7 +65,13 @@ class Transform {
     Vector3D rotateAxis, translate;
 
     Matrix4 * matrix,
-            * inverse;
+            * scale,
+            * rotation,
+            * translation,
+            * inverse,
+            * invScale,
+            * invRotation,
+            * invTranslation;
 
   public:
     Transform() {}
@@ -73,10 +81,15 @@ class Transform {
       xScale(xScale), yScale(yScale), zScale(zScale), radians(radians),
       rotateAxis(rotateAxis), translate(translate),
       matrix(new Matrix4()), inverse(new Matrix4()) {
-      Matrix4 scale(xScale, 0.0f, 0.0f, 0.0f,
-                    0.0f, yScale, 0.0f, 0.0f,
-                    0.0f, 0.0f, zScale, 0.0f,
-                    0.0f, 0.0f, 0.0f, 1.0f);
+      scale = new Matrix4(xScale, 0.0f, 0.0f, 0.0f,
+                          0.0f, yScale, 0.0f, 0.0f,
+                          0.0f, 0.0f, zScale, 0.0f,
+                          0.0f, 0.0f, 0.0f, 1.0f);
+
+      invScale = new Matrix4(1.0f / xScale, 0.0f, 0.0f, 0.0f,
+                             0.0f, 1.0f / yScale, 0.0f, 0.0f,
+                             0.0f, 0.0f, 1.0f / zScale, 0.0f,
+                             0.0f, 0.0f, 0.0f, 1.0f);
 
       this->rotateAxis.normalize();
       P_FLT x = this->rotateAxis.x,
@@ -85,76 +98,93 @@ class Transform {
             cosine = cos(radians),
             sine = sin(radians);
 
-      Matrix4 rotate(cosine + x * x * (1 - cosine),
-                     x * y * (1 - cosine) - z * sine,
-                     x * z * (1 - cosine) + y * sine,
-                     0.0f,
+      rotation = new Matrix4(cosine + x * x * (1 - cosine),
+                             x * y * (1 - cosine) - z * sine,
+                             x * z * (1 - cosine) + y * sine,
+                             0.0f,
 
-                     x * y * (1 - cosine) + z * sine,
-                     cosine + y * y * (1 - cosine),
-                     y * z * (1 - cosine) - x * sine,
-                     0.0f,
+                             x * y * (1 - cosine) + z * sine,
+                             cosine + y * y * (1 - cosine),
+                             y * z * (1 - cosine) - x * sine,
+                             0.0f,
 
-                     x * z * (1 - cosine) - y * sine,
-                     y * z * (1 - cosine) + x * sine,
-                     cosine + z * z * (1 - cosine),
-                     0.0f,
+                             x * z * (1 - cosine) - y * sine,
+                             y * z * (1 - cosine) + x * sine,
+                             cosine + z * z * (1 - cosine),
+                             0.0f,
 
-                     0.0f, 0.0f, 0.0f, 1.0f);
-
-      Matrix4 translation(1.0f, 0.0f, 0.0f, translate.x,
-                          0.0f, 1.0f, 0.0f, translate.y,
-                          0.0f, 0.0f, 1.0f, translate.z,
-                          0.0f, 0.0f, 0.0f, 1.0f);
-
-      *matrix = translation * rotate * scale;
-
-      Matrix4 invScale(1.0f / xScale, 0.0f, 0.0f, 0.0f,
-                       0.0f, 1.0f / yScale, 0.0f, 0.0f,
-                       0.0f, 0.0f, 1.0f / zScale, 0.0f,
-                       0.0f, 0.0f, 0.0f, 1.0f);
-
-      Matrix4 invRotate(cosine + x * x * (1 - cosine),
-                        x * y * (1 - cosine) + z * sine,
-                        x * z * (1 - cosine) - y * sine,
-                        0.0f,
-
-                        x * y * (1 - cosine) - z * sine,
-                        cosine + y * y * (1 - cosine),
-                        y * z * (1 - cosine) + x * sine,
-                        0.0f,
-
-                        x * z * (1 - cosine) + y * sine,
-                        y * z * (1 - cosine) - x * sine,
-                        cosine + z * z * (1 - cosine),
-                        0.0f,
-
-                        0.0f, 0.0f, 0.0f, 1.0f);
-
-      Matrix4 invTranslation(1.0f, 0.0f, 0.0f, -translate.x,
-                             0.0f, 1.0f, 0.0f, -translate.y,
-                             0.0f, 0.0f, 1.0f, -translate.z,
                              0.0f, 0.0f, 0.0f, 1.0f);
 
-      *inverse = invScale * invRotate * invTranslation;
+      invRotation = new Matrix4(cosine + x * x * (1 - cosine),
+                              x * y * (1 - cosine) + z * sine,
+                              x * z * (1 - cosine) - y * sine,
+                              0.0f,
+
+                              x * y * (1 - cosine) - z * sine,
+                              cosine + y * y * (1 - cosine),
+                              y * z * (1 - cosine) + x * sine,
+                              0.0f,
+
+                              x * z * (1 - cosine) + y * sine,
+                              y * z * (1 - cosine) - x * sine,
+                              cosine + z * z * (1 - cosine),
+                              0.0f,
+
+                              0.0f, 0.0f, 0.0f, 1.0f);
+
+      translation = new Matrix4(1.0f, 0.0f, 0.0f, translate.x,
+                                0.0f, 1.0f, 0.0f, translate.y,
+                                0.0f, 0.0f, 1.0f, translate.z,
+                                0.0f, 0.0f, 0.0f, 1.0f);
+
+      invTranslation = new Matrix4(1.0f, 0.0f, 0.0f, -translate.x,
+                                   0.0f, 1.0f, 0.0f, -translate.y,
+                                   0.0f, 0.0f, 1.0f, -translate.z,
+                                   0.0f, 0.0f, 0.0f, 1.0f);
+
+      *matrix = *translation * *rotation * *scale;
+
+      *inverse = *invScale * *invRotation * *invTranslation;
     }
 
     ~Transform() {
-      delete matrix;
-      delete inverse;
+      delete matrix,
+      delete scale,
+      delete rotation,
+      delete translation,
+      delete inverse,
+      delete invScale,
+      delete invRotation,
+      delete invTranslation;
     }
 
-    void apply(Vector3D * vector) const {
-      Vector3D result(*matrix[0][0] * vector->x + *matrix[0][1] * vector->y +
-                      *matrix[0][2] * vector->z + *matrix[0][3],
-                      *matrix[1][0] * vector->x + *matrix[1][1] * vector->y +
-                      *matrix[1][2] * vector->z + *matrix[1][3],
-                      *matrix[2][0] * vector->x + *matrix[2][1] * vector->y +
-                      *matrix[2][2] * vector->z + *matrix[2][3]);
-      result *= 1.0f / (*matrix[3][0] * vector->x + *matrix[3][1] * vector->y +
-                        *matrix[3][2] * vector->z + *matrix[3][3]);
+    void transformVector(Vector3D * vector) const {
+      Vector3D result(
+        *rotation[0][0] * vector->x + *rotation[0][1] * vector->y +
+        *rotation[0][2] * vector->z + *rotation[0][3],
+        *rotation[1][0] * vector->x + *rotation[1][1] * vector->y +
+        *rotation[1][2] * vector->z + *rotation[1][3],
+        *rotation[2][0] * vector->x + *rotation[2][1] * vector->y +
+        *rotation[2][2] * vector->z + *rotation[2][3]);
+      result *= 1.0f / (*rotation[3][0] * vector->x +
+                        *rotation[3][1] * vector->y +
+                        *rotation[3][2] * vector->z +
+                        *rotation[3][3]);
 
       *vector = result;
+    }
+
+    void transformPoint(Point3D * point) const {
+      Point3D result(*matrix[0][0] * point->x + *matrix[0][1] * point->y +
+                     *matrix[0][2] * point->z + *matrix[0][3],
+                     *matrix[1][0] * point->x + *matrix[1][1] * point->y +
+                     *matrix[1][2] * point->z + *matrix[1][3],
+                     *matrix[2][0] * point->x + *matrix[2][1] * point->y +
+                     *matrix[2][2] * point->z + *matrix[2][3]);
+      result *= 1.0f / (*matrix[3][0] * point->x + *matrix[3][1] * point->y +
+                        *matrix[3][2] * point->z + *matrix[3][3]);
+
+      *point = result;
     }
 };
 
