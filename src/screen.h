@@ -39,6 +39,10 @@ class PixelTracer {
                                 rayDir + halfHor - halfVert,
                                 rayDir - halfHor + halfVert,
                                 rayDir + halfHor + halfVert};
+      sampleDirs[0].normalize();
+      sampleDirs[1].normalize();
+      sampleDirs[2].normalize();
+      sampleDirs[3].normalize();
       Ray sampleRays[4] = {Ray(rayOrig, sampleDirs[0]),
                            Ray(rayOrig, sampleDirs[1]),
                            Ray(rayOrig, sampleDirs[2]),
