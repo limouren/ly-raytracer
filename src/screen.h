@@ -29,7 +29,7 @@ class PixelTracer {
     PixelTracer(Color * pixel, const Vector3D &rayDir):
       pixel(pixel), rayDir(rayDir) {}
 
-    inline void alias(const int level, Color * center,
+    inline void alias(const Scene * scene, const int level, Color * center,
                       const Point3D &rayOrig, const Vector3D &rayDir,
                       const Vector3D &pixelHor, const Vector3D &pixelVert) {
       Color samples[4];
@@ -49,7 +49,7 @@ class PixelTracer {
                            Ray(rayOrig, sampleDirs[3])};
 
       for (int i = 0; i < 4; i++) {
-        trace(0, 1.0f, sampleRays[i], &samples[i], scene.medium);
+        trace(scene, 0, 1.0f, sampleRays[i], &samples[i], scene->medium);
       }
 
       if (level < aaLevel) {
@@ -57,7 +57,7 @@ class PixelTracer {
         for (int i = 0; i < 4; i++) {
           if (fabs(samples[i].magnitude() - centerMagnitude) >
               AA_COLOR_THRESHOLD) {
-            alias(level + 1, &samples[i], rayOrig, sampleDirs[i],
+            alias(scene, level + 1, &samples[i], rayOrig, sampleDirs[i],
                   halfHor, halfVert);
           }
         }
@@ -66,13 +66,13 @@ class PixelTracer {
       *center = (samples[0] + samples[1] + samples[2] + samples[3]) * 0.25f;
     }
 
-    inline void run(const Point3D &rayOrig, const Vector3D &pixelHor,
-                   const Vector3D &pixelVert) {
+    inline void run(const Scene * scene, const Point3D &rayOrig,
+                    const Vector3D &pixelHor, const Vector3D &pixelVert) {
       Ray ray(rayOrig, rayDir);
-      trace(0, 1.0f, ray, pixel, scene.medium);
+      trace(scene, 0, 1.0f, ray, pixel, scene->medium);
 
       if (aaLevel > 0) {
-        alias(1, pixel, rayOrig, rayDir, pixelHor, pixelVert);
+        alias(scene, 1, pixel, rayOrig, rayDir, pixelHor, pixelVert);
       }
     }
 };
@@ -80,6 +80,7 @@ class PixelTracer {
 
 class ScreenTracer {
   private:
+    const Scene * scene;
     int taskCount;
     std::vector<PixelTracer *> tasks;
     pthread_mutex_t tasksMutex;
@@ -87,7 +88,7 @@ class ScreenTracer {
     Vector3D pixelHor, pixelVert;
 
   public:
-    ScreenTracer() {
+    explicit ScreenTracer(const Scene * scene): scene(scene) {
       pthread_mutex_init(&tasksMutex, NULL);
     }
 
@@ -125,7 +126,7 @@ class ScreenTracer {
           printf("\rTracing image...%.1f%% completed.", progress);
           fflush(stdout);
         }
-        pixelTracer->run(rayOrig, pixelHor, pixelVert);
+        pixelTracer->run(scene, rayOrig, pixelHor, pixelVert);
         delete pixelTracer;
 
         pthread_mutex_lock(&tasksMutex);
@@ -147,18 +148,18 @@ class Screen {
   public:
     int height, width;
     Color * pixels;
+    Scene * scene;
 
-    explicit Screen(const Camera * camera):
-      height(camera->imageHeight), width(camera->imageWidth) {
-      pixels = new Color[height * width];
-    }
+    explicit Screen(Scene * scene):
+      height(scene->camera->imageHeight), width(scene->camera->imageWidth),
+      pixels(new Color[height * width]), scene(scene) {}
 
     ~Screen() {
       delete [] pixels;
     }
 
     void calibrate();
-    void rayTrace(const Scene &scene, const Camera * camera);
+    void rayTrace();
     void saveBmp(char * outputFilename) const;
 };
 

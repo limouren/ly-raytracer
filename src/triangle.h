@@ -28,11 +28,7 @@ class Triangle: public Plane {
 
     Triangle(Material * material,
              Point3D * pointA, Point3D * pointB, Point3D * pointC):
-      Plane(material) {
-      vertex1 = pointA;
-      vertex2 = pointB;
-      vertex3 = pointC;
-
+      Plane(material), vertex1(pointA), vertex2(pointB), vertex3(pointC) {
       normal = crossProduct(*vertex2 - *vertex1, *vertex3 - *vertex1);
       normal.normalize();
 
@@ -45,11 +41,8 @@ class Triangle: public Plane {
 
     Triangle(Material * material, Texture * texture,
              Point3D * pointA, Point3D * pointB, Point3D * pointC):
-      Plane(material, texture) {
-      vertex1 = pointA;
-      vertex2 = pointB;
-      vertex3 = pointC;
-
+      Plane(material, texture),
+      vertex1(pointA), vertex2(pointB), vertex3(pointC) {
       normal = crossProduct(*vertex2 - *vertex1, *vertex3 - *vertex1);
       normal.normalize();
 
@@ -81,11 +74,9 @@ class TexturedTriangle: public Triangle {
                      Point3D * pointA, Point3D * pointB, Point3D * pointC,
                      Vector2D * textureCoordA, Vector2D * textureCoordB,
                      Vector2D * textureCoordC):
-      Triangle(material, texture, pointA, pointB, pointC) {
-      vertexTextureCoord1 = textureCoordA;
-      vertexTextureCoord2 = textureCoordB;
-      vertexTextureCoord3 = textureCoordC;
-    }
+      Triangle(material, texture, pointA, pointB, pointC),
+      vertexTextureCoord1(textureCoordA), vertexTextureCoord2(textureCoordB),
+      vertexTextureCoord3(textureCoordC) {}
 
     ~TexturedTriangle() {}
 
@@ -104,11 +95,8 @@ class TrianglePatch: public Triangle {
     TrianglePatch(Material * material,
                   Point3D * pointA, Point3D * pointB, Point3D * pointC,
                   Vector3D * normalA, Vector3D * normalB, Vector3D * normalC):
-      Triangle(material, pointA, pointB, pointC) {
-      vertexNormal1 = normalA;
-      vertexNormal2 = normalB;
-      vertexNormal3 = normalC;
-    }
+      Triangle(material, pointA, pointB, pointC),
+      vertexNormal1(normalA), vertexNormal2(normalB), vertexNormal3(normalC) {}
 
     ~TrianglePatch() {}
 
@@ -133,14 +121,10 @@ class PhongTriangle: public Triangle {
                   Vector3D * normalA, Vector3D * normalB, Vector3D * normalC,
                   Vector2D * textureCoordA, Vector2D * textureCoordB,
                   Vector2D * textureCoordC):
-      Triangle(material, texture, pointA, pointB, pointC) {
-      vertexNormal1 = normalA;
-      vertexNormal2 = normalB;
-      vertexNormal3 = normalC;
-      vertexTextureCoord1 = textureCoordA;
-      vertexTextureCoord2 = textureCoordB;
-      vertexTextureCoord3 = textureCoordC;
-    }
+      Triangle(material, texture, pointA, pointB, pointC),
+      vertexNormal1(normalA), vertexNormal2(normalB), vertexNormal3(normalC),
+      vertexTextureCoord1(textureCoordA), vertexTextureCoord2(textureCoordB),
+      vertexTextureCoord3(textureCoordC) {}
 
     ~PhongTriangle() {}
 

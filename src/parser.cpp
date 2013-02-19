@@ -54,7 +54,7 @@ void parseComment(FILE *file) {
 }
 
 
-void parseViewpoint(FILE *file, Camera ** camera) {
+void parseViewpoint(FILE *file, Scene * scene) {
   Point3D target, viewpoint;
   Vector3D up;
   P_FLT angle, hither;
@@ -75,8 +75,8 @@ void parseViewpoint(FILE *file, Camera ** camera) {
     exit(1);
   }
 
-  *camera = new Camera(viewpoint, target, up, angle, hither, imageWidth,
-                       imageHeight);
+  scene->camera = new Camera(viewpoint, target, up, angle, hither, imageWidth,
+                             imageHeight);
 }
 
 
@@ -288,8 +288,7 @@ void parsePoly(FILE * file, Scene * scene) {
   }
 }
 
-void parseInclude(FILE * file, Scene * scene, Camera ** camera,
-                  Transform ** currentTransform) {
+void parseInclude(FILE * file, Scene * scene, Transform ** currentTransform) {
   char filename[80],
        filepath[1024];
   FILE * includeFile;
@@ -302,7 +301,7 @@ void parseInclude(FILE * file, Scene * scene, Camera ** camera,
 
   if (detailLevel <= globalDetailLevel) {
     fullFilePath(filepath, filename);
-    parseFile(filepath, scene, camera, currentTransform);
+    parseFile(filepath, scene, currentTransform);
   } else {
     printf("Skipping include file: %s\n", filename);
   }
@@ -778,7 +777,12 @@ void parseMesh(FILE * file, Scene * scene) {
 }
 
 
-int parseFile(const char * filename, Scene * scene, Camera ** camera,
+int parseFile(const char * filename, Scene * scene) {
+  parseFile(filename, scene, NULL);
+}
+
+
+int parseFile(const char * filename, Scene * scene,
               Transform ** previousTransform) {
   FILE * file;
 
@@ -806,7 +810,7 @@ int parseFile(const char * filename, Scene * scene, Camera ** camera,
         parseComment(file);
         break;
       case 'v':
-        parseViewpoint(file, camera);
+        parseViewpoint(file, scene);
         break;
       case 'l':
         parseLight(file, scene);
@@ -827,7 +831,7 @@ int parseFile(const char * filename, Scene * scene, Camera ** camera,
         parsePoly(file, scene);
         break;
       case 'i':
-        parseInclude(file, scene, camera, &currentTransform);
+        parseInclude(file, scene, &currentTransform);
         break;
       case 'd':
         parseDetailLevel(file);

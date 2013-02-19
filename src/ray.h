@@ -14,8 +14,7 @@ class Ray {
     Point3D orig;
     Vector3D dir;
 
-    Ray(): orig(Point3D()), dir(Vector3D()) {}
-
+    Ray() {}
     Ray(Point3D orig, Vector3D dir): orig(orig), dir(dir) {}
 
     inline Ray& operator =(const Ray &ray) {

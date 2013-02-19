@@ -30,22 +30,12 @@ BEGIN_RAYTRACER
 
 
 int main(char * inputFilename, char * outputFilename) {
-  Camera * camera;
+  Scene scene;
+  scene.init(inputFilename);
 
-  printf("Parsing file \"%s\"...", inputFilename);
-  fflush(stdout);
-  parseFile(inputFilename, &scene, &camera, NULL);
-  printf("completed.\n");
-  scene.buildModelTree();
-  scene.loadTextures();
-
-  Screen screen(camera);
-  screen.rayTrace(scene, camera);
-
-  printf("Saving file to \"%s\"...", outputFilename);
-  fflush(stdout);
+  Screen screen(&scene);
+  screen.rayTrace();
   screen.saveBmp(outputFilename);
-  printf("completed.\n");
 
   return 0;
 }

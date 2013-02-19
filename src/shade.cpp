@@ -1,4 +1,5 @@
 #include <math.h>
+#include <vector>
 
 #include "config.h"
 
@@ -17,10 +18,10 @@
 BEGIN_RAYTRACER
 
 
-inline C_FLT shadow(const Ray &ray, P_FLT t) {
+inline C_FLT shadow(const Scene * scene, const Ray &ray, P_FLT t) {
   Intercept intercepts[MAX_INTERSECTIONS];
 
-  int hits = intersect(ray, scene.modelRoot, intercepts, NULL);
+  int hits = intersect(ray, scene->modelRoot, intercepts, NULL);
   if (hits == 0 || intercepts[0].t > t) {
     return 1.0f;
   }
@@ -59,12 +60,12 @@ inline bool transmissionDirection(const Material * entryMat,
 }
 
 
-inline void shade(const int level, const C_FLT weight,
+inline void shade(const Scene * scene, const int level, const C_FLT weight,
                   const Point3D &interceptPoint, const Vector3D &incident,
                   Intercept * intercepts, Color * color) {
   Material * entryMat = intercepts[0].material,
            * hitMat = intercepts[0].enter?
-                      intercepts[0].primitive->material: scene.medium;
+                      intercepts[0].primitive->material: scene->medium;
 
   C_FLT specWeight = hitMat->specular.magnitude() * weight,
         transWeight = hitMat->transmission.magnitude() * weight;
@@ -80,31 +81,30 @@ inline void shade(const int level, const C_FLT weight,
   bool transmission = transmissionDirection(entryMat, hitMat, incident, normal,
                                             &transDir);
 
-  *color += scene.ambience * hitMat->ambience;
+  *color += scene->ambience * hitMat->ambience;
 
-  for (int i = 0; i < scene.lights.size(); i++) {
-    Light * light = scene.lights[i];
-
-    Vector3D pointToLight = light->orig - interceptPoint;
+  for (std::vector<Light *>::const_iterator itr = scene->lights.begin();
+       itr != scene->lights.end(); itr++) {
+    Vector3D pointToLight = (*itr)->orig - interceptPoint;
     P_FLT distanceToLight = pointToLight.normalize();
     Ray rayToLight(interceptPoint, pointToLight);
 
     P_FLT lightDotNormal = dotProduct(pointToLight, normal);
     if (fGreaterZero(lightDotNormal) &&
-        fGreaterZero(shadow(rayToLight, distanceToLight))) {
+        fGreaterZero(shadow(scene, rayToLight, distanceToLight))) {
       // Light source diffuse reflection
-      *color += light->color * hitMat->diffuse * lightDotNormal;
+      *color += (*itr)->color * hitMat->diffuse * lightDotNormal;
 
       // Light source specular reflection
       Vector3D h = pointToLight - incident;
       h.normalize();
       P_FLT specDot = dotProduct(normal, h);
       if (specDot > 0.0f) {
-        *color += light->color * hitMat->specular *
+        *color += (*itr)->color * hitMat->specular *
                   pow(specDot, hitMat->shine);
       }
     } else if (transmission && fLessZero(lightDotNormal) &&
-               fLessZero(shadow(rayToLight, distanceToLight))) {
+               fLessZero(shadow(scene, rayToLight, distanceToLight))) {
       // Light source specular transmission
       C_FLT refrRatio = hitMat->refraction / entryMat->refraction;
       if (!fEqual(refrRatio, 1.0f)) {
@@ -113,7 +113,7 @@ inline void shade(const int level, const C_FLT weight,
         h_j.normalize();
 
         // TODO(kent): Define transmission highlight coefficient
-        *color += light->color * hitMat->transmission *
+        *color += (*itr)->color * hitMat->transmission *
                   pow(dotProduct(-normal, h_j), hitMat->shine);
       }
     }
@@ -125,7 +125,7 @@ inline void shade(const int level, const C_FLT weight,
       Ray specRay(interceptPoint, specDir);
       Color specColor;
 
-      trace(level + 1, specWeight, specRay, &specColor, entryMat);
+      trace(scene, level + 1, specWeight, specRay, &specColor, entryMat);
       *color += specColor * hitMat->specular;
     }
 
@@ -135,7 +135,7 @@ inline void shade(const int level, const C_FLT weight,
         Ray transRay(interceptPoint, transDir);
         Color transColor;
 
-        trace(level + 1, transWeight, transRay, &transColor, hitMat);
+        trace(scene, level + 1, transWeight, transRay, &transColor, hitMat);
         *color += transColor * hitMat->transmission;
       } else {
         // TODO(kent): Handle total internal reflection
@@ -149,8 +149,10 @@ inline void shade(const int level, const C_FLT weight,
 }
 
 
-inline void shadeBackground(const Ray &ray, Color * color) {
-  *color += scene.backgroundColor;
+inline void shadeBackground(const Scene * scene, const Ray &ray,
+                            Color * color) {
+  // TODO(kent): Shade background map according to ray.dir
+  *color += scene->backgroundColor;
 }
 
 

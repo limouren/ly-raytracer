@@ -26,11 +26,10 @@ class Camera {
     Camera(const Point3D &viewpoint, const Point3D &target,
            const Vector3D &up, const P_FLT angle, const P_FLT hither,
            const int imageWidth, const int imageHeight):
-      angle(angle), hither(hither), imageHeight(imageHeight),
-      imageWidth(imageWidth), target(target), up(up), viewpoint(viewpoint) {
-      aspectRatio = static_cast<P_FLT>(imageWidth) /
-                    static_cast<P_FLT>(imageHeight);
-
+      imageHeight(imageHeight), imageWidth(imageWidth),
+      angle(angle), aspectRatio(static_cast<P_FLT>(imageWidth) /
+                                static_cast<P_FLT>(imageHeight)),
+      hither(hither), target(target), viewpoint(viewpoint), up(up) {
       this->up.normalize();
     }
 };

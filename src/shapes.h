@@ -51,7 +51,7 @@ class Plane: public Primitive {
 
     Circle(Material * material, const Point3D &center, const P_FLT radius,
            const Vector3D &normal):
-      Plane(material), center(center), radius(radius), normal(normal) {}
+      Plane(material), normal(normal), radius(radius), center(center) {}
 
     int intersect(const Ray &ray, Intercept intercepts[],
                   Material * entrymat) const;
@@ -127,8 +127,8 @@ class Cylinder: public Primitive {
              const Point3D &apexCenter, const P_FLT radius):
       Primitive(material), insideOut(radius < 0.0f),
       radius(fabs(radius)), radiusSqr(radius * radius),
-      apexCenter(apexCenter), baseCenter(baseCenter) {
-      axisNormal = apexCenter - baseCenter;
+      apexCenter(apexCenter), baseCenter(baseCenter),
+      axisNormal(apexCenter - baseCenter) {
       height = axisNormal.normalize();
       apexD = - dotProduct(axisNormal, apexCenter);
       baseD = - dotProduct(axisNormal, baseCenter);
@@ -156,8 +156,8 @@ class Sphere: public Primitive {
 
   public:
     Sphere(Material * material, const Point3D &center, P_FLT radius):
-      Primitive(material), insideOut(radius < 0.0), center(center),
-      radius(fabs(radius)) {
+      Primitive(material), insideOut(radius < 0.0),
+      radius(fabs(radius)), center(center) {
       buildBoundingVolume();
     }
 

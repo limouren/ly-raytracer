@@ -14,14 +14,14 @@ class Material {
   public:
     const char * name;
 
-    C_FLT attenuation,
-          refraction,
-          shine;
-
     Color ambience,
           diffuse,
           specular,
           transmission;
+
+    C_FLT attenuation,
+          refraction,
+          shine;
 
     Material(const char * name, const Color &ambience, const Color &diffuse,
              const Color &specular, const Color transmission,

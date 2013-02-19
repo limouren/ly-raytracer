@@ -24,7 +24,7 @@ class Intercept {
     Intercept() {}
     Intercept(const P_FLT t, const bool enter, Material * material,
               const Primitive * primitive):
-      t(t), enter(enter), material(material),
+      enter(enter), t(t), material(material),
       primitive(const_cast<Primitive *>(primitive)) {}
 };
 

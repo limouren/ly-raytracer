@@ -27,14 +27,15 @@ BEGIN_RAYTRACER
 
 class Scene {
   public:
+    MODEL_CLS * modelRoot;
+    Camera * camera;
     Color ambience, backgroundColor;
     Material * medium;
-    std::vector<Light * > lights;
+    std::vector<Light *> lights;
     std::vector<Material *> materials;
     std::vector<MODEL_CLS *> primitives;
     std::vector<Texture *> textures;
     std::vector<Transform *> transforms;
-    MODEL_CLS * modelRoot;
 
     Scene(): modelRoot(NULL) {
       medium = new Material("Vacuum",
@@ -106,12 +107,23 @@ class Scene {
     }
 
     void loadTextures() {
+      printf("Loading textures...");
       for (std::vector<Texture *>::iterator itr = textures.begin();
            itr != textures.end(); itr++) {
         (*itr)->loadFromFile();
       }
+      printf("completed.\n");
     }
-} scene;
+
+    void init(char * inputFilename) {
+      printf("Parsing file \"%s\"...", inputFilename);
+      fflush(stdout);
+      parseFile(inputFilename, this);
+      printf("completed.\n");
+
+      loadTextures();
+    }
+};
 
 
 END_RAYTRACER

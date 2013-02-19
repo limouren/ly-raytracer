@@ -4,14 +4,16 @@
 
 #include "config.h"
 
-#include "color.h"
-#include "intercept.h"
-#include "material.h"
-#include "model.h"
-#include "ray.h"
-
 
 BEGIN_RAYTRACER
+
+
+class Color;
+class Intercept;
+class MODEL_CLS;
+class Material;
+class Ray;
+class Scene;
 
 
 inline int intersect(const Ray &ray, MODEL_CLS * model, Intercept intercepts[],
@@ -22,8 +24,8 @@ inline int intersectMerge(const int op,
                           const int hitsRight, Intercept interceptRight[],
                           Intercept merged[]);
 
-inline int trace(const int level, const C_FLT weight, const Ray &ray,
-                 Color * color, Material * entryMat);
+inline int trace(const Scene * scene, const int level, const C_FLT weight,
+                 const Ray &ray, Color * color, Material * entryMat);
 
 
 END_RAYTRACER

@@ -47,6 +47,8 @@ void Screen::calibrate() {
 
 
 void Screen::saveBmp(char * outputFilename) const {
+  printf("Saving file to \"%s\"...", outputFilename);
+  fflush(stdout);
   int pixelCount = height * width;
   C_FLT * redChannel = new C_FLT[pixelCount],
         * greenChannel = new C_FLT[pixelCount],
@@ -67,33 +69,36 @@ void Screen::saveBmp(char * outputFilename) const {
   delete [] redChannel;
   delete [] greenChannel;
   delete [] blueChannel;
+  printf("completed.\n");
 }
 
 
-void Screen::rayTrace(const Scene &scene, const Camera * camera) {
-  Vector3D dir = camera->target - camera->viewpoint;
+void Screen::rayTrace() {
+  scene->buildModelTree();
+
+  Vector3D dir = scene->camera->target - scene->camera->viewpoint;
   dir.normalize();
 
-  P_FLT horizontal = sin(camera->angle * 0.5f),
-        vertical = horizontal / camera->aspectRatio;
+  P_FLT horizontal = sin(scene->camera->angle * 0.5f),
+        vertical = horizontal / scene->camera->aspectRatio;
 
-  Vector3D top = camera->up - dir * dotProduct(camera->up, dir),
-           left = crossProduct(camera->up, dir);
+  Vector3D top = scene->camera->up - dir * dotProduct(scene->camera->up, dir),
+           left = crossProduct(scene->camera->up, dir);
   top.normalize();
   top *= vertical;
   left.normalize();
   left *= horizontal;
 
-  Point3D center = camera->viewpoint + dir,
+  Point3D center = scene->camera->viewpoint + dir,
           topLeft = center + top + left;
 
   Vector3D pixelHor = -left / static_cast<P_FLT>(width / 2),
            pixelVert = -top / static_cast<P_FLT>(height / 2);
 
-  Vector3D topLeftPixel = topLeft - camera->viewpoint +
+  Vector3D topLeftPixel = topLeft - scene->camera->viewpoint +
                           (pixelHor * 0.5f) + (pixelVert * 0.5f);
 
-  ScreenTracer * screenTracer = new ScreenTracer();
+  ScreenTracer * screenTracer = new ScreenTracer(scene);
   for (int i = 0; i < width; i++) {
     for (int j = 0; j < height; j++) {
       Vector3D rayDir = topLeftPixel +
@@ -104,7 +109,7 @@ void Screen::rayTrace(const Scene &scene, const Camera * camera) {
       screenTracer->addTask(&pixels[j * width + i], rayDir);
     }
   }
-  screenTracer->init(camera->viewpoint, pixelHor, pixelVert);
+  screenTracer->init(scene->camera->viewpoint, pixelHor, pixelVert);
 
   pthread_t * threads = new pthread_t[threadNum];
   for (int i = 0; i < threadNum; i++) {

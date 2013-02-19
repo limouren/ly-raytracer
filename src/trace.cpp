@@ -97,17 +97,17 @@ inline int intersectMerge(const int op,
 }
 
 
-inline int trace(const int level, const C_FLT weight, const Ray &ray,
-                 Color * color, Material * entryMat) {
+inline int trace(const Scene * scene, const int level, const C_FLT weight,
+                 const Ray &ray, Color * color, Material * entryMat) {
   Intercept intercepts[MAX_INTERSECTIONS];
 
-  int hits = intersect(ray, scene.modelRoot, intercepts, entryMat);
+  int hits = intersect(ray, scene->modelRoot, intercepts, entryMat);
   if (hits > 0) {
     Point3D interceptPoint = ray.rayPoint(intercepts[0].t);
-    shade(level, weight, interceptPoint, ray.dir, intercepts, color);
+    shade(scene, level, weight, interceptPoint, ray.dir, intercepts, color);
     return hits;
   } else {
-    shadeBackground(ray, color);
+    shadeBackground(scene, ray, color);
     return 0;
   }
 }

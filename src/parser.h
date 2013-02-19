@@ -13,8 +13,8 @@ class Material;
 class Scene;
 class Transform;
 
-
-int parseFile(const char * filename, Scene * scene, Camera ** camera,
+int parseFile(const char * filename, Scene * scene);
+int parseFile(const char * filename, Scene * scene,
               Transform ** previousTransform);
 
 
