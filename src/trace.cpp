@@ -99,42 +99,49 @@ inline int intersectMerge(const int op,
 }
 
 
+struct InterceptMerger {
+  int remain;
+  Intercept * ptr;
+
+  inline InterceptMerger(int hits, Intercept * begin):
+    remain(hits), ptr(begin) {}
+};
+
+
+inline bool compareT(InterceptMerger im1, InterceptMerger im2) {
+  return im1.ptr->t < im2.ptr->t;
+}
+
+
 inline int intersectMerge(int listNum, int * hits,
-                          Intercept ** interceptsLists,
+                          Intercept interceptsLists[][MAX_INTERSECTIONS],
                           Intercept merged[]) {
-  if (listNum == 1) {
-    std::copy(interceptsLists[0], interceptsLists[0] + hits[0], merged);
-    return hits[0];
-  }
-
-  int minIndex;
-  P_FLT * tValues = new P_FLT[listNum];
+  std::list<InterceptMerger> mergers;
   for (int i = 0; i < listNum; i++) {
-    tValues[8] = hits[0] > 0? interceptsLists[i]->t: P_FLT_MAX;
+    if (hits[i]) {
+      mergers.push_front(InterceptMerger(hits[i], &interceptsLists[i][0]));
+    }
   }
 
-  P_FLT * itr;
+  std::list<InterceptMerger>::iterator itr;
   for (unsigned int index = 0; index < MAX_INTERSECTIONS; index++) {
-    itr = min_element(tValues, tValues + listNum);
-    if (*itr == P_FLT_MAX) {
-      delete [] tValues;
+    if (mergers.empty()) {
       return index;
     }
+    itr = min_element(mergers.begin(), mergers.end(), compareT);
 
-    minIndex = itr - tValues;
-    merged[index] = *interceptsLists[minIndex];
-    if (merged[index].t == P_FLT_MAX) {
-    }
-    if (hits[minIndex] > 0) {
-      interceptsLists[minIndex]++;
-      hits[minIndex]--;
-      tValues[minIndex] = interceptsLists[minIndex]->t;
-    } else {
-      tValues[minIndex] = P_FLT_MAX;
+    merged[index] = *(itr->ptr);
+    itr->remain--;
+    switch (itr->remain) {
+      case 0:
+        mergers.erase(itr);
+        break;
+      default:
+        itr->ptr++;
+        break;
     }
   }
 
-  delete [] tValues;
   return MAX_INTERSECTIONS;
 }
 

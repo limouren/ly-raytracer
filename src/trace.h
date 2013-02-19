@@ -24,6 +24,10 @@ inline int intersectMerge(const int op,
                           const int hitsRight, Intercept interceptRight[],
                           Intercept merged[]);
 
+inline int intersectMerge(const int listNum, int hits[],
+                          Intercept interceptLists[][MAX_INTERSECTIONS],
+                          Intercept merged[]);
+
 inline int trace(const Scene * scene, const int level, const C_FLT weight,
                  const Ray &ray, Color * color, Material * entryMat);
 
