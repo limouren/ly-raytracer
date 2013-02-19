@@ -132,8 +132,8 @@ class Cylinder: public Primitive {
       apexCenter(apexCenter), baseCenter(baseCenter),
       axisNormal(apexCenter - baseCenter) {
       height = axisNormal.normalize();
-      apexD = - dotProduct(axisNormal, apexCenter);
-      baseD = - dotProduct(axisNormal, baseCenter);
+      apexD = -dotProduct(axisNormal, apexCenter);
+      baseD = -dotProduct(axisNormal, baseCenter);
 
       buildBoundingVolume();
     }
@@ -143,10 +143,11 @@ class Cylinder: public Primitive {
     }
 
     inline void buildBoundingVolume();
-    int intersect(const Ray &ray, Intercept intercepts[],
-                  Material * entryMat) const;
     void getIntersect(const Point3D &point, Vector3D * normal,
                       std::vector<P_FLT> * mapping) const;
+    int intersect(const Ray &ray, Intercept intercepts[],
+                  Material * entryMat) const;
+    void transform(Transform * transform);
 };
 
 
@@ -168,10 +169,11 @@ class Sphere: public Primitive {
     }
 
     inline void buildBoundingVolume();
-    int intersect(const Ray &ray, Intercept intercepts[],
-                  Material * entryMat) const;
     void getIntersect(const Point3D &point, Vector3D * normal,
                       std::vector<P_FLT> * mapping) const;
+    int intersect(const Ray &ray, Intercept intercepts[],
+                  Material * entryMat) const;
+    void transform(Transform * transform);
 };
 
 

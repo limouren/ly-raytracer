@@ -378,6 +378,17 @@ int Cylinder::intersect(const Ray &ray, Intercept intercepts[],
 }
 
 
+void Cylinder::transform(Transform * transform) {
+  transform->transformPoint(&apexCenter);
+  transform->transformPoint(&baseCenter);
+  transform->transformVector(&axisNormal);
+  apexD = -dotProduct(axisNormal, apexCenter);
+  baseD = -dotProduct(axisNormal, baseCenter);
+
+  buildBoundingVolume();
+}
+
+
 inline void Sphere::buildBoundingVolume() {
   Vector3D radiusVector(radius);
   boundingVolume = new Box(center + radiusVector, center - radiusVector);
@@ -434,6 +445,13 @@ int Sphere::intersect(const Ray &ray, Intercept intercepts[],
                               this);
     return 1;
   }
+}
+
+
+void Sphere::transform(Transform * transform) {
+  transform->transformPoint(&center);
+
+  buildBoundingVolume();
 }
 
 
