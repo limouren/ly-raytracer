@@ -1,3 +1,6 @@
+#include <algorithm>
+#include <vector>
+
 #include "config.h"
 
 #include "color.h"
@@ -93,6 +96,46 @@ inline int intersectMerge(const int op,
   }
 
   return index;
+}
+
+
+inline int intersectMerge(int listNum, int * hits,
+                          Intercept ** interceptsLists,
+                          Intercept merged[]) {
+  if (listNum == 1) {
+    std::copy(interceptsLists[0], interceptsLists[0] + hits[0], merged);
+    return hits[0];
+  }
+
+  int minIndex;
+  P_FLT * tValues = new P_FLT[listNum];
+  for (int i = 0; i < listNum; i++) {
+    tValues[8] = hits[0] > 0? interceptsLists[i]->t: P_FLT_MAX;
+  }
+
+  P_FLT * itr;
+  for (unsigned int index = 0; index < MAX_INTERSECTIONS; index++) {
+    itr = min_element(tValues, tValues + listNum);
+    if (*itr == P_FLT_MAX) {
+      delete [] tValues;
+      return index;
+    }
+
+    minIndex = itr - tValues;
+    merged[index] = *interceptsLists[minIndex];
+    if (merged[index].t == P_FLT_MAX) {
+    }
+    if (hits[minIndex] > 0) {
+      interceptsLists[minIndex]++;
+      hits[minIndex]--;
+      tValues[minIndex] = interceptsLists[minIndex]->t;
+    } else {
+      tValues[minIndex] = P_FLT_MAX;
+    }
+  }
+
+  delete [] tValues;
+  return MAX_INTERSECTIONS;
 }
 
 
