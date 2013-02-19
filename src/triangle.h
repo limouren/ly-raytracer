@@ -6,15 +6,18 @@
 
 #include "config.h"
 
-#include "intercept.h"
-#include "material.h"
 #include "point.h"
-#include "ray.h"
 #include "shapes.h"
 #include "vector.h"
 
 
 BEGIN_RAYTRACER
+
+
+class Intercept;
+class Material;
+class Transform;
+class Ray;
 
 
 class Triangle: public Plane {
@@ -61,6 +64,9 @@ class Triangle: public Plane {
     int intersect(const Ray &ray, Intercept intercepts[],
                         Material * entryMat) const;
     std::vector<P_FLT> inverseMap(const Point3D &point) const;
+    void transform(Transform * transform) {
+      buildBoundingVolume();
+    }
 };
 
 

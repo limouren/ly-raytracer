@@ -6,11 +6,8 @@
 
 #include "config.h"
 
-#include "bounding_volume.h"
 #include "model.h"
 #include "point.h"
-#include "ray.h"
-#include "texture.h"
 #include "triangle.h"
 #include "vector.h"
 
@@ -19,6 +16,10 @@ BEGIN_RAYTRACER
 
 
 class Intercept;
+class Material;
+class Ray;
+class Texture;
+class Transform;
 
 
 class TriangleMesh: public Primitive {
@@ -61,19 +62,6 @@ class TriangleMesh: public Primitive {
       constructTriangles(triangleDefs);
     }
 
-    inline void buildBoundingVolume();
-
-    inline void constructTriangles(const std::vector<int *> &triangleDefs);
-
-    int intersect(const Ray &ray, Intercept intercepts[],
-                  Material * entryMat) const;
-
-    Vector3D normalAt(const Point3D &point) {
-      // This shouldn't be getting called.
-      printf("ERROR: Calling unimplemented TriangleMesh normalAt.\n");
-      exit(1);
-    }
-
     ~TriangleMesh() {
       delete boundingVolume;
       delete [] normals;
@@ -88,6 +76,15 @@ class TriangleMesh: public Primitive {
         triangles.pop_back();
       }
     }
+
+    void buildBoundingVolume();
+
+    void constructTriangles(const std::vector<int *> &triangleDefs);
+
+    int intersect(const Ray &ray, Intercept intercepts[],
+                  Material * entryMat) const;
+
+    void transform(Transform * transform);
 };
 
 

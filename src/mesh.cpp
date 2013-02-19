@@ -1,19 +1,18 @@
 #include "config.h"
 
+#include "bounding_volume.h"
+#include "material.h"
 #include "mesh.h"
+#include "point.h"
 #include "trace.h"
+#include "transform.h"
 #include "vector.h"
 
 
 BEGIN_RAYTRACER
 
 
-class Box;
-class Material;
-class Point3D;
-
-
-inline void TriangleMesh::buildBoundingVolume() {
+void TriangleMesh::buildBoundingVolume() {
   Point3D maxExt = points[0],
           minExt = points[0];
   for (int i = 1; i < pointNum; i++) {
@@ -24,7 +23,7 @@ inline void TriangleMesh::buildBoundingVolume() {
   boundingVolume = new Box(minExt, maxExt);
 }
 
-inline void TriangleMesh::constructTriangles(
+void TriangleMesh::constructTriangles(
   const std::vector<int *> &triangleDefs) {
   std::vector<int *>::const_iterator itr;
   if (normalNum == 0 && textureCoordNum == 0) {
@@ -87,6 +86,26 @@ int TriangleMesh::intersect(const Ray &ray, Intercept intercepts[],
 
   return RAYTRACER_NAMESPACE::intersect(ray, triangleTree, intercepts,
                                         entryMat);
+}
+
+
+void TriangleMesh::transform(Transform * transform) {
+  for (int i = 0; i < pointNum; i++) {
+    transform->transformPoint(&points[i]);
+  }
+  for (int i = 0; i < normalNum; i++) {
+    transform->transformVector(&normals[i]);
+  }
+
+  Triangle * triangle;
+  for (std::vector<MODEL_CLS *>::iterator itr = triangles.begin();
+       itr != triangles.end(); itr++) {
+    triangle = static_cast<Triangle *>(*itr);
+    triangle->transform(transform);
+    triangle->buildBoundingVolume();
+  }
+  buildBoundingVolume();
+  triangleTree = buildModelTreeNode(triangles, 0);
 }
 
 
