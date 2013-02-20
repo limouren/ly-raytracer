@@ -116,15 +116,16 @@ inline bool compareT(InterceptMerger im1, InterceptMerger im2) {
 inline int intersectMerge(int listNum, int * hits,
                           Intercept interceptsLists[][MAX_INTERSECTIONS],
                           Intercept merged[]) {
-  std::list<InterceptMerger> mergers;
+  std::vector<InterceptMerger> mergers;
   for (int i = 0; i < listNum; i++) {
     if (hits[i]) {
-      mergers.push_front(InterceptMerger(hits[i], &interceptsLists[i][0]));
+      mergers.push_back(InterceptMerger(hits[i], &interceptsLists[i][0]));
     }
   }
 
-  std::list<InterceptMerger>::iterator itr;
-  for (unsigned int index = 0; index < MAX_INTERSECTIONS; index++) {
+  std::vector<InterceptMerger>::iterator itr;
+  unsigned int index;
+  for (index = 0; index < MAX_INTERSECTIONS; index++) {
     if (mergers.empty()) {
       return index;
     }
@@ -134,7 +135,9 @@ inline int intersectMerge(int listNum, int * hits,
     itr->remain--;
     switch (itr->remain) {
       case 0:
-        mergers.erase(itr);
+        itr->ptr = mergers.back().ptr;
+        itr->remain = mergers.back().remain;
+        mergers.pop_back();
         break;
       default:
         itr->ptr++;
@@ -142,7 +145,7 @@ inline int intersectMerge(int listNum, int * hits,
     }
   }
 
-  return MAX_INTERSECTIONS;
+  return index;
 }
 
 
