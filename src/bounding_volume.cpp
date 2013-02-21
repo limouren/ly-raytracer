@@ -18,7 +18,7 @@ using namespace std;
 
 // Ref: Glassner -An Introduction to Ray Tracing - P.65-66
 inline bool BoundingBox::intersect(const Ray &ray) const {
-  P_FLT inv, t1, t2, tNear, tFar;
+  P_FLT t1, t2, tNear, tFar;
 
   tNear = -P_FLT_MAX;
   tFar = P_FLT_MAX;
@@ -28,9 +28,8 @@ inline bool BoundingBox::intersect(const Ray &ray) const {
       return false;
     }
   } else {
-    inv = 1.0f / ray.dir.x;
-    t1 = (minExt.x - ray.orig.x) * inv;
-    t2 = (maxExt.x - ray.orig.x) * inv;
+    t1 = (minExt.x - ray.orig.x) * ray.invDir.x;
+    t2 = (maxExt.x - ray.orig.x) * ray.invDir.x;
     if (t1 > t2) {
       swap(t1, t2);
     }
@@ -46,9 +45,8 @@ inline bool BoundingBox::intersect(const Ray &ray) const {
       return false;
     }
   } else {
-    inv = 1.0f / ray.dir.y;
-    t1 = (minExt.y - ray.orig.y) * inv;
-    t2 = (maxExt.y - ray.orig.y) * inv;
+    t1 = (minExt.y - ray.orig.y) * ray.invDir.y;
+    t2 = (maxExt.y - ray.orig.y) * ray.invDir.y;
     if (t1 > t2) {
       swap(t1, t2);
     }
@@ -64,9 +62,8 @@ inline bool BoundingBox::intersect(const Ray &ray) const {
       return false;
     }
   } else {
-    inv = 1.0f / ray.dir.z;
-    t1 = (minExt.z - ray.orig.z) * inv;
-    t2 = (maxExt.z - ray.orig.z) * inv;
+    t1 = (minExt.z - ray.orig.z) * ray.invDir.z;
+    t2 = (maxExt.z - ray.orig.z) * ray.invDir.z;
     if (t1 > t2) {
       swap(t1, t2);
     }
