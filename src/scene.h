@@ -4,22 +4,21 @@
 
 #include <math.h>
 #include <string.h>
+#include <time.h>
 #include <vector>
 
 #include "bitmap/bitmap/bitmap_image.hpp"
 
 #include "config.h"
 
-#include "background.h"
+#include "camera.h"
 #include "color.h"
 #include "light.h"
 #include "material.h"
-#include "mesh.h"
 #include "model.h"
-#include "shapes.h"
 #include "texture.h"
 #include "transform.h"
-#include "triangle.h"
+#include "utils.h"
 
 
 BEGIN_RAYTRACER
@@ -107,19 +106,28 @@ class Scene {
     }
 
     void loadTextures() {
+      clock_t startTimer, endTimer;
+
       printf("Loading textures...");
+      fflush(stdout);
+      startTimer = clock();
       for (std::vector<Texture *>::iterator itr = textures.begin();
            itr != textures.end(); itr++) {
         (*itr)->loadFromFile();
       }
-      printf("completed.\n");
+      endTimer = clock();
+      printf("completed (%.3f seconds).\n", clockTime(startTimer, endTimer));
     }
 
     void init(char * inputFilename) {
-      printf("Parsing file \"%s\"...", inputFilename);
+      clock_t startTimer, endTimer;
+
+      printf("Parsing scene...");
       fflush(stdout);
+      startTimer = clock();
       parseFile(inputFilename, this);
-      printf("completed.\n");
+      endTimer = clock();
+      printf("completed (%.3f seconds).\n", clockTime(startTimer, endTimer));
 
       loadTextures();
     }

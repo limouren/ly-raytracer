@@ -1,6 +1,7 @@
 #include <math.h>
 #include <pthread.h>
 #include <stdio.h>
+#include <time.h>
 #include <vector>
 
 #include "bitmap/bitmap/bitmap_image.hpp"
@@ -8,7 +9,7 @@
 #include "config.h"
 
 #include "screen.h"
-
+#include "utils.h"
 
 
 BEGIN_RAYTRACER
@@ -47,8 +48,11 @@ void Screen::calibrate() {
 
 
 void Screen::saveBmp(char * outputFilename) const {
+  clock_t startTimer, endTimer;
+
   printf("Saving file to \"%s\"...", outputFilename);
   fflush(stdout);
+  startTimer = clock();
   int pixelCount = height * width;
   C_FLT * redChannel = new C_FLT[pixelCount],
         * greenChannel = new C_FLT[pixelCount],
@@ -69,12 +73,20 @@ void Screen::saveBmp(char * outputFilename) const {
   delete [] redChannel;
   delete [] greenChannel;
   delete [] blueChannel;
-  printf("completed.\n");
+  endTimer = clock();
+  printf("completed (%.3f seconds).\n", clockTime(startTimer, endTimer));
 }
 
 
 void Screen::rayTrace() {
+  clock_t startTimer, endTimer;
+
+  printf("Building model tree...");
+  fflush(stdout);
+  startTimer = clock();
   scene->buildModelTree();
+  endTimer = clock();
+  printf("completed (%.3f seconds).\n", clockTime(startTimer, endTimer));
 
   Vector3D dir = scene->camera->target - scene->camera->viewpoint;
   dir.normalize();
@@ -111,6 +123,7 @@ void Screen::rayTrace() {
   }
   screenTracer->init(scene->camera->viewpoint, pixelHor, pixelVert);
 
+  startTimer = clock();
   pthread_t * threads = new pthread_t[threadNum];
   for (int i = 0; i < threadNum; i++) {
     pthread_create(&threads[i], NULL, &runScreenTracer,
@@ -119,7 +132,9 @@ void Screen::rayTrace() {
   for (int i = 0; i < threadNum; i++) {
     pthread_join(threads[i], NULL);
   }
-  printf("\rTracing image...100.0%% completed.\n");
+  endTimer = clock();
+  printf("\rTracing image...100.0%% completed (%.3f seconds).\n",
+         clockTime(startTimer, endTimer));
 
   delete screenTracer;
 }
