@@ -107,8 +107,7 @@ class Primitive: public MODEL_CLS {
       exit(1);
     }
 
-    virtual int intersect(const Ray &ray, Intercept intercepts[],
-                                Material * entryMat) const {
+    virtual int intersect(const Ray &ray, Intercept intercepts[]) const {
       printf("ERROR: Unimplemented Primitive::intersect stub invoked\n");
       exit(1);
     }

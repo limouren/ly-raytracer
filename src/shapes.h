@@ -42,8 +42,7 @@ class Plane: public Primitive {
                               std::vector<P_FLT> * mapping) const {
       *normal = this->normal;
     }
-    virtual int intersect(const Ray &ray, Intercept intercepts[],
-                          Material * entryMat) const;
+    virtual int intersect(const Ray &ray, Intercept intercepts[]) const;
     void transform(Transform * transform);
 };
 
@@ -89,8 +88,7 @@ class Polygon: public Plane {
     }
 
     void buildBoundingBox();
-    int intersect(const Ray &ray, Intercept intercepts[],
-                  Material * entryMat) const;
+    int intersect(const Ray &ray, Intercept intercepts[]) const;
     void transform(Transform * transform);
 };
 
@@ -148,8 +146,7 @@ class Cylinder: public Primitive {
     inline void buildBoundingBox();
     void getIntersect(const Point3D &point, Vector3D * normal,
                       std::vector<P_FLT> * mapping) const;
-    int intersect(const Ray &ray, Intercept intercepts[],
-                  Material * entryMat) const;
+    int intersect(const Ray &ray, Intercept intercepts[]) const;
     void transform(Transform * transform);
 };
 
@@ -174,8 +171,7 @@ class Sphere: public Primitive {
     inline void buildBoundingBox();
     void getIntersect(const Point3D &point, Vector3D * normal,
                       std::vector<P_FLT> * mapping) const;
-    int intersect(const Ray &ray, Intercept intercepts[],
-                  Material * entryMat) const;
+    int intersect(const Ray &ray, Intercept intercepts[]) const;
     void transform(Transform * transform);
 };
 

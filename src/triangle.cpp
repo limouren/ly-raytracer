@@ -4,7 +4,6 @@
 
 #include "bounding_volume.h"
 #include "intercept.h"
-#include "material.h"
 #include "point.h"
 #include "ray.h"
 #include "shapes.h"
@@ -23,8 +22,7 @@ void Triangle::buildBoundingBox() {
 
 
 // Ref: Glassner -An Introduction to Ray Tracing - P.53-59
-int Triangle::intersect(const Ray &ray, Intercept intercepts[],
-                              Material * entryMat) const {
+int Triangle::intersect(const Ray &ray, Intercept intercepts[]) const {
   P_FLT normalDotOrig, normalDotDir,
         t, u, v;
 
@@ -159,7 +157,7 @@ int Triangle::intersect(const Ray &ray, Intercept intercepts[],
       break;
   }
 
-  intercepts[0] = Intercept(t, normalDotDir < 0, entryMat, this);
+  intercepts[0] = Intercept(t, normalDotDir < 0, ray.medium, this);
   return 1;
 }
 

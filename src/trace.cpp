@@ -17,12 +17,10 @@
 BEGIN_RAYTRACER
 
 
-inline int intersect(const Ray &ray, MODEL_CLS * model, Intercept intercepts[],
-                     Material * entryMat) {
+int intersect(const Ray &ray, MODEL_CLS * model, Intercept intercepts[]) {
   switch (model->type) {
     case 0:  // Primitive
-      return static_cast<Primitive *>(model)->intersect(ray, intercepts,
-                                                        entryMat);
+      return static_cast<Primitive *>(model)->intersect(ray, intercepts);
 
     case 1: {  // Composite
       Composite * composite = static_cast<Composite *>(model);
@@ -30,8 +28,8 @@ inline int intersect(const Ray &ray, MODEL_CLS * model, Intercept intercepts[],
       Intercept interceptsLeft[MAX_INTERSECTIONS],
                 interceptsRight[MAX_INTERSECTIONS];
 
-      hitsLeft = intersect(ray, composite->left, interceptsLeft, entryMat);
-      hitsRight = intersect(ray, composite->right, interceptsRight, entryMat);
+      hitsLeft = intersect(ray, composite->left, interceptsLeft);
+      hitsRight = intersect(ray, composite->right, interceptsRight);
 
       return intersectMerge(composite->op, hitsLeft, interceptsLeft, hitsRight,
                             interceptsRight, intercepts);
@@ -46,8 +44,8 @@ inline int intersect(const Ray &ray, MODEL_CLS * model, Intercept intercepts[],
         return 0;
       }
 
-      hits[0] = intersect(ray, bvhNode->left, interceptsLists[0], entryMat);
-      hits[1] = intersect(ray, bvhNode->right, interceptsLists[1], entryMat);
+      hits[0] = intersect(ray, bvhNode->left, interceptsLists[0]);
+      hits[1] = intersect(ray, bvhNode->right, interceptsLists[1]);
 
       return intersectMerge(2, hits, interceptsLists, intercepts);
     }
@@ -154,14 +152,14 @@ inline int intersectMerge(int listNum, int * hits,
 }
 
 
-inline int trace(const Scene * scene, const int level, const C_FLT weight,
-                 const Ray &ray, Color * color, Material * entryMat) {
+int trace(const Scene * scene, const int level, const C_FLT weight,
+          const Ray &ray, Color * color) {
   Intercept intercepts[MAX_INTERSECTIONS];
 
-  int hits = intersect(ray, scene->modelRoot, intercepts, entryMat);
+  int hits = intersect(ray, scene->modelRoot, intercepts);
   if (hits > 0) {
     Point3D interceptPoint = ray.rayPoint(intercepts[0].t);
-    shade(scene, level, weight, interceptPoint, ray.dir, intercepts, color);
+    shade(scene, level, weight, interceptPoint, ray, intercepts, color);
     return hits;
   } else {
     shadeBackground(scene, ray, color);

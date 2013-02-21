@@ -14,8 +14,7 @@
 BEGIN_RAYTRACER
 
 
-int Plane::intersect(const Ray &ray, Intercept intercepts[],
-                     Material * entryMat) const {
+int Plane::intersect(const Ray &ray, Intercept intercepts[]) const {
   P_FLT rayDotNorm, t;
 
   rayDotNorm = dotProduct(normal, ray.dir);
@@ -27,7 +26,7 @@ int Plane::intersect(const Ray &ray, Intercept intercepts[],
   t = -(dotProduct(normal, ray.orig) + d) / rayDotNorm;
 
   if (fGreaterZero(t)) {
-    intercepts[0] = Intercept(t, rayDotNorm < 0.0f, entryMat, this);
+    intercepts[0] = Intercept(t, rayDotNorm < 0.0f, ray.medium, this);
     return 1;
   }
 
@@ -42,9 +41,8 @@ void Plane::transform(Transform * transform) {
 }
 
 
-/* const int Circle::intersect(const Ray &ray, Intercept intercepts[],
-                            Material * entryMat) const {
-  if (Plane::intersect(ray, intercepts, entryMat) == 0) {
+/* const int Circle::intersect(const Ray &ray, Intercept intercepts[]) const {
+  if (Plane::intersect(ray, intercepts, ray.medium) == 0) {
     return 0;
   }
 
@@ -68,10 +66,9 @@ inline void Polygon::buildBoundingBox() {
 
 
 // Ref: Glassner -An Introduction to Ray Tracing - P.53-59
-int Polygon::intersect(const Ray &ray, Intercept intercepts[],
-                             Material * entryMat) const {
+int Polygon::intersect(const Ray &ray, Intercept intercepts[]) const {
   if (!boundingBox->intersect(ray) ||
-      Plane::intersect(ray, intercepts, entryMat) == 0) {
+      Plane::intersect(ray, intercepts) == 0) {
     return 0;
   }
 
@@ -210,8 +207,7 @@ void Cylinder::getIntersect(const Point3D &point, Vector3D * normal,
 }
 
 
-int Cylinder::intersect(const Ray &ray, Intercept intercepts[],
-                              Material * entryMat) const {
+int Cylinder::intersect(const Ray &ray, Intercept intercepts[]) const {
   if (!boundingBox->intersect(ray)) {
     return 0;
   }
@@ -255,7 +251,7 @@ int Cylinder::intersect(const Ray &ray, Intercept intercepts[],
       }
     }
 
-    intercepts[0] = Intercept(0.0f, true, entryMat, this);
+    intercepts[0] = Intercept(0.0f, true, ray.medium, this);
     intercepts[1] = Intercept(0.0f, false, material, this);
 
     if (tValues.size() == 2 || fEqual(rayDotAxis, 1.0f)) {
@@ -409,8 +405,7 @@ void Sphere::getIntersect(const Point3D &point, Vector3D * normal,
 }
 
 
-int Sphere::intersect(const Ray &ray, Intercept intercepts[],
-                            Material * entryMat) const {
+int Sphere::intersect(const Ray &ray, Intercept intercepts[]) const {
   if (!boundingBox->intersect(ray)) {
     return 0;
   }
@@ -437,12 +432,12 @@ int Sphere::intersect(const Ray &ray, Intercept intercepts[],
     if (insideOut) {
       return 0;
     }
-    intercepts[0] = Intercept(rayClosest - halfChord, true, entryMat, this);
+    intercepts[0] = Intercept(rayClosest - halfChord, true, ray.medium, this);
     intercepts[1] = Intercept(rayClosest + halfChord, false, this->material,
                               this);
     return 2;
   } else {
-    intercepts[0] = Intercept(rayClosest + halfChord, insideOut, entryMat,
+    intercepts[0] = Intercept(rayClosest + halfChord, insideOut, ray.medium,
                               this);
     return 1;
   }

@@ -5,28 +5,21 @@
 
 #include "point.h"
 #include "vector.h"
+#include "material.h"
+
 
 BEGIN_RAYTRACER
 
 
 class Ray {
   public:
+    Material * medium;
     Point3D orig;
     Vector3D dir;
 
     Ray() {}
-    Ray(Point3D orig, Vector3D dir): orig(orig), dir(dir) {}
-
-    inline Ray& operator =(const Ray &ray) {
-      if (this == &ray) {
-        return *this;
-      }
-
-      orig = ray.orig;
-      dir = ray.dir;
-
-      return *this;
-    }
+    Ray(Point3D orig, Vector3D dir, Material * medium):
+      orig(orig), dir(dir), medium(medium) {}
 
     inline Point3D rayPoint(P_FLT t) const {
       return orig + (dir * t);

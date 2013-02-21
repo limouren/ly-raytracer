@@ -71,14 +71,12 @@ void TriangleMesh::constructTriangles(
 }
 
 
-int TriangleMesh::intersect(const Ray &ray, Intercept intercepts[],
-                                  Material * entryMat) const {
+int TriangleMesh::intersect(const Ray &ray, Intercept intercepts[]) const {
   if (!(boundingBox->intersect)(ray)) {
     return 0;
   }
 
-  return RAYTRACER_NAMESPACE::intersect(ray, triangleTree, intercepts,
-                                        entryMat);
+  return RAYTRACER_NAMESPACE::intersect(ray, triangleTree, intercepts);
 }
 
 

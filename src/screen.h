@@ -43,13 +43,13 @@ class PixelTracer {
       sampleDirs[1].normalize();
       sampleDirs[2].normalize();
       sampleDirs[3].normalize();
-      Ray sampleRays[4] = {Ray(rayOrig, sampleDirs[0]),
-                           Ray(rayOrig, sampleDirs[1]),
-                           Ray(rayOrig, sampleDirs[2]),
-                           Ray(rayOrig, sampleDirs[3])};
+      Ray sampleRays[4] = {Ray(rayOrig, sampleDirs[0], scene->medium),
+                           Ray(rayOrig, sampleDirs[1], scene->medium),
+                           Ray(rayOrig, sampleDirs[2], scene->medium),
+                           Ray(rayOrig, sampleDirs[3], scene->medium)};
 
       for (int i = 0; i < 4; i++) {
-        trace(scene, 0, 1.0f, sampleRays[i], &samples[i], scene->medium);
+        trace(scene, 0, 1.0f, sampleRays[i], &samples[i]);
       }
 
       if (level < aaLevel) {
@@ -68,8 +68,8 @@ class PixelTracer {
 
     inline void run(const Scene * scene, const Point3D &rayOrig,
                     const Vector3D &pixelHor, const Vector3D &pixelVert) {
-      Ray ray(rayOrig, rayDir);
-      trace(scene, 0, 1.0f, ray, pixel, scene->medium);
+      Ray ray(rayOrig, rayDir, scene->medium);
+      trace(scene, 0, 1.0f, ray, pixel);
 
       if (aaLevel > 0) {
         alias(scene, 1, pixel, rayOrig, rayDir, pixelHor, pixelVert);

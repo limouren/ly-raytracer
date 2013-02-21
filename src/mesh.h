@@ -81,8 +81,7 @@ class TriangleMesh: public Primitive {
 
     void constructTriangles(const std::vector<int *> &triangleDefs);
 
-    int intersect(const Ray &ray, Intercept intercepts[],
-                  Material * entryMat) const;
+    int intersect(const Ray &ray, Intercept intercepts[]) const;
 
     void transform(Transform * transform);
 };
