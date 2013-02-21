@@ -13,6 +13,13 @@ BEGIN_RAYTRACER
 
 
 void TriangleMesh::buildBoundingBox() {
+  // Build triangle bounding boxes
+  for (std::vector<Primitive *>::iterator itr = triangles.begin();
+       itr != triangles.end(); itr++) {
+    (*itr)->buildBoundingBox();
+  }
+
+  // Build mesh bounding box
   Point3D maxExt = points[0],
           minExt = points[0];
   for (int i = 1; i < pointNum; i++) {
@@ -73,12 +80,11 @@ void TriangleMesh::constructTriangles(
                           &textureCoords[(*itr)[8]]));
     }
   }
+}
 
-  for (std::vector<Primitive *>::iterator itr = triangles.begin();
-       itr != triangles.end(); itr++) {
-    (*itr)->buildBoundingBox();
-  }
 
+void TriangleMesh::init() {
+  buildBoundingBox();
   triangleTree = buildBVHTree(triangles);
 }
 

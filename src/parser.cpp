@@ -771,9 +771,10 @@ void parseMesh(FILE * file, Scene * scene) {
     exit(1);
   }
 
-  scene->addPrimitive(new TriangleMesh(scene->latestMat(), texture, vertex,
-                                       normal, textureCoords, triangleDefs),
-                      currentTransform);
+  TriangleMesh * mesh = new TriangleMesh(scene->latestMat(), texture, vertex,
+                                         normal, textureCoords, triangleDefs);
+  scene->addPrimitive(mesh, currentTransform);
+  scene->meshes.push_back(mesh);
 }
 
 

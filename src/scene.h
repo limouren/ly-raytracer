@@ -7,21 +7,22 @@
 #include <time.h>
 #include <vector>
 
-#include "bitmap/bitmap/bitmap_image.hpp"
-
 #include "config.h"
 
-#include "camera.h"
-#include "color.h"
-#include "light.h"
 #include "material.h"
+#include "mesh.h"
 #include "model.h"
-#include "texture.h"
-#include "transform.h"
 #include "utils.h"
 
 
 BEGIN_RAYTRACER
+
+
+class Camera;
+class Color;
+class Light;
+class Texture;
+class Transform;
 
 
 class Scene {
@@ -32,6 +33,8 @@ class Scene {
     Material * medium;
     std::vector<Light *> lights;
     std::vector<Material *> materials;
+    // Keep track of meshes for later initialization
+    std::vector<TriangleMesh *> meshes;
     std::vector<Primitive *> primitives;
     std::vector<Texture *> textures;
     std::vector<Transform *> transforms;
@@ -85,6 +88,10 @@ class Scene {
       printf("Building model tree...");
       fflush(stdout);
       startTimer = clock();
+      for (std::vector<TriangleMesh *>::iterator itr = meshes.begin();
+           itr != meshes.end(); itr++) {
+        (*itr)->init();
+      }
       modelRoot = buildBVHTree(primitives);
       endTimer = clock();
       printf("completed (%.3f seconds).\n", clockTime(startTimer, endTimer));

@@ -76,11 +76,9 @@ class TriangleMesh: public Primitive {
     }
 
     void buildBoundingBox();
-
     void constructTriangles(const std::vector<int *> &triangleDefs);
-
+    void init();
     int intersect(const Ray &ray, Intercept intercepts[]) const;
-
     void transform(Transform * transform);
 };
 
