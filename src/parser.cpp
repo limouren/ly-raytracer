@@ -778,7 +778,7 @@ void parseMesh(FILE * file, Scene * scene) {
 
 
 int parseFile(const char * filename, Scene * scene) {
-  parseFile(filename, scene, NULL);
+  return parseFile(filename, scene, NULL);
 }
 
 

@@ -36,6 +36,7 @@ class Matrix4 {
 
     Matrix4 inverse() {
       // TODO(kent): Implement fast gaussian elimination
+      return Matrix4();
     }
 
     friend Vector3D operator *(const Vector3D &vector);
