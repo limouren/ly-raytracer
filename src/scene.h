@@ -32,7 +32,7 @@ class Scene {
     Material * medium;
     std::vector<Light *> lights;
     std::vector<Material *> materials;
-    std::vector<MODEL_CLS *> primitives;
+    std::vector<Primitive *> primitives;
     std::vector<Texture *> textures;
     std::vector<Transform *> transforms;
 
@@ -85,11 +85,7 @@ class Scene {
       printf("Building model tree...");
       fflush(stdout);
       startTimer = clock();
-      for (std::vector<MODEL_CLS *>::iterator itr = primitives.begin();
-           itr != primitives.end(); itr++) {
-        static_cast<Primitive *>(*itr)->buildBoundingBox();
-      }
-      modelRoot = buildModelTreeNode(primitives, 0);
+      modelRoot = buildBVHTree(primitives);
       endTimer = clock();
       printf("completed (%.3f seconds).\n", clockTime(startTimer, endTimer));
     }

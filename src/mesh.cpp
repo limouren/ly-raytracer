@@ -74,11 +74,12 @@ void TriangleMesh::constructTriangles(
     }
   }
 
-  for (std::vector<MODEL_CLS *>::iterator itr = triangles.begin();
+  for (std::vector<Primitive *>::iterator itr = triangles.begin();
        itr != triangles.end(); itr++) {
-    static_cast<Triangle *>(* itr)->buildBoundingBox();
+    (*itr)->buildBoundingBox();
   }
-  triangleTree = buildModelTreeNode(triangles, 0);
+
+  triangleTree = buildBVHTree(triangles);
 }
 
 
@@ -91,19 +92,14 @@ void TriangleMesh::transform(Transform * transform) {
   for (int i = 0; i < pointNum; i++) {
     transform->transformPoint(&points[i]);
   }
+  buildBoundingBox();
+
   for (int i = 0; i < normalNum; i++) {
     transform->transformVector(&normals[i]);
   }
 
-  Triangle * triangle;
-  for (std::vector<MODEL_CLS *>::iterator itr = triangles.begin();
-       itr != triangles.end(); itr++) {
-    triangle = static_cast<Triangle *>(*itr);
-    triangle->transform(transform);
-    triangle->buildBoundingBox();
-  }
-  buildBoundingBox();
-  triangleTree = buildModelTreeNode(triangles, 0);
+  delete triangleTree;
+  triangleTree = buildBVHTree(triangles);
 }
 
 

@@ -37,23 +37,74 @@ int intersect(const Ray &ray, MODEL_CLS * model, Intercept intercepts[]) {
       hitsLeft = intersect(ray, composite->left, interceptsLeft);
       hitsRight = intersect(ray, composite->right, interceptsRight);
 
-      return intersectMerge(composite->op, hitsLeft, interceptsLeft, hitsRight,
-                            interceptsRight, intercepts);
+      return intersectMergeTwo(hitsLeft, interceptsLeft,
+                               hitsRight, interceptsRight, intercepts);
     }
 
-    case 2: {  // K-D Tree Node
+    case 20: {  // BVH Node
       BVHNode * bvhNode = static_cast<BVHNode *>(model);
-      int hits[2];
-      Intercept interceptsLists[2][MAX_INTERSECTIONS];
 
       if (!bvhNode->boundingBox->intersect(ray)) {
         return 0;
       }
 
+      int hits[2];
+      Intercept interceptsLists[2][MAX_INTERSECTIONS];
+
       hits[0] = intersect(ray, bvhNode->left, interceptsLists[0]);
       hits[1] = intersect(ray, bvhNode->right, interceptsLists[1]);
 
-      return intersectMerge(2, hits, interceptsLists, intercepts);
+      return intersectMergeTwo(hits[0], interceptsLists[0],
+                               hits[1], interceptsLists[1], intercepts);
+    }
+
+    case 21: {  // BVH Leaf
+      BVHLeaf * bvhLeaf = static_cast<BVHLeaf *>(model);
+
+      if (bvhLeaf->primNum == 0 || (!bvhLeaf->boundingBox->intersect(ray))) {
+        return 0;
+      }
+
+      switch (bvhLeaf->primNum) {
+        case 1: {
+          if (!bvhLeaf->primitives[0]->boundingBox->intersect(ray)) {
+            return 0;
+          }
+          return bvhLeaf->primitives[0]->intersect(ray, intercepts);
+        }
+        case 2: {
+          int hits[2];
+          Intercept interceptsLists[2][MAX_INTERSECTIONS];
+          if (bvhLeaf->primitives[0]->boundingBox->intersect(ray)) {
+            hits[0] = bvhLeaf->primitives[0]->intersect(ray,
+                                                        interceptsLists[0]);
+          } else {
+            hits[0] = 0;
+          }
+          if (bvhLeaf->primitives[1]->boundingBox->intersect(ray)) {
+            hits[1] = bvhLeaf->primitives[1]->intersect(ray,
+                                                        interceptsLists[1]);
+          } else {
+            hits[1] = 0;
+          }
+          return intersectMergeTwo(hits[0], interceptsLists[0],
+                                   hits[1], interceptsLists[1], intercepts);
+        }
+        default: {
+          int hits[8];
+          Intercept interceptsLists[8][MAX_INTERSECTIONS];
+          for (int i = 0; i < bvhLeaf->primNum; i++) {
+            if (bvhLeaf->primitives[i]->boundingBox->intersect(ray)) {
+              hits[i] = bvhLeaf->primitives[i]->intersect(ray,
+                                                          interceptsLists[i]);
+            } else {
+              hits[i] = 0;
+            }
+          }
+          return intersectMergeMulti(bvhLeaf->primNum, hits, interceptsLists,
+                                     intercepts);
+        }
+      }
     }
   }
 
@@ -61,12 +112,9 @@ int intersect(const Ray &ray, MODEL_CLS * model, Intercept intercepts[]) {
 }
 
 
-inline int intersectMerge(const int op,
-                          int hitsLeft, Intercept interceptsLeft[],
-                          int hitsRight, Intercept interceptsRight[],
-                          Intercept merged[]) {
-  // Assume union only for now
-  // TODO(kent): Handle non unions
+inline int intersectMergeTwo(int hitsLeft, Intercept interceptsLeft[],
+                             int hitsRight, Intercept interceptsRight[],
+                             Intercept merged[]) {
   unsigned int index = 0;
   Intercept * left = interceptsLeft,
             * right = interceptsRight;
@@ -116,10 +164,10 @@ inline bool compareT(InterceptMerger im1, InterceptMerger im2) {
 }
 
 
-inline int intersectMerge(int listNum, int * hits,
-                          Intercept interceptsLists[][MAX_INTERSECTIONS],
-                          Intercept merged[]) {
-  // Merge at most 8 nodes of oct tree
+inline int intersectMergeMulti(int listNum, int * hits,
+                               Intercept interceptsLists[][MAX_INTERSECTIONS],
+                               Intercept merged[]) {
+  // NOTE: Merge at most 8; Designed for use in octree
   InterceptMerger mergers[8];
   InterceptMerger * mergerPtr;
   unsigned int index = 0;

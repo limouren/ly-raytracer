@@ -29,7 +29,7 @@ class TriangleMesh: public Primitive {
     Point3D * points;
     Vector3D * normals;
     Vector2D * textureCoords;
-    std::vector<MODEL_CLS *> triangles;
+    std::vector<Primitive *> triangles;
 
   public:
     // This constructor designed according to BART specifications
