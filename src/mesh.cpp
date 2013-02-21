@@ -12,7 +12,7 @@
 BEGIN_RAYTRACER
 
 
-void TriangleMesh::buildBoundingVolume() {
+void TriangleMesh::buildBoundingBox() {
   Point3D maxExt = points[0],
           minExt = points[0];
   for (int i = 1; i < pointNum; i++) {
@@ -20,7 +20,7 @@ void TriangleMesh::buildBoundingVolume() {
     minExt = pointMin(minExt, points[i]);
   }
 
-  boundingVolume = new Box(minExt, maxExt);
+  boundingBox = new BoundingBox(minExt, maxExt);
 }
 
 void TriangleMesh::constructTriangles(
@@ -80,7 +80,7 @@ void TriangleMesh::constructTriangles(
 
 int TriangleMesh::intersect(const Ray &ray, Intercept intercepts[],
                                   Material * entryMat) const {
-  if (!(boundingVolume->intersect)(ray)) {
+  if (!(boundingBox->intersect)(ray)) {
     return 0;
   }
 
@@ -102,9 +102,9 @@ void TriangleMesh::transform(Transform * transform) {
        itr != triangles.end(); itr++) {
     triangle = static_cast<Triangle *>(*itr);
     triangle->transform(transform);
-    triangle->buildBoundingVolume();
+    triangle->buildBoundingBox();
   }
-  buildBoundingVolume();
+  buildBoundingBox();
   triangleTree = buildModelTreeNode(triangles, 0);
 }
 

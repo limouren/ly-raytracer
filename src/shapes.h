@@ -80,15 +80,15 @@ class Polygon: public Plane {
 
       d = -dotProduct(vertex[0], normal);
 
-      buildBoundingVolume();
+      buildBoundingBox();
     };
 
     virtual ~Polygon() {
       delete [] vertex;
-      delete boundingVolume;
+      delete boundingBox;
     }
 
-    void buildBoundingVolume();
+    void buildBoundingBox();
     int intersect(const Ray &ray, Intercept intercepts[],
                   Material * entryMat) const;
     void transform(Transform * transform);
@@ -138,14 +138,14 @@ class Cylinder: public Primitive {
       apexD = -dotProduct(axisNormal, apexCenter);
       baseD = -dotProduct(axisNormal, baseCenter);
 
-      buildBoundingVolume();
+      buildBoundingBox();
     }
 
     ~Cylinder() {
-      delete boundingVolume;
+      delete boundingBox;
     }
 
-    inline void buildBoundingVolume();
+    inline void buildBoundingBox();
     void getIntersect(const Point3D &point, Vector3D * normal,
                       std::vector<P_FLT> * mapping) const;
     int intersect(const Ray &ray, Intercept intercepts[],
@@ -164,14 +164,14 @@ class Sphere: public Primitive {
     Sphere(Material * material, const Point3D &center, P_FLT radius):
       Primitive(material), insideOut(radius < 0.0),
       radius(fabs(radius)), center(center) {
-      buildBoundingVolume();
+      buildBoundingBox();
     }
 
     ~Sphere() {
-      delete boundingVolume;
+      delete boundingBox;
     }
 
-    inline void buildBoundingVolume();
+    inline void buildBoundingBox();
     void getIntersect(const Point3D &point, Vector3D * normal,
                       std::vector<P_FLT> * mapping) const;
     int intersect(const Ray &ray, Intercept intercepts[],

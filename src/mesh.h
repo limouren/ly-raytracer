@@ -58,12 +58,12 @@ class TriangleMesh: public Primitive {
         textureCoords[i] = _textureCoords[i];
       }
 
-      buildBoundingVolume();
+      buildBoundingBox();
       constructTriangles(triangleDefs);
     }
 
     ~TriangleMesh() {
-      delete boundingVolume;
+      delete boundingBox;
       delete [] normals;
       delete [] points;
       delete [] textureCoords;
@@ -77,7 +77,7 @@ class TriangleMesh: public Primitive {
       }
     }
 
-    void buildBoundingVolume();
+    void buildBoundingBox();
 
     void constructTriangles(const std::vector<int *> &triangleDefs);
 

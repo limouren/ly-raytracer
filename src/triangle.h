@@ -39,7 +39,7 @@ class Triangle: public Plane {
 
       d = -dotProduct(*vertex1, normal);
 
-      buildBoundingVolume();
+      buildBoundingBox();
     };
 
     Triangle(Material * material, Texture * texture,
@@ -53,19 +53,19 @@ class Triangle: public Plane {
 
       d = -dotProduct(*vertex1, normal);
 
-      buildBoundingVolume();
+      buildBoundingBox();
     };
 
     virtual ~Triangle() {
-      delete boundingVolume;
+      delete boundingBox;
     }
 
-    void buildBoundingVolume();
+    void buildBoundingBox();
     int intersect(const Ray &ray, Intercept intercepts[],
                         Material * entryMat) const;
     std::vector<P_FLT> inverseMap(const Point3D &point) const;
     void transform(Transform * transform) {
-      buildBoundingVolume();
+      buildBoundingBox();
     }
 };
 

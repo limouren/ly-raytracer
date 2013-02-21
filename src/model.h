@@ -20,7 +20,7 @@ BEGIN_RAYTRACER
 class MODEL_CLS {
   public:
     unsigned char type;
-    BoundingVolume * boundingVolume;
+    BoundingBox * boundingBox;
 
     explicit MODEL_CLS(const unsigned char type): type(type) {}
 
@@ -37,16 +37,17 @@ class BVHNode: public MODEL_CLS {
 
     BVHNode(MODEL_CLS * left, MODEL_CLS * right):
       MODEL_CLS(2), left(left), right(right) {
-      Point3D minExtLeft, maxExtLeft, minExtRight, maxExtRight;
-      left->boundingVolume->getBox(&minExtLeft, &maxExtLeft);
-      right->boundingVolume->getBox(&minExtRight, &maxExtRight);
+      Point3D minExtLeft = left->boundingBox->minExt,
+              maxExtLeft = left->boundingBox->maxExt,
+              minExtRight = right->boundingBox->minExt,
+              maxExtRight = right->boundingBox->maxExt;
 
-      boundingVolume = new Box(pointMin(minExtLeft, minExtRight),
-                               pointMax(maxExtLeft, maxExtRight));
+      boundingBox = new BoundingBox(pointMin(minExtLeft, minExtRight),
+                                    pointMax(maxExtLeft, maxExtRight));
     }
 
     ~BVHNode() {
-      delete boundingVolume;
+      delete boundingBox;
 
       if (left->type != 0) {
         delete left;
@@ -124,22 +125,13 @@ class Primitive: public MODEL_CLS {
 
 
 bool compareX(MODEL_CLS * modelA, MODEL_CLS * modelB) {
-  Point3D minExtA, maxExtA, minExtB, maxExtB;
-  modelA->boundingVolume->getBox(&minExtA, &maxExtA);
-  modelB->boundingVolume->getBox(&minExtB, &maxExtB);
-  return maxExtA.x < maxExtB.x;
+  return modelA->boundingBox->minExt.x < modelB->boundingBox->minExt.x;
 }
 bool compareY(MODEL_CLS * modelA, MODEL_CLS * modelB) {
-  Point3D minExtA, maxExtA, minExtB, maxExtB;
-  modelA->boundingVolume->getBox(&minExtA, &maxExtA);
-  modelB->boundingVolume->getBox(&minExtB, &maxExtB);
-  return maxExtA.y < maxExtB.y;
+  return modelA->boundingBox->minExt.y < modelB->boundingBox->minExt.y;
 }
 bool compareZ(MODEL_CLS * modelA, MODEL_CLS * modelB) {
-  Point3D minExtA, maxExtA, minExtB, maxExtB;
-  modelA->boundingVolume->getBox(&minExtA, &maxExtA);
-  modelB->boundingVolume->getBox(&minExtB, &maxExtB);
-  return maxExtA.z < maxExtB.z;
+  return modelA->boundingBox->minExt.z < modelB->boundingBox->minExt.z;
 }
 
 

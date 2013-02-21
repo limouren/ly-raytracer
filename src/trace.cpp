@@ -42,7 +42,7 @@ inline int intersect(const Ray &ray, MODEL_CLS * model, Intercept intercepts[],
       int hits[2];
       Intercept interceptsLists[2][MAX_INTERSECTIONS];
 
-      if (!bvhNode->boundingVolume->intersect(ray)) {
+      if (!bvhNode->boundingBox->intersect(ray)) {
         return 0;
       }
 

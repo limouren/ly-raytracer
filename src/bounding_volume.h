@@ -13,36 +13,17 @@
 BEGIN_RAYTRACER
 
 
-class BoundingVolume {
-  public:
-    BoundingVolume() {}
-
-    virtual void getBox(Point3D * minExt, Point3D * maxExt) const {}
-    virtual bool intersect(const Ray &ray) const {
-      return true;
-    }
-
-    virtual ~BoundingVolume() {}
-};
-
-
-class Box: public BoundingVolume {
+class BoundingBox {
   public:
     Point3D minExt, maxExt;
 
-    Box(P_FLT min_x, P_FLT min_y, P_FLT min_z,
-        P_FLT max_x, P_FLT max_y, P_FLT max_z):
-      minExt(Point3D(min_x, min_y, min_z)),
-      maxExt(Point3D(max_x, max_y, max_z)) {}
+    BoundingBox(const P_FLT minX, const P_FLT minY, const P_FLT minZ,
+                const P_FLT maxX, const P_FLT maxY, const P_FLT maxZ):
+      minExt(Point3D(minX, minY, minZ)),
+      maxExt(Point3D(maxX, maxY, maxZ)) {}
 
-    Box(const Point3D &minExt, const Point3D &maxExt):
-      minExt(minExt), maxExt(maxExt), BoundingVolume() {}
-
-    void getBox(Point3D * minExt, Point3D * maxExt) const {
-      *minExt = this->minExt;
-      *maxExt = this->maxExt;
-    }
-
+    BoundingBox(const Point3D &minExt, const Point3D &maxExt):
+      minExt(minExt), maxExt(maxExt) {}
 
     inline bool intersect(const Ray &ray) const;
 };

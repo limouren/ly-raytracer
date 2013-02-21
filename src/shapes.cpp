@@ -55,7 +55,7 @@ void Plane::transform(Transform * transform) {
 } */
 
 
-inline void Polygon::buildBoundingVolume() {
+inline void Polygon::buildBoundingBox() {
   Point3D maxExt = vertex[0],
           minExt = vertex[0];
   for (int i = 1; i < vertexNum; i++) {
@@ -63,14 +63,14 @@ inline void Polygon::buildBoundingVolume() {
     minExt = pointMin(minExt, vertex[i]);
   }
 
-  boundingVolume = new Box(minExt, maxExt);
+  boundingBox = new BoundingBox(minExt, maxExt);
 }
 
 
 // Ref: Glassner -An Introduction to Ray Tracing - P.53-59
 int Polygon::intersect(const Ray &ray, Intercept intercepts[],
                              Material * entryMat) const {
-  if (!boundingVolume->intersect(ray) ||
+  if (!boundingBox->intersect(ray) ||
       Plane::intersect(ray, intercepts, entryMat) == 0) {
     return 0;
   }
@@ -122,7 +122,7 @@ void Polygon::transform(Transform * transform) {
 
   d = -dotProduct(vertex[0], normal);
 
-  buildBoundingVolume();
+  buildBoundingBox();
 }
 
 
@@ -157,7 +157,7 @@ void PolygonPatch::transform(Transform * transform) {
 
 
 /* TODO(kent): Use this when Cone is implemented
-int Cone::buildBoundingVolume() {
+int Cone::buildBoundingBox() {
   // Square means it doesn't matter which normal is which
   Vector3D apexExtend(sqrt(1 - apex.normal.x * apex.normal.x) * apex.radius,
                       sqrt(1 - apex.normal.y * apex.normal.y) * apex.radius,
@@ -170,7 +170,7 @@ int Cone::buildBoundingVolume() {
                             apex.center - apexExtend);
           maxExt = pointMax(base.center + baseExtend,
                             apex.center + apexExtend);
-  boundingVolume = new Box(minExt, maxExt);
+  boundingBox = new BoundingBox(minExt, maxExt);
 }
 
 
@@ -178,13 +178,13 @@ ref: www.geometrictools.com/LibMathematics/Intersection/Intersection.html
 int Cone::intersectQuadric() const {} */
 
 
-void Cylinder::buildBoundingVolume() {
+void Cylinder::buildBoundingBox() {
   Vector3D radiusVector(radius);
   Point3D minExt = pointMin(baseCenter - radiusVector,
                             apexCenter - radiusVector),
           maxExt = pointMax(baseCenter + radiusVector,
                             apexCenter + radiusVector);
-  boundingVolume = new Box(minExt, maxExt);
+  boundingBox = new BoundingBox(minExt, maxExt);
 }
 
 
@@ -212,7 +212,7 @@ void Cylinder::getIntersect(const Point3D &point, Vector3D * normal,
 
 int Cylinder::intersect(const Ray &ray, Intercept intercepts[],
                               Material * entryMat) const {
-  if (!boundingVolume->intersect(ray)) {
+  if (!boundingBox->intersect(ray)) {
     return 0;
   }
 
@@ -386,13 +386,13 @@ void Cylinder::transform(Transform * transform) {
   apexD = -dotProduct(axisNormal, apexCenter);
   baseD = -dotProduct(axisNormal, baseCenter);
 
-  buildBoundingVolume();
+  buildBoundingBox();
 }
 
 
-inline void Sphere::buildBoundingVolume() {
+inline void Sphere::buildBoundingBox() {
   Vector3D radiusVector(radius);
-  boundingVolume = new Box(center + radiusVector, center - radiusVector);
+  boundingBox = new BoundingBox(center + radiusVector, center - radiusVector);
 }
 
 
@@ -411,7 +411,7 @@ void Sphere::getIntersect(const Point3D &point, Vector3D * normal,
 
 int Sphere::intersect(const Ray &ray, Intercept intercepts[],
                             Material * entryMat) const {
-  if (!boundingVolume->intersect(ray)) {
+  if (!boundingBox->intersect(ray)) {
     return 0;
   }
 
@@ -452,7 +452,7 @@ int Sphere::intersect(const Ray &ray, Intercept intercepts[],
 void Sphere::transform(Transform * transform) {
   transform->transformPoint(&center);
 
-  buildBoundingVolume();
+  buildBoundingBox();
 }
 
 
