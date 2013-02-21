@@ -15,7 +15,6 @@ BEGIN_RAYTRACER
 class Point2D: public Vector2D {
   public:
     inline Point2D(): Vector2D() {}
-
     inline Point2D(P_FLT x, P_FLT y): Vector2D(x, y) {}
 
     inline Point2D& operator =(const Point2D &point);
@@ -43,7 +42,7 @@ inline P_FLT dotProduct(const Vector2D &a, const Point2D &b) {
 class Point3D: public Vector3D {
   public:
     inline Point3D(): Vector3D() {}
-
+    explicit inline Point3D(P_FLT pFlt): Vector3D(pFlt) {}
     inline Point3D(P_FLT x, P_FLT y, P_FLT z): Vector3D(x, y, z) {}
 
     inline Point3D& operator =(const Point3D &point);
