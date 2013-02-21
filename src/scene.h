@@ -80,7 +80,18 @@ class Scene {
     }
 
     void buildModelTree() {
+      clock_t startTimer, endTimer;
+
+      printf("Building model tree...");
+      fflush(stdout);
+      startTimer = clock();
+      for (std::vector<MODEL_CLS *>::iterator itr = primitives.begin();
+           itr != primitives.end(); itr++) {
+        static_cast<Primitive *>(*itr)->buildBoundingBox();
+      }
       modelRoot = buildModelTreeNode(primitives, 0);
+      endTimer = clock();
+      printf("completed (%.3f seconds).\n", clockTime(startTimer, endTimer));
     }
 
     Material * latestMat() {

@@ -38,8 +38,6 @@ class Triangle: public Plane {
       dominantIndex = normal.dominantIndex();
 
       d = -dotProduct(*vertex1, normal);
-
-      buildBoundingBox();
     };
 
     Triangle(Material * material, Texture * texture,
@@ -52,13 +50,9 @@ class Triangle: public Plane {
       dominantIndex = normal.dominantIndex();
 
       d = -dotProduct(*vertex1, normal);
-
-      buildBoundingBox();
     };
 
-    virtual ~Triangle() {
-      delete boundingBox;
-    }
+    virtual ~Triangle() {}
 
     void buildBoundingBox();
     int intersect(const Ray &ray, Intercept intercepts[]) const;

@@ -81,13 +81,9 @@ void Screen::saveBmp(char * outputFilename) const {
 void Screen::rayTrace() {
   clock_t startTimer, endTimer;
 
-  printf("Building model tree...");
-  fflush(stdout);
-  startTimer = clock();
   scene->buildModelTree();
-  endTimer = clock();
-  printf("completed (%.3f seconds).\n", clockTime(startTimer, endTimer));
 
+  startTimer = clock();
   Vector3D dir = scene->camera->target - scene->camera->viewpoint;
   dir.normalize();
 
@@ -123,7 +119,6 @@ void Screen::rayTrace() {
   }
   screenTracer->init(scene->camera->viewpoint, pixelHor, pixelVert);
 
-  startTimer = clock();
   pthread_t * threads = new pthread_t[threadNum];
   for (int i = 0; i < threadNum; i++) {
     pthread_create(&threads[i], NULL, &runScreenTracer,

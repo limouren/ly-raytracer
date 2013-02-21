@@ -22,7 +22,8 @@ class MODEL_CLS {
     unsigned char type;
     BoundingBox * boundingBox;
 
-    explicit MODEL_CLS(const unsigned char type): type(type) {}
+    explicit MODEL_CLS(const unsigned char type):
+      type(type), boundingBox(NULL) {}
 
     virtual ~MODEL_CLS() {}
 };
@@ -93,7 +94,17 @@ class Primitive: public MODEL_CLS {
     Primitive(Material * material, Texture * texture):
       MODEL_CLS(0), material(material), texture(texture) {}
 
-    virtual ~Primitive() {}
+    virtual ~Primitive() {
+      if (boundingBox) {
+        delete boundingBox;
+      }
+    }
+
+    virtual void buildBoundingBox() {
+      printf("ERROR: Unimplemented Primitive::buildBoundingBox stub "
+             "invoked\n");
+      exit(1);
+    }
 
     virtual void getIntersect(const Point3D &point, Vector3D * normal,
                               std::vector<P_FLT> * mapping) const {

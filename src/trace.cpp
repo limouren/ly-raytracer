@@ -19,8 +19,14 @@ BEGIN_RAYTRACER
 
 int intersect(const Ray &ray, MODEL_CLS * model, Intercept intercepts[]) {
   switch (model->type) {
-    case 0:  // Primitive
-      return static_cast<Primitive *>(model)->intersect(ray, intercepts);
+    case 0: {  // Primitive
+      Primitive * primitive = static_cast<Primitive *>(model);
+      if (!primitive->boundingBox->intersect(ray)) {
+        return 0;
+      } else {
+        return primitive->intersect(ray, intercepts);
+      }
+    }
 
     case 1: {  // Composite
       Composite * composite = static_cast<Composite *>(model);

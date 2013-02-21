@@ -67,8 +67,7 @@ inline void Polygon::buildBoundingBox() {
 
 // Ref: Glassner -An Introduction to Ray Tracing - P.53-59
 int Polygon::intersect(const Ray &ray, Intercept intercepts[]) const {
-  if (!boundingBox->intersect(ray) ||
-      Plane::intersect(ray, intercepts) == 0) {
+  if (Plane::intersect(ray, intercepts) == 0) {
     return 0;
   }
 
@@ -208,10 +207,6 @@ void Cylinder::getIntersect(const Point3D &point, Vector3D * normal,
 
 
 int Cylinder::intersect(const Ray &ray, Intercept intercepts[]) const {
-  if (!boundingBox->intersect(ray)) {
-    return 0;
-  }
-
   P_FLT baseToOrigDotAxis, origDistanceSqr,
         rayDotAxis,
         t;
@@ -406,10 +401,6 @@ void Sphere::getIntersect(const Point3D &point, Vector3D * normal,
 
 
 int Sphere::intersect(const Ray &ray, Intercept intercepts[]) const {
-  if (!boundingBox->intersect(ray)) {
-    return 0;
-  }
-
   P_FLT halfChordSqr, halfChord, ocSqr, radiusSqr, rayClosest;
   Vector3D originToCenter = center - ray.orig;
 

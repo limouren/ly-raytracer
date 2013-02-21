@@ -13,7 +13,14 @@ BEGIN_RAYTRACER
 
 
 void TriangleMesh::buildBoundingBox() {
-  boundingBox = boundingBoxBuilder(triangles);
+  Point3D maxExt = points[0],
+          minExt = points[0];
+  for (int i = 1; i < pointNum; i++) {
+    maxExt = pointMax(maxExt, points[i]);
+    minExt = pointMin(minExt, points[i]);
+  }
+
+  boundingBox = new BoundingBox(minExt, maxExt);
 }
 
 void TriangleMesh::constructTriangles(
@@ -67,15 +74,15 @@ void TriangleMesh::constructTriangles(
     }
   }
 
+  for (std::vector<MODEL_CLS *>::iterator itr = triangles.begin();
+       itr != triangles.end(); itr++) {
+    static_cast<Triangle *>(* itr)->buildBoundingBox();
+  }
   triangleTree = buildModelTreeNode(triangles, 0);
 }
 
 
 int TriangleMesh::intersect(const Ray &ray, Intercept intercepts[]) const {
-  if (!(boundingBox->intersect)(ray)) {
-    return 0;
-  }
-
   return RAYTRACER_NAMESPACE::intersect(ray, triangleTree, intercepts);
 }
 

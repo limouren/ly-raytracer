@@ -78,13 +78,10 @@ class Polygon: public Plane {
       dominantIndex = normal.dominantIndex();
 
       d = -dotProduct(vertex[0], normal);
-
-      buildBoundingBox();
     };
 
     virtual ~Polygon() {
       delete [] vertex;
-      delete boundingBox;
     }
 
     void buildBoundingBox();
@@ -135,13 +132,9 @@ class Cylinder: public Primitive {
       height = axisNormal.normalize();
       apexD = -dotProduct(axisNormal, apexCenter);
       baseD = -dotProduct(axisNormal, baseCenter);
-
-      buildBoundingBox();
     }
 
-    ~Cylinder() {
-      delete boundingBox;
-    }
+    ~Cylinder() {}
 
     inline void buildBoundingBox();
     void getIntersect(const Point3D &point, Vector3D * normal,
@@ -161,12 +154,9 @@ class Sphere: public Primitive {
     Sphere(Material * material, const Point3D &center, P_FLT radius):
       Primitive(material), insideOut(radius < 0.0),
       radius(fabs(radius)), center(center) {
-      buildBoundingBox();
     }
 
-    ~Sphere() {
-      delete boundingBox;
-    }
+    ~Sphere() {}
 
     inline void buildBoundingBox();
     void getIntersect(const Point3D &point, Vector3D * normal,
