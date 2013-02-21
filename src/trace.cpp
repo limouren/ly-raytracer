@@ -39,19 +39,17 @@ inline int intersect(const Ray &ray, MODEL_CLS * model, Intercept intercepts[],
 
     case 2: {  // K-D Tree Node
       BVHNode * bvhNode = static_cast<BVHNode *>(model);
-      int hitsLeft, hitsRight;
-      Intercept interceptsLeft[MAX_INTERSECTIONS],
-                interceptsRight[MAX_INTERSECTIONS];
+      int hits[2];
+      Intercept interceptsLists[2][MAX_INTERSECTIONS];
 
       if (!bvhNode->boundingVolume->intersect(ray)) {
         return 0;
       }
 
-      hitsLeft = intersect(ray, bvhNode->left, interceptsLeft, entryMat);
-      hitsRight = intersect(ray, bvhNode->right, interceptsRight, entryMat);
+      hits[0] = intersect(ray, bvhNode->left, interceptsLists[0], entryMat);
+      hits[1] = intersect(ray, bvhNode->right, interceptsLists[1], entryMat);
 
-      return intersectMerge('|', hitsLeft, interceptsLeft, hitsRight,
-                            interceptsRight, intercepts);
+      return intersectMerge(2, hits, interceptsLists, intercepts);
     }
   }
 
@@ -103,6 +101,7 @@ struct InterceptMerger {
   int remain;
   Intercept * ptr;
 
+  inline InterceptMerger() {}
   inline InterceptMerger(int hits, Intercept * begin):
     remain(hits), ptr(begin) {}
 };
@@ -116,31 +115,37 @@ inline bool compareT(InterceptMerger im1, InterceptMerger im2) {
 inline int intersectMerge(int listNum, int * hits,
                           Intercept interceptsLists[][MAX_INTERSECTIONS],
                           Intercept merged[]) {
-  std::vector<InterceptMerger> mergers;
+  // Merge at most 8 nodes of oct tree
+  InterceptMerger mergers[8];
+  InterceptMerger * mergerPtr;
+  unsigned int index = 0;
   for (int i = 0; i < listNum; i++) {
-    if (hits[i]) {
-      mergers.push_back(InterceptMerger(hits[i], &interceptsLists[i][0]));
+    if (hits[i] == 0) {
+        continue;
     }
-  }
 
-  std::vector<InterceptMerger>::iterator itr;
-  unsigned int index;
+    mergers[index].remain = hits[i];
+    mergers[index].ptr =  &interceptsLists[i][0];
+    index++;
+  }
+  listNum = index;
+
   for (index = 0; index < MAX_INTERSECTIONS; index++) {
-    if (mergers.empty()) {
+    if (listNum == 0) {
       return index;
     }
-    itr = min_element(mergers.begin(), mergers.end(), compareT);
+    mergerPtr = min_element(mergers, mergers + listNum, compareT);
 
-    merged[index] = *(itr->ptr);
-    itr->remain--;
-    switch (itr->remain) {
+    merged[index] = *(mergerPtr->ptr);
+    mergerPtr->remain--;
+    switch (mergerPtr->remain) {
       case 0:
-        itr->ptr = mergers.back().ptr;
-        itr->remain = mergers.back().remain;
-        mergers.pop_back();
+        mergerPtr->ptr = mergers[listNum - 1].ptr;
+        mergerPtr->remain = mergers[listNum - 1].remain;
+        listNum--;
         break;
       default:
-        itr->ptr++;
+        mergerPtr->ptr++;
         break;
     }
   }
