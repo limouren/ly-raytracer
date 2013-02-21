@@ -4,13 +4,14 @@
 
 #include "config.h"
 
-#include "intercept.h"
+
 #include "point.h"
-#include "ray.h"
-#include "vector.h"
 
 
 BEGIN_RAYTRACER
+
+
+class Ray;
 
 
 class BoundingBox {

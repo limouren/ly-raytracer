@@ -173,6 +173,19 @@ MODEL_CLS * buildModelTreeNode(std::vector<MODEL_CLS *> modelVector,
 }
 
 
+BoundingBox * boundingBoxBuilder(std::vector<MODEL_CLS *> primitives) {
+  Point3D minExt(-P_FLT_MAX), maxExt(P_FLT_MAX);
+
+  for (std::vector<MODEL_CLS *>::iterator itr = primitives.begin();
+       itr != primitives.end(); itr++) {
+    minExt = pointMin((*itr)->boundingBox->minExt, minExt);
+    minExt = pointMin((*itr)->boundingBox->maxExt, maxExt);
+  }
+
+  return new BoundingBox(minExt, maxExt);
+}
+
+
 END_RAYTRACER
 
 

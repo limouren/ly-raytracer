@@ -13,14 +13,7 @@ BEGIN_RAYTRACER
 
 
 void TriangleMesh::buildBoundingBox() {
-  Point3D maxExt = points[0],
-          minExt = points[0];
-  for (int i = 1; i < pointNum; i++) {
-    maxExt = pointMax(maxExt, points[i]);
-    minExt = pointMin(minExt, points[i]);
-  }
-
-  boundingBox = new BoundingBox(minExt, maxExt);
+  boundingBox = boundingBoxBuilder(triangles);
 }
 
 void TriangleMesh::constructTriangles(
