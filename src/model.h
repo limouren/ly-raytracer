@@ -87,6 +87,8 @@ MODEL_CLS * buildBVHNode(vector<Primitive *> modelVector, const int depth);
 MODEL_CLS * buildBVHTree(std::vector<Primitive *> modelVector);
 BoundingBox * boundingBoxBuilder(int length, MODEL_CLS * modelArray[]);
 BoundingBox * boundingBoxBuilder(vector<MODEL_CLS *> modelVector);
+void findSAHSplit(vector<Primitive *> modelVector,
+                  int * minCostIndex, P_FLT * minCost);
 
 
 END_RAYTRACER

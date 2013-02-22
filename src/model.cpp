@@ -75,45 +75,6 @@ inline bool compareBoxZ(MODEL_CLS * modelA, MODEL_CLS * modelB) {
 }
 
 
-void findSAHSplit(vector<Primitive *> modelVector,
-                  int * minCostIndex, P_FLT * minCost) {
-  int size = modelVector.size();
-  P_FLT * leftSA = new P_FLT[size],
-        * rightSA = new P_FLT[size];
-
-  Point3D leftMinExt(P_FLT_MAX),
-          leftMaxExt(-P_FLT_MAX);
-  for (int i = 1; i < size; i++) {
-    leftMinExt = pointMin(leftMinExt, modelVector[i]->boundingBox->minExt);
-    leftMaxExt = pointMax(leftMaxExt, modelVector[i]->boundingBox->maxExt);
-    leftSA[i] = (leftMaxExt - leftMinExt).boxArea();
-  }
-
-  Point3D rightMinExt(P_FLT_MAX),
-          rightMaxExt(-P_FLT_MAX);
-  for (int i = size - 1; i > 0; i--) {
-    rightMinExt = pointMin(rightMinExt, modelVector[i]->boundingBox->minExt);
-    rightMaxExt = pointMax(rightMaxExt, modelVector[i]->boundingBox->maxExt);
-    rightSA[i] = (rightMaxExt - rightMinExt).boxArea();
-  }
-
-  P_FLT cost,
-        invTotalSA = 1.0f / ((rightMaxExt - leftMinExt).boxArea() * size);
-  *minCostIndex = 0;
-  *minCost = P_FLT_MAX;
-  for (int leftPrims = 1; leftPrims < size; leftPrims++) {
-    cost = 0.1f + ((leftSA[leftPrims] * leftPrims) +
-                   (rightSA[leftPrims] * (size - leftPrims))) * invTotalSA;
-    if (cost <= *minCost) {
-      *minCost = cost;
-      *minCostIndex = leftPrims;
-    }
-  }
-  delete [] leftSA;
-  delete [] rightSA;
-}
-
-
 BVHNode::BVHNode(MODEL_CLS * left, MODEL_CLS * right)
   : MODEL_CLS(20), left(left), right(right) {
   boundingBox = new BoundingBox(pointMin(left->boundingBox->minExt,
@@ -216,6 +177,45 @@ BoundingBox * boundingBoxBuilder(vector<MODEL_CLS *> modelVector) {
   }
 
   return new BoundingBox(minExt, maxExt);
+}
+
+
+void findSAHSplit(vector<Primitive *> modelVector,
+                  int * minCostIndex, P_FLT * minCost) {
+  int size = modelVector.size();
+  P_FLT * leftSA = new P_FLT[size],
+        * rightSA = new P_FLT[size];
+
+  Point3D leftMinExt(P_FLT_MAX),
+          leftMaxExt(-P_FLT_MAX);
+  for (int i = 1; i < size; i++) {
+    leftMinExt = pointMin(leftMinExt, modelVector[i]->boundingBox->minExt);
+    leftMaxExt = pointMax(leftMaxExt, modelVector[i]->boundingBox->maxExt);
+    leftSA[i] = (leftMaxExt - leftMinExt).boxArea();
+  }
+
+  Point3D rightMinExt(P_FLT_MAX),
+          rightMaxExt(-P_FLT_MAX);
+  for (int i = size - 1; i > 0; i--) {
+    rightMinExt = pointMin(rightMinExt, modelVector[i]->boundingBox->minExt);
+    rightMaxExt = pointMax(rightMaxExt, modelVector[i]->boundingBox->maxExt);
+    rightSA[i] = (rightMaxExt - rightMinExt).boxArea();
+  }
+
+  P_FLT cost,
+        invTotalSA = 1.0f / ((rightMaxExt - leftMinExt).boxArea() * size);
+  *minCostIndex = 0;
+  *minCost = P_FLT_MAX;
+  for (int leftPrims = 1; leftPrims < size; leftPrims++) {
+    cost = 0.1f + ((leftSA[leftPrims] * leftPrims) +
+                   (rightSA[leftPrims] * (size - leftPrims))) * invTotalSA;
+    if (cost <= *minCost) {
+      *minCost = cost;
+      *minCostIndex = leftPrims;
+    }
+  }
+  delete [] leftSA;
+  delete [] rightSA;
 }
 
 
