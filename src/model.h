@@ -89,6 +89,7 @@ BoundingBox * boundingBoxBuilder(int length, MODEL_CLS * modelArray[]);
 BoundingBox * boundingBoxBuilder(vector<MODEL_CLS *> modelVector);
 void findSAHSplit(vector<Primitive *> modelVector,
                   int * minCostIndex, P_FLT * minCost);
+int sahSplitVector(vector<Primitive *> * modelVector);
 
 
 END_RAYTRACER

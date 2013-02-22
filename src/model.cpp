@@ -95,59 +95,22 @@ BVHNode::~BVHNode() {
 }
 
 
-MODEL_CLS * buildBVHNode(vector<Primitive *> modelVector, const int depth) {
-  int axis;
-  if (modelVector.size() == 1) {
+MODEL_CLS * buildBVHNode(vector<Primitive *> modelVector) {
+  int axis,
+      size = modelVector.size();
+  if (size == 1) {
     return modelVector[0];
-  } else if (modelVector.size() <= 4) {
-    axis = modelVector.size() / 2;
-    switch (depth % 3) {
-      case 0:
-        sort(modelVector.begin(), modelVector.end(), compareBoxX);
-        break;
-      case 1:
-        sort(modelVector.begin(), modelVector.end(), compareBoxY);
-        break;
-      case 2:
-        sort(modelVector.begin(), modelVector.end(), compareBoxZ);
-        break;
-    }
+  } else if (size <= 4) {
+    axis = size / 2;
   } else {
-    int xSplit, ySplit, zSplit;
-    P_FLT xSplitCost, ySplitCost, zSplitCost;
-    vector<Primitive *> xVector(modelVector),
-                        yVector(modelVector),
-                        zVector(modelVector);
-    sort(xVector.begin(), xVector.end(), compareBoxX);
-    findSAHSplit(xVector, &xSplit, &xSplitCost);
-    sort(yVector.begin(), yVector.end(), compareBoxY);
-    findSAHSplit(yVector, &ySplit, &ySplitCost);
-    sort(zVector.begin(), zVector.end(), compareBoxZ);
-    findSAHSplit(zVector, &zSplit, &zSplitCost);
-    if (xSplitCost < ySplitCost) {
-      if (xSplitCost < zSplitCost) {
-        axis = xSplit;
-        modelVector = xVector;
-      } else {
-        axis = zSplit;
-        modelVector = zVector;
-      }
-    } else {
-      if (ySplitCost < zSplitCost) {
-        axis = ySplit;
-        modelVector = yVector;
-      } else {
-        axis = zSplit;
-        modelVector = zVector;
-      }
-    }
+    axis = sahSplitVector(&modelVector);
   }
 
   vector<Primitive *>::iterator mid = modelVector.begin() + axis;
   vector<Primitive *> leftVector(modelVector.begin(), mid),
                       rightVector(mid, modelVector.end());
-  return new BVHNode(buildBVHNode(leftVector, depth + 1),
-                     buildBVHNode(rightVector, depth + 1));
+  return new BVHNode(buildBVHNode(leftVector),
+                     buildBVHNode(rightVector));
 }
 
 
@@ -162,7 +125,7 @@ MODEL_CLS * buildBVHTree(vector<Primitive *> modelVector) {
     exit(1);
     return NULL;
   } else {
-    return buildBVHNode(modelVector, 0);
+    return buildBVHNode(modelVector);
   }
 }
 
@@ -216,6 +179,38 @@ void findSAHSplit(vector<Primitive *> modelVector,
   }
   delete [] leftSA;
   delete [] rightSA;
+}
+
+
+int sahSplitVector(vector<Primitive *> * modelVector) {
+  int xSplit, ySplit, zSplit;
+  P_FLT xSplitCost, ySplitCost, zSplitCost;
+  vector<Primitive *> xVector(*modelVector),
+                      yVector(*modelVector),
+                      zVector(*modelVector);
+  sort(xVector.begin(), xVector.end(), compareBoxX);
+  findSAHSplit(xVector, &xSplit, &xSplitCost);
+  sort(yVector.begin(), yVector.end(), compareBoxY);
+  findSAHSplit(yVector, &ySplit, &ySplitCost);
+  sort(zVector.begin(), zVector.end(), compareBoxZ);
+  findSAHSplit(zVector, &zSplit, &zSplitCost);
+  if (xSplitCost < ySplitCost) {
+    if (xSplitCost < zSplitCost) {
+      *modelVector = xVector;
+      return xSplit;
+    } else {
+      *modelVector = zVector;
+      return zSplit;
+    }
+  } else {
+    if (ySplitCost < zSplitCost) {
+      *modelVector = yVector;
+      return ySplit;
+    } else {
+      *modelVector = zVector;
+      return zSplit;
+    }
+  }
 }
 
 
