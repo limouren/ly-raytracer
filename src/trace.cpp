@@ -28,19 +28,6 @@ int intersect(const Ray &ray, MODEL_CLS * model, Intercept intercepts[]) {
       }
     }
 
-    case 1: {  // Composite
-      Composite * composite = static_cast<Composite *>(model);
-      int hitsLeft, hitsRight;
-      Intercept interceptsLeft[MAX_INTERSECTIONS],
-                interceptsRight[MAX_INTERSECTIONS];
-
-      hitsLeft = intersect(ray, composite->left, interceptsLeft);
-      hitsRight = intersect(ray, composite->right, interceptsRight);
-
-      return intersectMergeTwo(hitsLeft, interceptsLeft,
-                               hitsRight, interceptsRight, intercepts);
-    }
-
     case 20: {  // BVH Node
       BVHNode * bvhNode = static_cast<BVHNode *>(model);
 
