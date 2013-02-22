@@ -75,20 +75,8 @@ inline bool compareBoxZ(MODEL_CLS * modelA, MODEL_CLS * modelB) {
 }
 
 
-void findSAHSplit(vector<Primitive *> modelVector, const int axis,
+void findSAHSplit(vector<Primitive *> modelVector,
                   int * minCostIndex, P_FLT * minCost) {
-  switch (axis) {
-    case 0:
-      sort(modelVector.begin(), modelVector.end(), compareBoxX);
-      break;
-    case 1:
-      sort(modelVector.begin(), modelVector.end(), compareBoxY);
-      break;
-    case 2:
-      sort(modelVector.begin(), modelVector.end(), compareBoxZ);
-      break;
-  }
-
   int size = modelVector.size();
   P_FLT * leftSA = new P_FLT[size],
         * rightSA = new P_FLT[size];
@@ -109,12 +97,13 @@ void findSAHSplit(vector<Primitive *> modelVector, const int axis,
     rightSA[i] = (rightMaxExt - rightMinExt).boxArea();
   }
 
-  P_FLT cost;
+  P_FLT cost,
+        invTotalSA = 1.0f / ((rightMaxExt - leftMinExt).boxArea() * size);
   *minCostIndex = 0;
-  *minCost = P_FLT_MAX * P_FLT_MAX * size;
+  *minCost = P_FLT_MAX;
   for (int leftPrims = 1; leftPrims < size; leftPrims++) {
-    cost = (leftSA[leftPrims] * leftPrims) +
-           (rightSA[leftPrims] * (size - leftPrims));
+    cost = 0.1f + ((leftSA[leftPrims] * leftPrims) +
+                   (rightSA[leftPrims] * (size - leftPrims))) * invTotalSA;
     if (cost <= *minCost) {
       *minCost = cost;
       *minCostIndex = leftPrims;
@@ -165,20 +154,30 @@ MODEL_CLS * buildBVHNode(vector<Primitive *> modelVector, const int depth) {
   } else {
     int xSplit, ySplit, zSplit;
     P_FLT xSplitCost, ySplitCost, zSplitCost;
-    findSAHSplit(modelVector, 0, &xSplit, &xSplitCost);
-    findSAHSplit(modelVector, 1, &ySplit, &ySplitCost);
-    findSAHSplit(modelVector, 2, &zSplit, &zSplitCost);
+    vector<Primitive *> xVector(modelVector),
+                        yVector(modelVector),
+                        zVector(modelVector);
+    sort(xVector.begin(), xVector.end(), compareBoxX);
+    findSAHSplit(xVector, &xSplit, &xSplitCost);
+    sort(yVector.begin(), yVector.end(), compareBoxY);
+    findSAHSplit(yVector, &ySplit, &ySplitCost);
+    sort(zVector.begin(), zVector.end(), compareBoxZ);
+    findSAHSplit(zVector, &zSplit, &zSplitCost);
     if (xSplitCost < ySplitCost) {
       if (xSplitCost < zSplitCost) {
         axis = xSplit;
+        modelVector = xVector;
       } else {
         axis = zSplit;
+        modelVector = zVector;
       }
     } else {
       if (ySplitCost < zSplitCost) {
         axis = ySplit;
+        modelVector = yVector;
       } else {
         axis = zSplit;
+        modelVector = zVector;
       }
     }
   }
