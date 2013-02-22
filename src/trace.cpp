@@ -212,8 +212,7 @@ int trace(const Scene * scene, const int level, const C_FLT weight,
 
   int hits = intersect(ray, scene->modelRoot, intercepts);
   if (hits > 0) {
-    Point3D interceptPoint = ray.rayPoint(intercepts[0].t);
-    shade(scene, level, weight, interceptPoint, ray, intercepts, color);
+    shade(scene, level, weight, ray, intercepts, color);
     return hits;
   } else {
     shadeBackground(scene, ray, color);

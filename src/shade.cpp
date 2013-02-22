@@ -61,8 +61,7 @@ inline bool transmissionDirection(const Material * entryMat,
 
 
 void shade(const Scene * scene, const int level, const C_FLT weight,
-           const Point3D &interceptPoint, const Ray &ray,
-           Intercept * intercepts, Color * color) {
+           const Ray &ray, Intercept * intercepts, Color * color) {
   Material * entryMat = intercepts[0].material,
            * hitMat = intercepts[0].enter?
                       intercepts[0].primitive->material: ray.medium;
@@ -72,6 +71,8 @@ void shade(const Scene * scene, const int level, const C_FLT weight,
 
   Vector3D specDir, transDir, normal;
   std::vector<P_FLT> mapping;
+
+  Point3D interceptPoint = ray.rayPoint(intercepts[0].t);
 
   intercepts[0].primitive->getIntersect(interceptPoint, &normal, &mapping);
   if (dotProduct(ray.dir, normal) > 0.0f) {
