@@ -75,7 +75,8 @@ inline bool compareBoxZ(MODEL_CLS * modelA, MODEL_CLS * modelB) {
 }
 
 
-int findSAHSplit(vector<Primitive *> modelVector, const int axis) {
+void findSAHSplit(vector<Primitive *> modelVector, const int axis,
+                  int * minCostIndex, P_FLT * minCost) {
   switch (axis) {
     case 0:
       sort(modelVector.begin(), modelVector.end(), compareBoxX);
@@ -87,8 +88,8 @@ int findSAHSplit(vector<Primitive *> modelVector, const int axis) {
       sort(modelVector.begin(), modelVector.end(), compareBoxZ);
       break;
   }
-  int size = modelVector.size();
 
+  int size = modelVector.size();
   P_FLT * leftSA = new P_FLT[size],
         * rightSA = new P_FLT[size];
 
@@ -108,21 +109,19 @@ int findSAHSplit(vector<Primitive *> modelVector, const int axis) {
     rightSA[i] = (rightMaxExt - rightMinExt).boxArea();
   }
 
-  int minCostIndex = 0;
-  P_FLT cost,
-        minCost = P_FLT_MAX * P_FLT_MAX * size;
+  P_FLT cost;
+  *minCostIndex = 0;
+  *minCost = P_FLT_MAX * P_FLT_MAX * size;
   for (int leftPrims = 1; leftPrims < size; leftPrims++) {
     cost = (leftSA[leftPrims] * leftPrims) +
            (rightSA[leftPrims] * (size - leftPrims));
-    if (cost <= minCost) {
-      minCost = cost;
-      minCostIndex = leftPrims;
+    if (cost <= *minCost) {
+      *minCost = cost;
+      *minCostIndex = leftPrims;
     }
   }
   delete [] leftSA;
   delete [] rightSA;
-
-  return minCostIndex;
 }
 
 
@@ -147,11 +146,43 @@ BVHNode::~BVHNode() {
 
 
 MODEL_CLS * buildBVHNode(vector<Primitive *> modelVector, const int depth) {
+  int axis;
   if (modelVector.size() == 1) {
     return modelVector[0];
+  } else if (modelVector.size() <= 4) {
+    axis = modelVector.size() / 2;
+    switch (depth % 3) {
+      case 0:
+        sort(modelVector.begin(), modelVector.end(), compareBoxX);
+        break;
+      case 1:
+        sort(modelVector.begin(), modelVector.end(), compareBoxY);
+        break;
+      case 2:
+        sort(modelVector.begin(), modelVector.end(), compareBoxZ);
+        break;
+    }
+  } else {
+    int xSplit, ySplit, zSplit;
+    P_FLT xSplitCost, ySplitCost, zSplitCost;
+    findSAHSplit(modelVector, 0, &xSplit, &xSplitCost);
+    findSAHSplit(modelVector, 1, &ySplit, &ySplitCost);
+    findSAHSplit(modelVector, 2, &zSplit, &zSplitCost);
+    if (xSplitCost < ySplitCost) {
+      if (xSplitCost < zSplitCost) {
+        axis = xSplit;
+      } else {
+        axis = zSplit;
+      }
+    } else {
+      if (ySplitCost < zSplitCost) {
+        axis = ySplit;
+      } else {
+        axis = zSplit;
+      }
+    }
   }
 
-  int axis = findSAHSplit(modelVector, depth % 3);
   vector<Primitive *>::iterator mid = modelVector.begin() + axis;
   vector<Primitive *> leftVector(modelVector.begin(), mid),
                       rightVector(mid, modelVector.end());
