@@ -108,12 +108,12 @@ int findSAHSplit(vector<Primitive *> modelVector, const int axis) {
     rightSA[i] = (rightMaxExt - rightMinExt).boxArea();
   }
 
-  int minCostIndex = 1;
+  int minCostIndex = 0;
   P_FLT cost,
-        minCost = 0.1f + leftSA[1] + (rightSA[1] * (size - 1));
-  for (int leftPrims = 2; leftPrims < size; leftPrims++) {
-    cost = 0.1f + (leftSA[leftPrims] * leftPrims)
-                + (rightSA[leftPrims] * (size - leftPrims));
+        minCost = P_FLT_MAX * P_FLT_MAX * size;
+  for (int leftPrims = 1; leftPrims < size; leftPrims++) {
+    cost = (leftSA[leftPrims] * leftPrims) +
+           (rightSA[leftPrims] * (size - leftPrims));
     if (cost <= minCost) {
       minCost = cost;
       minCostIndex = leftPrims;
@@ -151,8 +151,8 @@ MODEL_CLS * buildBVHNode(vector<Primitive *> modelVector, const int depth) {
     return modelVector[0];
   }
 
-  vector<Primitive *>::iterator mid = modelVector.begin() +
-                                      findSAHSplit(modelVector, depth % 3);
+  int axis = findSAHSplit(modelVector, depth % 3);
+  vector<Primitive *>::iterator mid = modelVector.begin() + axis;
   vector<Primitive *> leftVector(modelVector.begin(), mid),
                       rightVector(mid, modelVector.end());
   return new BVHNode(buildBVHNode(leftVector, depth + 1),
