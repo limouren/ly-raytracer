@@ -122,12 +122,7 @@ int findSAHSplit(vector<Primitive *> modelVector, const int axis) {
   delete [] leftSA;
   delete [] rightSA;
 
-  if ((minCost > (rightMaxExt - leftMinExt).boxArea() * size) &&
-      (size <= 8)) {
-    return 0;
-  } else {
-    return minCostIndex;
-  }
+  return minCostIndex;
 }
 
 
@@ -142,8 +137,12 @@ BVHNode::BVHNode(MODEL_CLS * left, MODEL_CLS * right)
 
 BVHNode::~BVHNode() {
   delete boundingBox;
-  delete left;
-  delete right;
+  if (left->type != 0) {
+    delete left;
+  }
+  if (right->type != 0) {
+    delete right;
+  }
 }
 
 
@@ -163,16 +162,12 @@ BVHLeaf::BVHLeaf(vector<Primitive *> modelVector)
 
 
 MODEL_CLS * buildBVHNode(vector<Primitive *> modelVector, const int depth) {
-  if (modelVector.size() < 9) {
-    return new BVHLeaf(modelVector);
+  if (modelVector.size() == 1) {
+    return modelVector[0];
   }
 
-  int axis = findSAHSplit(modelVector, depth % 3);
-  if (axis == 0) {
-    return new BVHLeaf(modelVector);
-  }
-
-  vector<Primitive *>::iterator mid = modelVector.begin() + axis;
+  vector<Primitive *>::iterator mid = modelVector.begin() +
+                                      findSAHSplit(modelVector, depth % 3);
   vector<Primitive *> leftVector(modelVector.begin(), mid),
                       rightVector(mid, modelVector.end());
   return new BVHNode(buildBVHNode(leftVector, depth + 1),
