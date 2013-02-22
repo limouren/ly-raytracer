@@ -2,10 +2,7 @@
 #define VECTOR_H
 
 
-#ifdef DEBUG
 #include <stdio.h>
-#endif
-
 
 #include "config.h"
 
@@ -95,11 +92,9 @@ class Vector3D {
     inline P_FLT normalize();
     inline Vector3D negate();
 
-    #ifdef DEBUG
     void print(char * id) const {
       printf("Vector %s: %f, %f, %f\n", id, x, y, z);
     }
-    #endif
 };
 
 

@@ -3,6 +3,7 @@
 
 
 #include <math.h>
+#include <stdio.h>
 
 #include "config.h"
 
@@ -57,6 +58,15 @@ class Matrix4 {
                      0.0f, 0.0f, 0.0f, 0.0f,
                      0.0f, 0.0f, 0.0f, 0.0f);
     }
+
+    void print(char * id) const {
+      printf("Matix %s:\n%f, %f, %f, %f\n%f, %f, %f, %f\n"
+             "%f, %f, %f, %f\n%f, %f, %f, %f\n", id,
+             data[0][0], data[0][1], data[0][2], data[0][3],
+             data[1][0], data[1][1], data[1][2], data[1][3],
+             data[2][0], data[2][1], data[2][2], data[2][3],
+             data[3][0], data[3][1], data[3][2], data[3][3]);
+    }
 };
 
 
@@ -80,8 +90,7 @@ class Transform {
               const P_FLT radians, const Vector3D &rotateAxis,
               const Vector3D &translate):
       xScale(xScale), yScale(yScale), zScale(zScale), radians(radians),
-      rotateAxis(rotateAxis), translate(translate),
-      matrix(new Matrix4()), inverse(new Matrix4()) {
+      rotateAxis(rotateAxis), translate(translate) {
       scale = new Matrix4(xScale, 0.0f, 0.0f, 0.0f,
                           0.0f, yScale, 0.0f, 0.0f,
                           0.0f, 0.0f, zScale, 0.0f,
@@ -143,9 +152,9 @@ class Transform {
                                    0.0f, 0.0f, 1.0f, -translate.z,
                                    0.0f, 0.0f, 0.0f, 1.0f);
 
-      *matrix = *translation * *rotation * *scale;
+      matrix = new Matrix4(*translation * *rotation * *scale);
 
-      *inverse = *invScale * *invRotation * *invTranslation;
+      inverse = new Matrix4(*invScale * *invRotation * *invTranslation);
     }
 
     ~Transform() {
@@ -186,6 +195,28 @@ class Transform {
                         *matrix[3][2] * point->z + *matrix[3][3]);
 
       *point = result;
+    }
+
+    void print(char * id) const {
+      printf("Transform %s\n", id);
+
+      // Surpressing const string to char * conversion errors
+      char matrixStr[] = "matrix";
+      matrix->print(matrixStr);
+      char scaleStr[] = "scale";
+      scale->print(scaleStr);
+      char rotationStr[] = "rotation";
+      rotation->print(rotationStr);
+      char translationStr[] = "translation";
+      translation->print(translationStr);
+      char invereStr[] = "inverse";
+      inverse->print(invereStr);
+      char invScaleStr[] = "invScale";
+      invScale->print(invScaleStr);
+      char invRotationStr[] = "invRotation";
+      invRotation->print(invRotationStr);
+      char invTranslationStr[] = "invTranslation";
+      invTranslation->print(invTranslationStr);
     }
 };
 

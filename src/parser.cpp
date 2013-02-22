@@ -527,7 +527,7 @@ void parseKeyFrames(FILE *file) {
 }
 
 
-void parseXform(FILE * f) {
+void parseXform(FILE * f, Scene * scene) {
   char name[100];
   char ch, isStatic;
 
@@ -841,7 +841,7 @@ int parseFile(const char * filename, Scene * scene,
         parseTextureStuff(file, scene);
         break;
       case 'x':
-        parseXform(file);
+        parseXform(file, scene);
         break;
       case '}':
         currentTransform = NULL;

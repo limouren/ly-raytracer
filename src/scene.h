@@ -76,8 +76,7 @@ class Scene {
 
     void addPrimitive(Primitive * primitive, Transform * staticTransform) {
       if (staticTransform) {
-        // Enable when fixed
-        // primitive->transform(staticTransform);
+        primitive->transform(staticTransform);
       }
 
       primitives.push_back(primitive);

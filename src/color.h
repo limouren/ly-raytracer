@@ -3,10 +3,7 @@
 
 
 #include <math.h>
-#ifdef DEBUG
 #include <stdio.h>
-#endif
-
 
 #include "config.h"
 
@@ -48,11 +45,9 @@ class Color {
       return (r * 0.299f)  + (g * 0.587f) + (b * 0.114f);
     }
 
-    #ifdef DEBUG
     void print(char * id) {
       printf("Color %s: %f, %f, %f\n", id, r, g, b);
     }
-    #endif
 };
 
 
