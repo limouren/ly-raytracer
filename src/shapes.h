@@ -63,7 +63,8 @@ class Plane: public Primitive {
 
 class Polygon: public Plane {
   public:
-    int dominantIndex, vertexNum;
+    unsigned char dominantIndex;
+    unsigned int vertexNum;
     Point3D * vertex;
 
     Polygon(Material * material, int pointNum, Point3D * points):
