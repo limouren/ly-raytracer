@@ -11,11 +11,12 @@
 /* skip all rows that start with #, i.e., comments */
 static void eatComments(FILE *f)
 {
+   char * dummy;
    int ch;
    while((ch=getc(f))=='#')
    {
       char str[1000];
-      fgets(str,1000,f);
+      dummy = fgets(str,1000,f);
    }
    ungetc(ch,f);   
 }
@@ -45,7 +46,7 @@ struct Texture *viReadPPM(char *filename)
 {
    FILE *f;
    char ch;
-   int width, height, colres;
+   int width, height, colres, dummy;
    if(f=fopen(filename,"rb"))
    {
       char str[100];
@@ -53,7 +54,7 @@ struct Texture *viReadPPM(char *filename)
       eatWhitespace(f);
       eatComments(f);
       eatWhitespace(f);
-      fscanf(f,"%s",str);
+      dummy = fscanf(f,"%s",str);
       if(strcmp(str,"P6")!=0)
       {
 	 printf("Error: the texture image file must be of raw color PPM format,\n");
@@ -63,7 +64,7 @@ struct Texture *viReadPPM(char *filename)
       eatWhitespace(f);
       eatComments(f);
       eatWhitespace(f);
-      fscanf(f,"%d %d",&width,&height);
+      dummy = fscanf(f,"%d %d",&width,&height);
       if(width<=0 || height<=0)
       {
 	 printf("Error: width and height of the image must be greater than zero. File: %s\n",filename);
@@ -72,7 +73,7 @@ struct Texture *viReadPPM(char *filename)
       eatWhitespace(f);
       eatComments(f);
       eatWhitespace(f);
-      fscanf(f,"%d",&colres);
+      dummy = fscanf(f,"%d",&colres);
       if(colres!=255)
       {
 	 printf("Error: color resolution must be 255.File: %s\n",filename);
@@ -80,7 +81,7 @@ struct Texture *viReadPPM(char *filename)
       }
       /* gotta eat the newline too */
       ch=0;
-      while(ch!='\n') fscanf(f,"%c",&ch);
+      while(ch!='\n') dummy = fscanf(f,"%c",&ch);
       
       tx=(struct Texture*)malloc(sizeof(struct Texture));
       if(tx==NULL)
