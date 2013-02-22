@@ -176,14 +176,12 @@ inline P_FLT Vector3D::boxArea() const {
 
 
 inline Vector2D Vector3D::dropIndex(const int index) const {
-  switch (index) {
+  switch (index % 3) {
     case 0:
-    case 3:
       return Vector2D(y, z);
     case 1:
-    case 4:
       return Vector2D(x, z);
-    default:
+    case 2:
       return Vector2D(x, y);
   }
 }
