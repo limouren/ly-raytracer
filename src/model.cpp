@@ -146,21 +146,6 @@ BVHNode::~BVHNode() {
 }
 
 
-BVHLeaf::BVHLeaf(vector<Primitive *> modelVector)
-  :MODEL_CLS(21), primNum(modelVector.size()) {
-  if (primNum > 8) {
-    printf("ERROR: Create BVHLeaf with >8 primitives: (%d)\n", primNum);
-    throw 20;
-    exit(1);
-  }
-
-  copy(modelVector.begin(), modelVector.end(), primitives);
-  MODEL_CLS * bounders[8];
-  copy(primitives, primitives + primNum, bounders);
-  boundingBox = boundingBoxBuilder(primNum, bounders);
-}
-
-
 MODEL_CLS * buildBVHNode(vector<Primitive *> modelVector, const int depth) {
   if (modelVector.size() == 1) {
     return modelVector[0];
@@ -188,18 +173,6 @@ MODEL_CLS * buildBVHTree(vector<Primitive *> modelVector) {
   } else {
     return buildBVHNode(modelVector, 0);
   }
-}
-
-
-BoundingBox * boundingBoxBuilder(const int length, MODEL_CLS * modelArray[]) {
-  Point3D minExt(P_FLT_MAX), maxExt(-P_FLT_MAX);
-
-  for (int i = 0; i < length; i++) {
-    minExt = pointMin(modelArray[i]->boundingBox->minExt, minExt);
-    maxExt = pointMax(modelArray[i]->boundingBox->maxExt, maxExt);
-  }
-
-  return new BoundingBox(minExt, maxExt);
 }
 
 
