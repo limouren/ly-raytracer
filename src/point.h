@@ -53,6 +53,9 @@ class Point3D: public Vector3D {
     inline Point3D operator -(const Vector3D &vector) const;
     inline Point3D& operator +=(const Vector3D &vector);
     inline Point3D& operator -=(const Vector3D &vector);
+
+    inline Point3D operator *(const P_FLT scalar) const;
+    inline Point3D& operator *=(const P_FLT scalar);
 };
 
 

@@ -191,6 +191,11 @@ inline Vector3D Vector3D::operator /=(const P_FLT scalar) {
 }
 
 
+inline P_FLT Vector3D::boxArea() const {
+  return fabs(x * y) + fabs(y * z) + fabs(z * x);
+}
+
+
 inline Vector2D Vector3D::dropIndex(const int index) const {
   switch (index) {
     case 0:

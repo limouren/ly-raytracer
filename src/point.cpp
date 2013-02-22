@@ -109,4 +109,21 @@ inline Point3D& Point3D::operator -=(const Vector3D &vector) {
 }
 
 
+inline Point3D Point3D::operator *(const P_FLT scalar) const {
+  Point3D result = *this;
+  result *= scalar;
+
+  return result;
+}
+
+
+inline Point3D& Point3D::operator *=(const P_FLT scalar) {
+  x *= scalar;
+  y *= scalar;
+  z *= scalar;
+
+  return *this;
+}
+
+
 END_RAYTRACER

@@ -87,6 +87,7 @@ class Vector3D {
     inline Vector3D operator *=(const P_FLT scalar);
     inline Vector3D operator /=(const P_FLT scalar);
 
+    inline P_FLT boxArea() const;
     inline int dominantIndex() const;
     inline Vector2D dropIndex(const int index) const;
     inline P_FLT length() const;
