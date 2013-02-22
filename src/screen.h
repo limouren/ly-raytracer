@@ -103,8 +103,6 @@ class ScreenTracer {
       this->pixelVert = pixelVert * 0.5f;
 
       taskCount = tasks.size();
-      // The magic behind steady progress printing...
-      std::random_shuffle(tasks.begin(), tasks.end());
     }
 
     inline void run() {
