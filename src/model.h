@@ -77,7 +77,7 @@ class BVHNode: public MODEL_CLS {
     MODEL_CLS * left,
               * right;
 
-    explicit BVHNode(vector<Primitive *> modelVector, int depth);
+    explicit BVHNode(MODEL_CLS * left, MODEL_CLS * right);
 
     ~BVHNode();
 };
@@ -93,7 +93,7 @@ class BVHLeaf: public MODEL_CLS {
     ~BVHLeaf() {}
 };
 
-
+MODEL_CLS * buildBVHNode(vector<Primitive *> modelVector, int depth);
 MODEL_CLS * buildBVHTree(std::vector<Primitive *> modelVector);
 BoundingBox * boundingBoxBuilder(int length, MODEL_CLS * modelArray[]);
 BoundingBox * boundingBoxBuilder(vector<MODEL_CLS *> modelVector);
