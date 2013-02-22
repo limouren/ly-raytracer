@@ -21,18 +21,12 @@ inline Vector2D Vector2D::operator =(const Vector2D &vector) {
 
 
 inline Vector2D Vector2D::operator +(const Vector2D &vector) const {
-  Vector2D result = *this;
-  result += vector;
-
-  return result;
+  return Vector2D(x + vector.x, y + vector.y);
 }
 
 
 inline Vector2D Vector2D::operator -(const Vector2D &vector) const {
-  Vector2D result = *this;
-  result -= vector;
-
-  return result;
+  return Vector2D(x - vector.x, y - vector.y);
 }
 
 
@@ -53,18 +47,13 @@ inline Vector2D Vector2D::operator -=(const Vector2D &vector) {
 
 
 inline Vector2D Vector2D::operator *(const P_FLT scalar) const {
-  Vector2D result = *this;
-  result *= scalar;
-
-  return result;
+  return Vector2D(x * scalar, y * scalar);
 }
 
 
 inline Vector2D Vector2D::operator /(const P_FLT scalar) const {
-  Vector2D result = *this;
-  result /= scalar;
-
-  return result;
+  P_FLT invScalar = 1.0f / scalar;
+  return Vector2D(x * invScalar, y * invScalar);
 }
 
 
@@ -77,8 +66,9 @@ inline Vector2D Vector2D::operator *=(const P_FLT scalar) {
 
 
 inline Vector2D Vector2D::operator /=(const P_FLT scalar) {
-  x /= scalar;
-  y /= scalar;
+  P_FLT invScalar = 1.0f / scalar;
+  x *= scalar;
+  y *= scalar;
 
   return *this;
 }
@@ -124,18 +114,12 @@ inline Vector3D Vector3D::operator =(const Vector3D &vector) {
 
 
 inline Vector3D Vector3D::operator +(const Vector3D &vector) const {
-  Vector3D result = *this;
-  result += vector;
-
-  return result;
+  return Vector3D(x + vector.x, y + vector.y, z + vector.z);
 }
 
 
 inline Vector3D Vector3D::operator -(const Vector3D &vector) const {
-  Vector3D result = *this;
-  result -= vector;
-
-  return result;
+  return Vector3D(x - vector.x, y - vector.y, z - vector.z);
 }
 
 
@@ -158,18 +142,13 @@ inline Vector3D Vector3D::operator -=(const Vector3D &vector) {
 
 
 inline Vector3D Vector3D::operator *(const P_FLT scalar) const {
-  Vector3D result = *this;
-  result *= scalar;
-
-  return result;
+  return Vector3D(x * scalar, y * scalar, z * scalar);
 }
 
 
 inline Vector3D Vector3D::operator /(const P_FLT scalar) const {
-  Vector3D result = *this;
-  result /= scalar;
-
-  return result;
+  P_FLT invScalar = 1.0f / scalar;
+  return Vector3D(x * invScalar, y * invScalar, z * invScalar);
 }
 
 

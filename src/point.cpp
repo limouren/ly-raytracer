@@ -24,18 +24,12 @@ inline Vector2D Point2D::operator -(const Point2D &point) const {
 
 
 inline Point2D Point2D::operator +(const Vector2D &vector) const {
-  Point2D result = *this;
-  result += vector;
-
-  return result;
+  return Point2D(x + vector.x, y + vector.y);
 }
 
 
 inline Point2D Point2D::operator -(const Vector2D &vector) const {
-  Point2D result = *this;
-  result -= vector;
-
-  return result;
+  return Point2D(x - vector.x, y - vector.y);
 }
 
 
@@ -76,18 +70,12 @@ inline Vector3D Point3D::operator -(const Point3D &point) const {
 
 
 inline Point3D Point3D::operator +(const Vector3D &vector) const {
-  Point3D result = *this;
-  result += vector;
-
-  return result;
+  return Point3D(x + vector.x, y + vector.y, z + vector.z);
 }
 
 
 inline Point3D Point3D::operator -(const Vector3D &vector) const {
-  Point3D result = *this;
-  result -= vector;
-
-  return result;
+  return Point3D(x - vector.x, y - vector.y, z - vector.z);
 }
 
 
@@ -110,10 +98,7 @@ inline Point3D& Point3D::operator -=(const Vector3D &vector) {
 
 
 inline Point3D Point3D::operator *(const P_FLT scalar) const {
-  Point3D result = *this;
-  result *= scalar;
-
-  return result;
+  return Point3D(x * scalar, y * scalar, z * scalar);
 }
 
 
