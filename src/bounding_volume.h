@@ -28,10 +28,7 @@ class BoundingBox {
     BoundingBox(const Point3D &minExt, const Point3D &maxExt):
       minExt(minExt), maxExt(maxExt), center((minExt + maxExt) * 0.5f) {}
 
-    inline bool intersect(const Ray &ray) const;
-    P_FLT surfaceArea() const {
-      return (maxExt - minExt).boxArea();
-    }
+    inline bool intersect(const Ray &ray, P_FLT tCeil) const;
 };
 
 

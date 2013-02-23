@@ -17,7 +17,7 @@ using namespace std;
 
 
 // Ref: Glassner -An Introduction to Ray Tracing - P.65-66
-inline bool BoundingBox::intersect(const Ray &ray) const {
+inline bool BoundingBox::intersect(const Ray &ray, P_FLT tCeil) const {
   P_FLT t1, t2, tNear, tFar;
 
   tNear = -P_FLT_MAX;
@@ -74,7 +74,7 @@ inline bool BoundingBox::intersect(const Ray &ray) const {
     }
   }
 
-  return true;
+  return tNear < tCeil;
 }
 
 

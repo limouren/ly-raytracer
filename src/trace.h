@@ -17,6 +17,8 @@ class Scene;
 
 
 int intersect(const Ray &ray, Model * model, Intercept intercepts[]);
+int intersect(const Ray &ray, Model * model, Intercept intercepts[],
+              P_FLT * tCeil);
 
 inline int intersectMergeTwo(const int hitsLeft, Intercept interceptLeft[],
                              const int hitsRight, Intercept interceptRight[],
