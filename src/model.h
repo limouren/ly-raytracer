@@ -83,8 +83,24 @@ class BVHNode: public MODEL_CLS {
 };
 
 
+class KDNode: public MODEL_CLS {
+  public:
+    unsigned char axis;
+    P_FLT value;
+    MODEL_CLS * left,
+              * right;
+
+    explicit KDNode(unsigned char axis, const P_FLT value,
+                     MODEL_CLS * left, MODEL_CLS * right);
+
+    ~KDNode();
+};
+
+
 MODEL_CLS * buildBVHNode(vector<Primitive *> modelVector);
 MODEL_CLS * buildBVHTree(vector<Primitive *> modelVector);
+MODEL_CLS * buildKDNode(vector<Primitive *> modelVector, const int depth);
+MODEL_CLS * buildKDTree(vector<Primitive *> modelVector);
 BoundingBox * boundingBoxBuilder(int length, MODEL_CLS * modelArray[]);
 BoundingBox * boundingBoxBuilder(vector<MODEL_CLS *> modelVector);
 
@@ -92,6 +108,12 @@ void findBVHSplit(vector<Primitive *> modelVector,
                   int * minCostIndex, P_FLT * minCost);
 void sahBVHSplit(vector<Primitive *> * modelVector,
                  int * axis, int * minCostIndex);
+bool findKDSplit(vector<Primitive *> modelVector, const int axis,
+                 int * splitValue, P_FLT * minCost);
+bool sahKDSplit(vector<Primitive *> modelVector,
+                int * axis, P_FLT * splitValue,
+                vector<Primitive *> * leftVector,
+                vector<Primitive *> * rightVector);
 
 
 END_RAYTRACER

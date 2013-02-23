@@ -94,6 +94,21 @@ BVHNode::~BVHNode() {
 }
 
 
+KDNode::KDNode(const unsigned char axis, const P_FLT value,
+                 MODEL_CLS * left, MODEL_CLS * right)
+  : MODEL_CLS(30), axis(axis), value(value), left(left), right(right) {}
+
+
+KDNode::~KDNode() {
+  if (left->type != 0) {
+    delete left;
+  }
+  if (right->type != 0) {
+    delete right;
+  }
+}
+
+
 MODEL_CLS * buildBVHNode(vector<Primitive *> modelVector) {
   int axis, minCostIndex,
       size = modelVector.size();
@@ -137,6 +152,46 @@ MODEL_CLS * buildBVHTree(vector<Primitive *> modelVector) {
     return NULL;
   } else {
     return buildBVHNode(modelVector);
+  }
+}
+
+
+#define KD_MAX_DEPTH 32
+
+
+MODEL_CLS * buildKDNode(vector<Primitive *> modelVector, const int depth) {
+  if (modelVector.size() == 1) {
+    return modelVector[0];
+  } else if (depth == KD_MAX_DEPTH) {
+    return buildBVHNode(modelVector);
+  }
+
+  int axis;
+  P_FLT value;
+  vector<Primitive *> leftVector, rightVector;
+  if (sahKDSplit(modelVector, &axis, &value, &leftVector, &rightVector)) {
+    MODEL_CLS * leftNode = buildKDNode(leftVector, depth + 1);
+    MODEL_CLS * rightNode = buildKDNode(rightVector, depth + 1);
+
+    return new KDNode(axis, value, leftNode, rightNode);
+  } else {
+    return buildBVHNode(modelVector);
+  }
+}
+
+
+MODEL_CLS * buildKDTree(vector<Primitive *> modelVector) {
+  for (vector<Primitive *>::iterator itr = modelVector.begin();
+       itr != modelVector.end(); itr++) {
+    static_cast<Primitive *>(*itr)->buildBoundingBox();
+  }
+
+  if (modelVector.empty()) {
+    printf("ERROR: Attempted to construct tree with no primitives\n");
+    exit(1);
+    return NULL;
+  } else {
+    return buildKDNode(modelVector, 0);
   }
 }
 
@@ -227,6 +282,188 @@ void sahBVHSplit(vector<Primitive *> * modelVector,
       *modelVector = zVector;
     }
   }
+}
+
+
+struct Edge {
+  P_FLT value;
+  Primitive * prim;
+  bool left;
+
+  Edge(P_FLT value, Primitive * prim, bool left)
+    : value(value), prim(prim), left(left) {}
+};
+
+
+bool edgeSort(const Edge &edgeA, const Edge &edgeB) {
+  if (edgeA.value == edgeB.value) {
+    if (edgeA.left == edgeB.left) {
+      return edgeA.prim < edgeB.prim;
+    }
+
+    return edgeA.left;
+  }
+
+  return edgeA.value < edgeB.value;
+}
+
+
+bool findKDSplit(vector<Primitive *> modelVector, const int axis,
+                 P_FLT * splitValue, P_FLT * minCost) {
+  vector<Edge> edges;
+  for (vector<Primitive *>::iterator itr = modelVector.begin();
+       itr != modelVector.end(); itr++) {
+    edges.push_back(Edge((*itr)->boundingBox->minExt[axis], *itr, true));
+    edges.push_back(Edge((*itr)->boundingBox->maxExt[axis], *itr, false));
+  }
+  sort(edges.begin(), edges.end(), edgeSort);
+
+  int primNum = modelVector.size(),
+      edgeNum = edges.size();
+  P_FLT * leftSA = new P_FLT[edgeNum],
+        * rightSA = new P_FLT[edgeNum];
+
+  Point3D leftMinExt = edges.front().prim->boundingBox->minExt,
+          leftMaxExt = edges.front().prim->boundingBox->maxExt,
+          rightMinExt = edges.back().prim->boundingBox->minExt,
+          rightMaxExt = edges.back().prim->boundingBox->maxExt;
+  for (int i = 0, j = edgeNum - 1; i < edgeNum; i++, j--) {
+    if (edges[i].left) {
+      leftMinExt = pointMin(leftMinExt, edges[i].prim->boundingBox->minExt);
+      leftMaxExt = pointMax(leftMaxExt, edges[i].prim->boundingBox->maxExt);
+    }
+    leftSA[i] = (leftMaxExt - leftMinExt).boxArea();
+
+    if (!edges[j].left) {
+      rightMinExt = pointMin(rightMinExt, edges[j].prim->boundingBox->minExt);
+      rightMaxExt = pointMax(rightMaxExt, edges[j].prim->boundingBox->maxExt);
+    }
+    rightSA[j] = (rightMaxExt - rightMinExt).boxArea();
+  }
+
+  bool splitSuccess = false;
+  int countedLeftEdge = 0,
+      countedRightEdge = 0,
+      leftPrims = 0,
+      rightPrims = primNum;
+  P_FLT cost,
+        invTotalSA = 1.0f / ((rightMaxExt - leftMinExt).boxArea());
+
+  *minCost = static_cast<P_FLT>(primNum);
+  for (int i = 0; i < edgeNum; i++) {
+    if (edges[i].left) {
+      if (countedLeftEdge > 0) {
+        countedLeftEdge--;
+      } else {
+        leftPrims++;
+        // Count number of boxes that share left edge at this value
+        for (int j = i + 1; j < edgeNum; j++) {
+          if (edges[j].value == edges[i].value && edges[j].left) {
+            countedLeftEdge++;
+          } else {
+            break;
+          };
+        }
+
+        leftPrims += countedLeftEdge;
+        cost = 0.2f + ((leftSA[i] * leftPrims) +
+                       (rightSA[i] * rightPrims)) * invTotalSA;
+        if (cost < *minCost) {
+          splitSuccess = true;
+          *minCost = cost;
+          *splitValue = edges[i].value;
+        }
+      }
+    } else {
+      if (countedRightEdge > 0) {
+        countedRightEdge--;
+      } else {
+        cost = 0.2f + ((leftSA[i] * leftPrims) +
+                       (rightSA[i] * rightPrims)) * invTotalSA;
+        if (cost < *minCost) {
+          splitSuccess = true;
+          *minCost = cost;
+          *splitValue = edges[i].value;
+        }
+
+        rightPrims--;
+        // Count number of boxes that share right edge at this value
+        for (int j = i + 1; j < edgeNum; j++) {
+          if (edges[j].value == edges[i].value && !edges[j].left) {
+            countedRightEdge++;
+          } else {
+            break;
+          };
+        }
+
+        rightPrims -= countedRightEdge;
+      }
+    }
+  }
+  delete [] leftSA;
+  delete [] rightSA;
+
+  return splitSuccess;
+}
+
+
+bool sahKDSplit(vector<Primitive *> modelVector,
+                int * axis, P_FLT * splitValue,
+                vector<Primitive *> * leftVector,
+                vector<Primitive *> * rightVector) {
+  bool xSplitSuccess, ySplitSuccess, zSplitSuccess;
+  P_FLT xSplit, ySplit, zSplit;
+  P_FLT minSplitCost, xSplitCost, ySplitCost, zSplitCost;
+  vector<Primitive *> xVector(modelVector),
+                      yVector(modelVector),
+                      zVector(modelVector);
+  xSplitSuccess = findKDSplit(xVector, 0, &xSplit, &xSplitCost);
+  ySplitSuccess = findKDSplit(yVector, 1, &ySplit, &ySplitCost);
+  zSplitSuccess = findKDSplit(zVector, 2, &zSplit, &zSplitCost);
+
+  if (!(xSplitSuccess || ySplitSuccess || zSplitSuccess)) {
+    return false;
+  }
+
+  if (xSplitCost < ySplitCost) {
+    if (xSplitCost < zSplitCost) {
+      *axis = 0;
+      *splitValue = xSplit;
+      modelVector = xVector;
+    } else {
+      *axis = 2;
+      *splitValue = zSplit;
+      modelVector = zVector;
+    }
+  } else {
+    if (ySplitCost < zSplitCost) {
+      *axis = 1;
+      *splitValue = ySplit;
+      modelVector = yVector;
+    } else {
+      *axis = 2;
+      *splitValue = zSplit;
+      modelVector = zVector;
+    }
+  }
+
+  for (vector<Primitive *>::iterator itr = modelVector.begin();
+       itr != modelVector.end(); itr++) {
+    if ((*itr)->boundingBox->minExt[*axis] <= *splitValue) {
+      leftVector->push_back(*itr);
+    }
+    if ((*itr)->boundingBox->maxExt[*axis] >= *splitValue) {
+      rightVector->push_back(*itr);
+    }
+  }
+
+  /*printf("Split vector of size %d into %d : %d\n",
+         modelVector.size(), leftVector->size(), rightVector->size());
+  printf("Expansion factor: %.2f%%.\n",
+         (leftVector->size() + rightVector->size()) * 100.0f /
+          modelVector.size());
+  getchar();*/
+  return true;
 }
 
 

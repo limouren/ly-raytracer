@@ -44,6 +44,49 @@ int intersect(const Ray &ray, MODEL_CLS * model, Intercept intercepts[]) {
       return intersectMergeTwo(hits[0], interceptsLists[0],
                                hits[1], interceptsLists[1], intercepts);
     }
+
+    case 30: {  // KD Node
+      KDNode * kdNode = static_cast<KDNode *>(model);
+
+      int hits[2];
+      P_FLT dirValue, origValue;
+      Intercept interceptsLists[2][MAX_INTERSECTIONS];
+
+      dirValue = ray.dir[kdNode->axis];
+      origValue = ray.orig[kdNode->axis];
+
+      if (origValue < kdNode->value) {
+        hits[0] = intersect(ray, kdNode->left, intercepts);
+        if (hits[0]) {
+          if (ray.rayPoint(intercepts[0].t)[kdNode->axis] < kdNode->value) {
+            return hits[0];
+          } else if (dirValue > 0.0f) {
+            std::copy(intercepts, intercepts + hits[0], interceptsLists[0]);
+            hits[1] = intersect(ray, kdNode->right, interceptsLists[1]);
+            return intersectMergeTwo(hits[0], interceptsLists[0],
+                                     hits[1], interceptsLists[1], intercepts);
+          }
+        } else if (dirValue > 0.0f) {
+          return intersect(ray, kdNode->right, intercepts);
+        }
+      } else {
+        hits[0] = intersect(ray, kdNode->right, intercepts);
+        if (hits[0]) {
+          if (ray.rayPoint(intercepts[0].t)[kdNode->axis] >= kdNode->value) {
+            return hits[0];
+          } else if (dirValue < 0.0f) {
+            std::copy(intercepts, intercepts + hits[0], interceptsLists[0]);
+            hits[1] = intersect(ray, kdNode->left, interceptsLists[1]);
+            return intersectMergeTwo(hits[0], interceptsLists[0],
+                                     hits[1], interceptsLists[1], intercepts);
+          }
+        } else if (dirValue < 0.0f) {
+          return intersect(ray, kdNode->left, intercepts);
+        }
+      }
+
+      return 0;
+    }
   }
 
   return 0;
