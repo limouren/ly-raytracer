@@ -1,5 +1,4 @@
 #include <algorithm>
-#include <set>
 #include <vector>
 
 #include "config.h"
@@ -96,17 +95,29 @@ BVHNode::~BVHNode() {
 
 
 MODEL_CLS * buildBVHNode(vector<Primitive *> modelVector) {
-  int axis,
+  int axis, minCostIndex,
       size = modelVector.size();
   if (size == 1) {
     return modelVector[0];
   } else if (size <= 4) {
-    axis = size / 2;
+    minCostIndex = size / 2;
   } else {
-    axis = sahSplitVector(&modelVector);
+    sahBVHSplit(&modelVector, &axis, &minCostIndex);
   }
 
-  vector<Primitive *>::iterator mid = modelVector.begin() + axis;
+  switch (axis) {
+    case 0:
+      sort(modelVector.begin(), modelVector.end(), compareBoxX);
+      break;
+    case 1:
+      sort(modelVector.begin(), modelVector.end(), compareBoxY);
+      break;
+    case 2:
+      sort(modelVector.begin(), modelVector.end(), compareBoxZ);
+      break;
+  }
+
+  vector<Primitive *>::iterator mid = modelVector.begin() + minCostIndex;
   vector<Primitive *> leftVector(modelVector.begin(), mid),
                       rightVector(mid, modelVector.end());
   return new BVHNode(buildBVHNode(leftVector),
@@ -143,7 +154,7 @@ BoundingBox * boundingBoxBuilder(vector<MODEL_CLS *> modelVector) {
 }
 
 
-void findSAHSplit(vector<Primitive *> modelVector,
+void findBVHSplit(vector<Primitive *> modelVector,
                   int * minCostIndex, P_FLT * minCost) {
   int size = modelVector.size();
   P_FLT * leftSA = new P_FLT[size],
@@ -172,7 +183,7 @@ void findSAHSplit(vector<Primitive *> modelVector,
   for (int leftPrims = 1; leftPrims < size; leftPrims++) {
     cost = 0.1f + ((leftSA[leftPrims] * leftPrims) +
                    (rightSA[leftPrims] * (size - leftPrims))) * invTotalSA;
-    if (cost <= *minCost) {
+    if (cost < *minCost) {
       *minCost = cost;
       *minCostIndex = leftPrims;
     }
@@ -182,33 +193,38 @@ void findSAHSplit(vector<Primitive *> modelVector,
 }
 
 
-int sahSplitVector(vector<Primitive *> * modelVector) {
+void sahBVHSplit(vector<Primitive *> * modelVector,
+                 int * axis, int * minCostIndex) {
   int xSplit, ySplit, zSplit;
   P_FLT xSplitCost, ySplitCost, zSplitCost;
   vector<Primitive *> xVector(*modelVector),
                       yVector(*modelVector),
                       zVector(*modelVector);
   sort(xVector.begin(), xVector.end(), compareBoxX);
-  findSAHSplit(xVector, &xSplit, &xSplitCost);
+  findBVHSplit(xVector, &xSplit, &xSplitCost);
   sort(yVector.begin(), yVector.end(), compareBoxY);
-  findSAHSplit(yVector, &ySplit, &ySplitCost);
+  findBVHSplit(yVector, &ySplit, &ySplitCost);
   sort(zVector.begin(), zVector.end(), compareBoxZ);
-  findSAHSplit(zVector, &zSplit, &zSplitCost);
+  findBVHSplit(zVector, &zSplit, &zSplitCost);
   if (xSplitCost < ySplitCost) {
     if (xSplitCost < zSplitCost) {
+      *axis = 0;
+      *minCostIndex = xSplit;
       *modelVector = xVector;
-      return xSplit;
     } else {
+      *axis = 2;
+      *minCostIndex = zSplit;
       *modelVector = zVector;
-      return zSplit;
     }
   } else {
     if (ySplitCost < zSplitCost) {
+      *axis = 1;
+      *minCostIndex = ySplit;
       *modelVector = yVector;
-      return ySplit;
     } else {
+      *axis = 2;
+      *minCostIndex = zSplit;
       *modelVector = zVector;
-      return zSplit;
     }
   }
 }
