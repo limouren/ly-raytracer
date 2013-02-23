@@ -24,30 +24,42 @@ using namespace std;
 class Model {
   public:
     unsigned char type;
-    BoundingBox * boundingBox;
 
     explicit Model(const unsigned char type):
-      type(type), boundingBox(NULL) {}
+      type(type) {}
 
     virtual ~Model() {}
 };
 
 
-class Primitive: public Model {
+class BoundedModel: public Model {
+  public:
+    BoundingBox * boundingBox;
+
+    explicit BoundedModel(const unsigned char type):
+      Model(type), boundingBox(NULL) {}
+
+    virtual ~BoundedModel() {
+      if (boundingBox) {
+        delete boundingBox;
+      }
+    }
+};
+
+
+class Primitive: public BoundedModel {
   public:
     Material * material;
     Texture * texture;
 
     Primitive():
-      Model(0), material(NULL), texture(NULL) {}
+      BoundedModel(0), material(NULL), texture(NULL) {}
     explicit Primitive(Material * material):
-      Model(0), material(material), texture(NULL) {}
+      BoundedModel(0), material(material), texture(NULL) {}
     Primitive(Material * material, Texture * texture):
-      Model(0), material(material), texture(texture) {}
+      BoundedModel(0), material(material), texture(texture) {}
 
-    virtual ~Primitive() {
-      delete boundingBox;
-    }
+    virtual ~Primitive() {}
 
     virtual void buildBoundingBox();
     virtual void getIntersect(const Point3D &point, Vector3D * normal,
@@ -59,25 +71,12 @@ class Primitive: public Model {
 };
 
 
-class Composite: public Model {
+class BVHNode: public BoundedModel {
   public:
-    Model * left,
-              * right;
+    BoundedModel * left,
+                 * right;
 
-    Composite(): Model(1) {}
-    Composite(Model * left, Model * right):
-      Model(1), left(left), right(right) {}
-
-    ~Composite();
-};
-
-
-class BVHNode: public Model {
-  public:
-    Model * left,
-              * right;
-
-    explicit BVHNode(Model * left, Model * right);
+    explicit BVHNode(BoundedModel * left, BoundedModel * right);
 
     ~BVHNode();
 };
@@ -88,32 +87,30 @@ class KDNode: public Model {
     unsigned char axis;
     P_FLT value;
     Model * left,
-              * right;
+          * right;
 
     explicit KDNode(unsigned char axis, const P_FLT value,
-                     Model * left, Model * right);
+                    Model * left, Model * right);
 
     ~KDNode();
 };
 
 
-Model * buildBVHNode(vector<Primitive *> modelVector);
-Model * buildBVHTree(vector<Primitive *> modelVector);
-Model * buildKDNode(vector<Primitive *> modelVector, const int depth);
-Model * buildKDTree(vector<Primitive *> modelVector);
-BoundingBox * boundingBoxBuilder(int length, Model * modelArray[]);
-BoundingBox * boundingBoxBuilder(vector<Model *> modelVector);
+BoundedModel * buildBVHNode(vector<Primitive *> primitives);
+BoundedModel * buildBVHTree(vector<Primitive *> primitives);
+Model * buildKDNode(vector<Primitive *> primitives, const int depth);
+Model * buildKDTree(vector<Primitive *> primitives);
 
-void findBVHSplit(vector<Primitive *> modelVector,
+void findBVHSplit(vector<Primitive *> primitives,
                   int * minCostIndex, P_FLT * minCost);
-void sahBVHSplit(vector<Primitive *> * modelVector,
+void sahBVHSplit(vector<Primitive *> * primitives,
                  int * axis, int * minCostIndex);
-bool findKDSplit(vector<Primitive *> modelVector, const int axis,
+bool findKDSplit(vector<Primitive *> primitives, const int axis,
                  int * splitValue, P_FLT * minCost);
-bool sahKDSplit(vector<Primitive *> modelVector,
+bool sahKDSplit(vector<Primitive *> primitives,
                 int * axis, P_FLT * splitValue,
-                vector<Primitive *> * leftVector,
-                vector<Primitive *> * rightVector);
+                vector<Primitive *> * leftPrims,
+                vector<Primitive *> * rightPrims);
 
 
 END_RAYTRACER

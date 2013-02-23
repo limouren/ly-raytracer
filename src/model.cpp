@@ -49,33 +49,24 @@ std::vector<P_FLT> Primitive::inverseMap(const Point3D &point) const {
 
 
 void Primitive::transform(Transform * transform) {
-  // TODO(kent): Implement individual transform methods
+  printf("ERROR: Unimplemented Primitive::transform stub invoked\n");
+  exit(1);
 }
 
 
-Composite::~Composite() {
-  if (left->type != 0) {
-    delete left;
-  }
-  if (right->type != 0) {
-    delete right;
-  }
-}
-
-
-inline bool compareBoxX(Model * modelA, Model * modelB) {
+inline bool compareBoxX(BoundedModel * modelA, BoundedModel * modelB) {
   return modelA->boundingBox->center.x < modelB->boundingBox->center.x;
 }
-inline bool compareBoxY(Model * modelA, Model * modelB) {
+inline bool compareBoxY(BoundedModel * modelA, BoundedModel * modelB) {
   return modelA->boundingBox->center.y < modelB->boundingBox->center.y;
 }
-inline bool compareBoxZ(Model * modelA, Model * modelB) {
+inline bool compareBoxZ(BoundedModel * modelA, BoundedModel * modelB) {
   return modelA->boundingBox->center.z < modelB->boundingBox->center.z;
 }
 
 
-BVHNode::BVHNode(Model * left, Model * right)
-  : Model(20), left(left), right(right) {
+BVHNode::BVHNode(BoundedModel * left, BoundedModel * right)
+  : BoundedModel(20), left(left), right(right) {
   boundingBox = new BoundingBox(pointMin(left->boundingBox->minExt,
                                          right->boundingBox->minExt),
                                 pointMax(left->boundingBox->maxExt,
@@ -84,7 +75,6 @@ BVHNode::BVHNode(Model * left, Model * right)
 
 
 BVHNode::~BVHNode() {
-  delete boundingBox;
   if (left->type != 0) {
     delete left;
   }
@@ -95,7 +85,7 @@ BVHNode::~BVHNode() {
 
 
 KDNode::KDNode(const unsigned char axis, const P_FLT value,
-                 Model * left, Model * right)
+               Model * left, Model * right)
   : Model(30), axis(axis), value(value), left(left), right(right) {}
 
 
@@ -109,49 +99,49 @@ KDNode::~KDNode() {
 }
 
 
-Model * buildBVHNode(vector<Primitive *> modelVector) {
+BoundedModel * buildBVHNode(vector<Primitive *> primitives) {
   int axis, minCostIndex,
-      size = modelVector.size();
+      size = primitives.size();
   if (size == 1) {
-    return modelVector[0];
+    return primitives[0];
   } else if (size <= 4) {
     minCostIndex = size / 2;
   } else {
-    sahBVHSplit(&modelVector, &axis, &minCostIndex);
+    sahBVHSplit(&primitives, &axis, &minCostIndex);
   }
 
   switch (axis) {
     case 0:
-      sort(modelVector.begin(), modelVector.end(), compareBoxX);
+      sort(primitives.begin(), primitives.end(), compareBoxX);
       break;
     case 1:
-      sort(modelVector.begin(), modelVector.end(), compareBoxY);
+      sort(primitives.begin(), primitives.end(), compareBoxY);
       break;
     case 2:
-      sort(modelVector.begin(), modelVector.end(), compareBoxZ);
+      sort(primitives.begin(), primitives.end(), compareBoxZ);
       break;
   }
 
-  vector<Primitive *>::iterator mid = modelVector.begin() + minCostIndex;
-  vector<Primitive *> leftVector(modelVector.begin(), mid),
-                      rightVector(mid, modelVector.end());
-  return new BVHNode(buildBVHNode(leftVector),
-                     buildBVHNode(rightVector));
+  vector<Primitive *>::iterator mid = primitives.begin() + minCostIndex;
+  vector<Primitive *> leftPrims(primitives.begin(), mid),
+                      rightPrims(mid, primitives.end());
+  return new BVHNode(buildBVHNode(leftPrims),
+                     buildBVHNode(rightPrims));
 }
 
 
-Model * buildBVHTree(vector<Primitive *> modelVector) {
-  for (vector<Primitive *>::iterator itr = modelVector.begin();
-       itr != modelVector.end(); itr++) {
+BoundedModel * buildBVHTree(vector<Primitive *> primitives) {
+  for (vector<Primitive *>::iterator itr = primitives.begin();
+       itr != primitives.end(); itr++) {
     static_cast<Primitive *>(*itr)->buildBoundingBox();
   }
 
-  if (modelVector.empty()) {
+  if (primitives.empty()) {
     printf("ERROR: Attempted to construct tree with no primitives\n");
     exit(1);
     return NULL;
   } else {
-    return buildBVHNode(modelVector);
+    return buildBVHNode(primitives);
   }
 }
 
@@ -159,75 +149,62 @@ Model * buildBVHTree(vector<Primitive *> modelVector) {
 #define KD_MAX_DEPTH 32
 
 
-Model * buildKDNode(vector<Primitive *> modelVector, const int depth) {
-  if (modelVector.size() == 1) {
-    return modelVector[0];
+Model * buildKDNode(vector<Primitive *> primitives, const int depth) {
+  if (primitives.size() == 1) {
+    return primitives[0];
   } else if (depth == KD_MAX_DEPTH) {
-    return buildBVHNode(modelVector);
+    return buildBVHNode(primitives);
   }
 
   int axis;
   P_FLT value;
-  vector<Primitive *> leftVector, rightVector;
-  if (sahKDSplit(modelVector, &axis, &value, &leftVector, &rightVector)) {
-    Model * leftNode = buildKDNode(leftVector, depth + 1);
-    Model * rightNode = buildKDNode(rightVector, depth + 1);
+  vector<Primitive *> leftPrims, rightPrims;
+  if (sahKDSplit(primitives, &axis, &value, &leftPrims, &rightPrims)) {
+    Model * leftNode = buildKDNode(leftPrims, depth + 1);
+    Model * rightNode = buildKDNode(rightPrims, depth + 1);
 
     return new KDNode(axis, value, leftNode, rightNode);
   } else {
-    return buildBVHNode(modelVector);
+    return buildBVHNode(primitives);
   }
 }
 
 
-Model * buildKDTree(vector<Primitive *> modelVector) {
-  for (vector<Primitive *>::iterator itr = modelVector.begin();
-       itr != modelVector.end(); itr++) {
+Model * buildKDTree(vector<Primitive *> primitives) {
+  for (vector<Primitive *>::iterator itr = primitives.begin();
+       itr != primitives.end(); itr++) {
     static_cast<Primitive *>(*itr)->buildBoundingBox();
   }
 
-  if (modelVector.empty()) {
+  if (primitives.empty()) {
     printf("ERROR: Attempted to construct tree with no primitives\n");
     exit(1);
     return NULL;
   } else {
-    return buildKDNode(modelVector, 0);
+    return buildKDNode(primitives, 0);
   }
 }
 
 
-BoundingBox * boundingBoxBuilder(vector<Model *> modelVector) {
-  Point3D minExt(P_FLT_MAX), maxExt(-P_FLT_MAX);
-
-  for (vector<Model *>::iterator itr = modelVector.begin();
-       itr != modelVector.end(); itr++) {
-    minExt = pointMin((*itr)->boundingBox->minExt, minExt);
-    maxExt = pointMax((*itr)->boundingBox->maxExt, maxExt);
-  }
-
-  return new BoundingBox(minExt, maxExt);
-}
-
-
-void findBVHSplit(vector<Primitive *> modelVector,
+void findBVHSplit(vector<Primitive *> primitives,
                   int * minCostIndex, P_FLT * minCost) {
-  int size = modelVector.size();
+  int size = primitives.size();
   P_FLT * leftSA = new P_FLT[size],
         * rightSA = new P_FLT[size];
 
   Point3D leftMinExt(P_FLT_MAX),
           leftMaxExt(-P_FLT_MAX);
   for (int i = 1; i < size; i++) {
-    leftMinExt = pointMin(leftMinExt, modelVector[i]->boundingBox->minExt);
-    leftMaxExt = pointMax(leftMaxExt, modelVector[i]->boundingBox->maxExt);
+    leftMinExt = pointMin(leftMinExt, primitives[i]->boundingBox->minExt);
+    leftMaxExt = pointMax(leftMaxExt, primitives[i]->boundingBox->maxExt);
     leftSA[i] = (leftMaxExt - leftMinExt).boxArea();
   }
 
   Point3D rightMinExt(P_FLT_MAX),
           rightMaxExt(-P_FLT_MAX);
   for (int i = size - 1; i > 0; i--) {
-    rightMinExt = pointMin(rightMinExt, modelVector[i]->boundingBox->minExt);
-    rightMaxExt = pointMax(rightMaxExt, modelVector[i]->boundingBox->maxExt);
+    rightMinExt = pointMin(rightMinExt, primitives[i]->boundingBox->minExt);
+    rightMaxExt = pointMax(rightMaxExt, primitives[i]->boundingBox->maxExt);
     rightSA[i] = (rightMaxExt - rightMinExt).boxArea();
   }
 
@@ -248,13 +225,13 @@ void findBVHSplit(vector<Primitive *> modelVector,
 }
 
 
-void sahBVHSplit(vector<Primitive *> * modelVector,
+void sahBVHSplit(vector<Primitive *> * primitives,
                  int * axis, int * minCostIndex) {
   int xSplit, ySplit, zSplit;
   P_FLT xSplitCost, ySplitCost, zSplitCost;
-  vector<Primitive *> xVector(*modelVector),
-                      yVector(*modelVector),
-                      zVector(*modelVector);
+  vector<Primitive *> xVector(*primitives),
+                      yVector(*primitives),
+                      zVector(*primitives);
   sort(xVector.begin(), xVector.end(), compareBoxX);
   findBVHSplit(xVector, &xSplit, &xSplitCost);
   sort(yVector.begin(), yVector.end(), compareBoxY);
@@ -265,21 +242,21 @@ void sahBVHSplit(vector<Primitive *> * modelVector,
     if (xSplitCost < zSplitCost) {
       *axis = 0;
       *minCostIndex = xSplit;
-      *modelVector = xVector;
+      *primitives = xVector;
     } else {
       *axis = 2;
       *minCostIndex = zSplit;
-      *modelVector = zVector;
+      *primitives = zVector;
     }
   } else {
     if (ySplitCost < zSplitCost) {
       *axis = 1;
       *minCostIndex = ySplit;
-      *modelVector = yVector;
+      *primitives = yVector;
     } else {
       *axis = 2;
       *minCostIndex = zSplit;
-      *modelVector = zVector;
+      *primitives = zVector;
     }
   }
 }
@@ -308,17 +285,17 @@ bool edgeSort(const Edge &edgeA, const Edge &edgeB) {
 }
 
 
-bool findKDSplit(vector<Primitive *> modelVector, const int axis,
+bool findKDSplit(vector<Primitive *> primitives, const int axis,
                  P_FLT * splitValue, P_FLT * minCost) {
   vector<Edge> edges;
-  for (vector<Primitive *>::iterator itr = modelVector.begin();
-       itr != modelVector.end(); itr++) {
+  for (vector<Primitive *>::iterator itr = primitives.begin();
+       itr != primitives.end(); itr++) {
     edges.push_back(Edge((*itr)->boundingBox->minExt[axis], *itr, true));
     edges.push_back(Edge((*itr)->boundingBox->maxExt[axis], *itr, false));
   }
   sort(edges.begin(), edges.end(), edgeSort);
 
-  int primNum = modelVector.size(),
+  int primNum = primitives.size(),
       edgeNum = edges.size();
   P_FLT * leftSA = new P_FLT[edgeNum],
         * rightSA = new P_FLT[edgeNum];
@@ -407,16 +384,16 @@ bool findKDSplit(vector<Primitive *> modelVector, const int axis,
 }
 
 
-bool sahKDSplit(vector<Primitive *> modelVector,
+bool sahKDSplit(vector<Primitive *> primitives,
                 int * axis, P_FLT * splitValue,
-                vector<Primitive *> * leftVector,
-                vector<Primitive *> * rightVector) {
+                vector<Primitive *> * leftPrims,
+                vector<Primitive *> * rightPrims) {
   bool xSplitSuccess, ySplitSuccess, zSplitSuccess;
   P_FLT xSplit, ySplit, zSplit;
   P_FLT minSplitCost, xSplitCost, ySplitCost, zSplitCost;
-  vector<Primitive *> xVector(modelVector),
-                      yVector(modelVector),
-                      zVector(modelVector);
+  vector<Primitive *> xVector(primitives),
+                      yVector(primitives),
+                      zVector(primitives);
   xSplitSuccess = findKDSplit(xVector, 0, &xSplit, &xSplitCost);
   ySplitSuccess = findKDSplit(yVector, 1, &ySplit, &ySplitCost);
   zSplitSuccess = findKDSplit(zVector, 2, &zSplit, &zSplitCost);
@@ -429,40 +406,34 @@ bool sahKDSplit(vector<Primitive *> modelVector,
     if (xSplitCost < zSplitCost) {
       *axis = 0;
       *splitValue = xSplit;
-      modelVector = xVector;
+      primitives = xVector;
     } else {
       *axis = 2;
       *splitValue = zSplit;
-      modelVector = zVector;
+      primitives = zVector;
     }
   } else {
     if (ySplitCost < zSplitCost) {
       *axis = 1;
       *splitValue = ySplit;
-      modelVector = yVector;
+      primitives = yVector;
     } else {
       *axis = 2;
       *splitValue = zSplit;
-      modelVector = zVector;
+      primitives = zVector;
     }
   }
 
-  for (vector<Primitive *>::iterator itr = modelVector.begin();
-       itr != modelVector.end(); itr++) {
+  for (vector<Primitive *>::iterator itr = primitives.begin();
+       itr != primitives.end(); itr++) {
     if ((*itr)->boundingBox->minExt[*axis] <= *splitValue) {
-      leftVector->push_back(*itr);
+      leftPrims->push_back(*itr);
     }
     if ((*itr)->boundingBox->maxExt[*axis] >= *splitValue) {
-      rightVector->push_back(*itr);
+      rightPrims->push_back(*itr);
     }
   }
 
-  /*printf("Split vector of size %d into %d : %d\n",
-         modelVector.size(), leftVector->size(), rightVector->size());
-  printf("Expansion factor: %.2f%%.\n",
-         (leftVector->size() + rightVector->size()) * 100.0f /
-          modelVector.size());
-  getchar();*/
   return true;
 }
 
