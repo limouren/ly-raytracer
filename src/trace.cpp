@@ -63,43 +63,43 @@ int intersect(const Ray &ray, Model * model, Intercept intercepts[],
       KDNode * kdNode = static_cast<KDNode *>(model);
 
       int hits[2];
-      P_FLT dirValue, origValue;
       Intercept interceptsLists[2][MAX_INTERSECTIONS];
-
-      dirValue = ray.dir[kdNode->axis];
-      origValue = ray.orig[kdNode->axis];
+      P_FLT dirValue = ray.dir[kdNode->axis],
+            origValue = ray.orig[kdNode->axis];
 
       if (origValue < kdNode->value) {
-        hits[0] = intersect(ray, kdNode->left, intercepts, tCeil);
+        hits[0] = intersect(ray, kdNode->left, interceptsLists[0], tCeil);
+
         if (hits[0]) {
-          if (ray.rayPoint(intercepts[0].t)[kdNode->axis] < kdNode->value) {
-            return hits[0];
-          } else if (dirValue > 0.0f) {
-            std::copy(intercepts, intercepts + hits[0], interceptsLists[0]);
+          if (*tCeil * dirValue + origValue > kdNode->value) {
             hits[1] = intersect(ray, kdNode->right, interceptsLists[1], tCeil);
             return intersectMergeTwo(hits[0], interceptsLists[0],
                                      hits[1], interceptsLists[1], intercepts);
+          } else {
+            std::copy(&interceptsLists[0][0], &interceptsLists[0][hits[0]],
+                      intercepts);
+            return hits[0];
           }
         } else if (dirValue > 0.0f) {
           return intersect(ray, kdNode->right, intercepts, tCeil);
         }
       } else {
-        hits[0] = intersect(ray, kdNode->right, intercepts, tCeil);
+        hits[0] = intersect(ray, kdNode->right, interceptsLists[0], tCeil);
+
         if (hits[0]) {
-          if (ray.rayPoint(intercepts[0].t)[kdNode->axis] >= kdNode->value) {
-            return hits[0];
-          } else if (dirValue < 0.0f) {
-            std::copy(intercepts, intercepts + hits[0], interceptsLists[0]);
+          if (*tCeil * dirValue + origValue < kdNode->value) {
             hits[1] = intersect(ray, kdNode->left, interceptsLists[1], tCeil);
             return intersectMergeTwo(hits[0], interceptsLists[0],
                                      hits[1], interceptsLists[1], intercepts);
+          } else {
+            std::copy(&interceptsLists[0][0], &interceptsLists[0][hits[0]],
+                      intercepts);
+            return hits[0];
           }
-        } else if (dirValue < 0.0f) {
+        } else if (dirValue <= 0.0f) {
           return intersect(ray, kdNode->left, intercepts, tCeil);
         }
       }
-
-      return 0;
     }
   }
 
