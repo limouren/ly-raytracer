@@ -17,7 +17,7 @@
 BEGIN_RAYTRACER
 
 
-int intersect(const Ray &ray, MODEL_CLS * model, Intercept intercepts[]) {
+int intersect(const Ray &ray, Model * model, Intercept intercepts[]) {
   switch (model->type) {
     case 0: {  // Primitive
       Primitive * primitive = static_cast<Primitive *>(model);

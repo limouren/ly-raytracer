@@ -24,7 +24,7 @@ class Transform;
 
 class TriangleMesh: public Primitive {
   private:
-    MODEL_CLS * triangleTree;
+    Model * triangleTree;
     unsigned int pointNum, normalNum, textureCoordNum;
     Point3D * points;
     Vector3D * normals;

@@ -27,7 +27,7 @@ class Transform;
 
 class Scene {
   public:
-    MODEL_CLS * modelRoot;
+    Model * modelRoot;
     Camera * camera;
     Color ambience, backgroundColor;
     Material * medium;

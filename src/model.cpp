@@ -63,19 +63,19 @@ Composite::~Composite() {
 }
 
 
-inline bool compareBoxX(MODEL_CLS * modelA, MODEL_CLS * modelB) {
+inline bool compareBoxX(Model * modelA, Model * modelB) {
   return modelA->boundingBox->center.x < modelB->boundingBox->center.x;
 }
-inline bool compareBoxY(MODEL_CLS * modelA, MODEL_CLS * modelB) {
+inline bool compareBoxY(Model * modelA, Model * modelB) {
   return modelA->boundingBox->center.y < modelB->boundingBox->center.y;
 }
-inline bool compareBoxZ(MODEL_CLS * modelA, MODEL_CLS * modelB) {
+inline bool compareBoxZ(Model * modelA, Model * modelB) {
   return modelA->boundingBox->center.z < modelB->boundingBox->center.z;
 }
 
 
-BVHNode::BVHNode(MODEL_CLS * left, MODEL_CLS * right)
-  : MODEL_CLS(20), left(left), right(right) {
+BVHNode::BVHNode(Model * left, Model * right)
+  : Model(20), left(left), right(right) {
   boundingBox = new BoundingBox(pointMin(left->boundingBox->minExt,
                                          right->boundingBox->minExt),
                                 pointMax(left->boundingBox->maxExt,
@@ -95,8 +95,8 @@ BVHNode::~BVHNode() {
 
 
 KDNode::KDNode(const unsigned char axis, const P_FLT value,
-                 MODEL_CLS * left, MODEL_CLS * right)
-  : MODEL_CLS(30), axis(axis), value(value), left(left), right(right) {}
+                 Model * left, Model * right)
+  : Model(30), axis(axis), value(value), left(left), right(right) {}
 
 
 KDNode::~KDNode() {
@@ -109,7 +109,7 @@ KDNode::~KDNode() {
 }
 
 
-MODEL_CLS * buildBVHNode(vector<Primitive *> modelVector) {
+Model * buildBVHNode(vector<Primitive *> modelVector) {
   int axis, minCostIndex,
       size = modelVector.size();
   if (size == 1) {
@@ -140,7 +140,7 @@ MODEL_CLS * buildBVHNode(vector<Primitive *> modelVector) {
 }
 
 
-MODEL_CLS * buildBVHTree(vector<Primitive *> modelVector) {
+Model * buildBVHTree(vector<Primitive *> modelVector) {
   for (vector<Primitive *>::iterator itr = modelVector.begin();
        itr != modelVector.end(); itr++) {
     static_cast<Primitive *>(*itr)->buildBoundingBox();
@@ -159,7 +159,7 @@ MODEL_CLS * buildBVHTree(vector<Primitive *> modelVector) {
 #define KD_MAX_DEPTH 32
 
 
-MODEL_CLS * buildKDNode(vector<Primitive *> modelVector, const int depth) {
+Model * buildKDNode(vector<Primitive *> modelVector, const int depth) {
   if (modelVector.size() == 1) {
     return modelVector[0];
   } else if (depth == KD_MAX_DEPTH) {
@@ -170,8 +170,8 @@ MODEL_CLS * buildKDNode(vector<Primitive *> modelVector, const int depth) {
   P_FLT value;
   vector<Primitive *> leftVector, rightVector;
   if (sahKDSplit(modelVector, &axis, &value, &leftVector, &rightVector)) {
-    MODEL_CLS * leftNode = buildKDNode(leftVector, depth + 1);
-    MODEL_CLS * rightNode = buildKDNode(rightVector, depth + 1);
+    Model * leftNode = buildKDNode(leftVector, depth + 1);
+    Model * rightNode = buildKDNode(rightVector, depth + 1);
 
     return new KDNode(axis, value, leftNode, rightNode);
   } else {
@@ -180,7 +180,7 @@ MODEL_CLS * buildKDNode(vector<Primitive *> modelVector, const int depth) {
 }
 
 
-MODEL_CLS * buildKDTree(vector<Primitive *> modelVector) {
+Model * buildKDTree(vector<Primitive *> modelVector) {
   for (vector<Primitive *>::iterator itr = modelVector.begin();
        itr != modelVector.end(); itr++) {
     static_cast<Primitive *>(*itr)->buildBoundingBox();
@@ -196,10 +196,10 @@ MODEL_CLS * buildKDTree(vector<Primitive *> modelVector) {
 }
 
 
-BoundingBox * boundingBoxBuilder(vector<MODEL_CLS *> modelVector) {
+BoundingBox * boundingBoxBuilder(vector<Model *> modelVector) {
   Point3D minExt(P_FLT_MAX), maxExt(-P_FLT_MAX);
 
-  for (vector<MODEL_CLS *>::iterator itr = modelVector.begin();
+  for (vector<Model *>::iterator itr = modelVector.begin();
        itr != modelVector.end(); itr++) {
     minExt = pointMin((*itr)->boundingBox->minExt, minExt);
     maxExt = pointMax((*itr)->boundingBox->maxExt, maxExt);

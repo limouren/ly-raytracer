@@ -10,13 +10,13 @@ BEGIN_RAYTRACER
 
 class Color;
 class Intercept;
-class MODEL_CLS;
+class Model;
 class Material;
 class Ray;
 class Scene;
 
 
-int intersect(const Ray &ray, MODEL_CLS * model, Intercept intercepts[]);
+int intersect(const Ray &ray, Model * model, Intercept intercepts[]);
 
 inline int intersectMergeTwo(const int hitsLeft, Intercept interceptLeft[],
                              const int hitsRight, Intercept interceptRight[],

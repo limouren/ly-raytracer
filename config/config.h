@@ -33,8 +33,6 @@
 #define P_FLT_MAX (1.0E+10f)
 
 
-#define MODEL_CLS Model
-
 // Levels of recursion in adaptive supersampling
 #define DEFAULT_AA_LEVEL (0)
 #define AA_COLOR_THRESHOLD (0.1f)

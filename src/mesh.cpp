@@ -84,7 +84,7 @@ void TriangleMesh::constructTriangles(
 void TriangleMesh::init() {
   buildBoundingBox();
 
-  MODEL_CLS * newTree = buildBVHTree(triangles);
+  Model * newTree = buildBVHTree(triangles);
   if (newTree && triangleTree) {
     delete triangleTree;
   }
