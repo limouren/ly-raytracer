@@ -184,6 +184,8 @@ inline Vector2D Vector3D::dropIndex(const int index) const {
     case 2:
       return Vector2D(x, y);
   }
+
+  return Vector2D();
 }
 
 
