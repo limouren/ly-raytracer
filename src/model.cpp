@@ -110,18 +110,6 @@ BoundedModel * buildBVHNode(vector<Primitive *> primitives) {
     sahBVHSplit(&primitives, &axis, &minCostIndex);
   }
 
-  switch (axis) {
-    case 0:
-      sort(primitives.begin(), primitives.end(), compareBoxX);
-      break;
-    case 1:
-      sort(primitives.begin(), primitives.end(), compareBoxY);
-      break;
-    case 2:
-      sort(primitives.begin(), primitives.end(), compareBoxZ);
-      break;
-  }
-
   vector<Primitive *>::iterator mid = primitives.begin() + minCostIndex;
   vector<Primitive *> leftPrims(primitives.begin(), mid),
                       rightPrims(mid, primitives.end());
