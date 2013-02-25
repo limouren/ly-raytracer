@@ -12,14 +12,19 @@ BEGIN_RAYTRACER
 
 class Vector2D {
   public:
-    P_FLT x, y;
+    union {
+      P_FLT components[2];
+      struct {
+        P_FLT x, y;
+      };
+    };
 
     inline Vector2D() {}
 
     inline Vector2D(const P_FLT x, const P_FLT y): x(x), y(y) {}
 
     inline P_FLT operator[](const unsigned int index) const {
-      return (&x)[index];  // Referenced from yafaray
+      return components[index];  // Referenced from yafaray
     }
 
     inline Vector2D operator =(const Vector2D &vector);
@@ -60,7 +65,12 @@ inline P_FLT dotProduct(const Vector2D &u, const Vector2D &v) {
 
 class Vector3D {
   public:
-    P_FLT x, y, z;
+    union {
+      P_FLT components[3];
+      struct {
+        P_FLT x, y, z;
+      };
+    };
 
     inline Vector3D() {}
     explicit inline Vector3D(const P_FLT pFlt): x(pFlt), y(pFlt), z(pFlt) {}
@@ -69,7 +79,7 @@ class Vector3D {
       x(x), y(y), z(z) {}
 
     inline P_FLT operator[](const unsigned int index) const {
-      return (&x)[index];  // Referenced from yafaray
+      return components[index];  // Referenced from yafaray
     }
 
     inline Vector3D operator =(const Vector3D &vector);
