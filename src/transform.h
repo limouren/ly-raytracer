@@ -40,6 +40,14 @@ class Matrix4 {
       return Matrix4();
     }
 
+    Matrix4 transpose() {
+      return Matrix4(data[0][0], data[1][0], data[2][0], data[3][0],
+                     data[0][1], data[1][1], data[2][1], data[3][1],
+                     data[0][2], data[1][2], data[2][2], data[3][2],
+                     data[0][3], data[1][3], data[2][3], data[3][3]);
+    }
+
+    friend Point3D operator *(const Point3D &point);
     friend Vector3D operator *(const Vector3D &vector);
     friend Matrix4 operator +(const Matrix4 &A, const Matrix4&B);
     friend Matrix4 operator -(const Matrix4 &A, const Matrix4&B);
@@ -68,6 +76,101 @@ class Matrix4 {
              data[3][0], data[3][1], data[3][2], data[3][3]);
     }
 };
+
+
+Point3D operator *(const Matrix4 &matrix, const Point3D &point) {
+  Point3D result(matrix[0][0] * point.x + matrix[0][1] * point.y +
+                  matrix[0][2] * point.z + matrix[0][3],
+                  matrix[1][0] * point.x + matrix[1][1] * point.y +
+                  matrix[1][2] * point.z + matrix[1][3],
+                  matrix[2][0] * point.x + matrix[2][1] * point.y +
+                  matrix[2][2] * point.z + matrix[2][3]);
+  result *= 1.0f / (matrix[3][0] * point.x + matrix[3][1] * point.y +
+                    matrix[3][2] * point.z + matrix[3][3]);
+
+  return result;
+}
+
+
+Vector3D operator *(const Matrix4 &matrix, const Vector3D &vector) {
+  Vector3D result(matrix[0][0] * vector.x + matrix[0][1] * vector.y +
+                  matrix[0][2] * vector.z + matrix[0][3],
+                  matrix[1][0] * vector.x + matrix[1][1] * vector.y +
+                  matrix[1][2] * vector.z + matrix[1][3],
+                  matrix[2][0] * vector.x + matrix[2][1] * vector.y +
+                  matrix[2][2] * vector.z + matrix[2][3]);
+  result *= 1.0f / (matrix[3][0] * vector.x + matrix[3][1] * vector.y +
+                    matrix[3][2] * vector.z + matrix[3][3]);
+
+  return result;
+}
+
+
+Matrix4 operator +(const Matrix4 &A, const Matrix4 &B) {
+  return Matrix4(A[0][0] + B[0][0], A[0][1] + B[0][1],
+                 A[0][2] + B[0][2], A[0][3] + B[0][3],
+
+                 A[1][0] + B[1][0], A[1][1] + B[1][1],
+                 A[1][2] + B[1][2], A[1][3] + B[1][3],
+
+                 A[2][0] + B[2][0], A[2][1] + B[2][1],
+                 A[2][2] + B[2][2], A[2][3] + B[2][3],
+
+                 A[3][0] + B[3][0], A[3][1] + B[3][1],
+                 A[3][2] + B[3][2], A[3][3] + B[3][3]);
+}
+
+Matrix4 operator -(const Matrix4 &A, const Matrix4 &B) {
+  return Matrix4(A[0][0] - B[0][0], A[0][1] - B[0][1],
+                 A[0][2] - B[0][2], A[0][3] - B[0][3],
+
+                 A[1][0] - B[1][0], A[1][1] - B[1][1],
+                 A[1][2] - B[1][2], A[1][3] - B[1][3],
+
+                 A[2][0] - B[2][0], A[2][1] - B[2][1],
+                 A[2][2] - B[2][2], A[2][3] - B[2][3],
+
+                 A[3][0] - B[3][0], A[3][1] - B[3][1],
+                 A[3][2] - B[3][2], A[3][3] - B[3][3]);
+}
+
+Matrix4 operator *(const Matrix4 &A, const Matrix4 &B) {
+  return Matrix4(A[0][0] * B[0][0] + A[0][1] * B[1][0] +
+                 A[0][2] * B[2][0] + A[0][3] * B[3][0],
+                 A[0][0] * B[0][1] + A[0][1] * B[1][1] +
+                 A[0][2] * B[2][1] + A[0][3] * B[3][1],
+                 A[0][0] * B[0][2] + A[0][1] * B[1][2] +
+                 A[0][2] * B[2][2] + A[0][3] * B[3][2],
+                 A[0][0] * B[0][3] + A[0][1] * B[1][3] +
+                 A[0][2] * B[2][3] + A[0][3] * B[3][3],
+
+                 A[1][0] * B[0][0] + A[1][1] * B[1][0] +
+                 A[1][2] * B[2][0] + A[1][3] * B[3][0],
+                 A[1][0] * B[0][1] + A[1][1] * B[1][1] +
+                 A[1][2] * B[2][1] + A[1][3] * B[3][1],
+                 A[1][0] * B[0][2] + A[1][1] * B[1][2] +
+                 A[1][2] * B[2][2] + A[1][3] * B[3][2],
+                 A[1][0] * B[0][3] + A[1][1] * B[1][3] +
+                 A[1][2] * B[2][3] + A[1][3] * B[3][3],
+
+                 A[2][0] * B[0][0] + A[2][1] * B[1][0] +
+                 A[2][2] * B[2][0] + A[2][3] * B[3][0],
+                 A[2][0] * B[0][1] + A[2][1] * B[1][1] +
+                 A[2][2] * B[2][1] + A[2][3] * B[3][1],
+                 A[2][0] * B[0][2] + A[2][1] * B[1][2] +
+                 A[2][2] * B[2][2] + A[2][3] * B[3][2],
+                 A[2][0] * B[0][3] + A[2][1] * B[1][3] +
+                 A[2][2] * B[2][3] + A[2][3] * B[3][3],
+
+                 A[3][0] * B[0][0] + A[3][1] * B[1][0] +
+                 A[3][2] * B[2][0] + A[3][3] * B[3][0],
+                 A[3][0] * B[0][1] + A[3][1] * B[1][1] +
+                 A[3][2] * B[2][1] + A[3][3] * B[3][1],
+                 A[3][0] * B[0][2] + A[3][1] * B[1][2] +
+                 A[3][2] * B[2][2] + A[3][3] * B[3][2],
+                 A[3][0] * B[0][3] + A[3][1] * B[1][3] +
+                 A[3][2] * B[2][3] + A[3][3] * B[3][3]);
+}
 
 
 class Transform {
@@ -168,33 +271,19 @@ class Transform {
       delete invTranslation;
     }
 
-    void transformVector(Vector3D * vector) const {
-      Vector3D result(
-        *rotation[0][0] * vector->x + *rotation[0][1] * vector->y +
-        *rotation[0][2] * vector->z + *rotation[0][3],
-        *rotation[1][0] * vector->x + *rotation[1][1] * vector->y +
-        *rotation[1][2] * vector->z + *rotation[1][3],
-        *rotation[2][0] * vector->x + *rotation[2][1] * vector->y +
-        *rotation[2][2] * vector->z + *rotation[2][3]);
-      result *= 1.0f / (*rotation[3][0] * vector->x +
-                        *rotation[3][1] * vector->y +
-                        *rotation[3][2] * vector->z +
-                        *rotation[3][3]);
+    void transformNormal(Vector3D * normal) const {
+      Matrix4 normalTransform = *invScale * *rotation;
 
-      *vector = result;
+      *normal = normalTransform * (*normal);
+      normal->normalize();
     }
 
     void transformPoint(Point3D * point) const {
-      Point3D result(*matrix[0][0] * point->x + *matrix[0][1] * point->y +
-                     *matrix[0][2] * point->z + *matrix[0][3],
-                     *matrix[1][0] * point->x + *matrix[1][1] * point->y +
-                     *matrix[1][2] * point->z + *matrix[1][3],
-                     *matrix[2][0] * point->x + *matrix[2][1] * point->y +
-                     *matrix[2][2] * point->z + *matrix[2][3]);
-      result *= 1.0f / (*matrix[3][0] * point->x + *matrix[3][1] * point->y +
-                        *matrix[3][2] * point->z + *matrix[3][3]);
+      *point = (*matrix) * (*point);
+    }
 
-      *point = result;
+    void transformVector(Vector3D * vector) const {
+      // TODO(kent): Apply transforms to vector
     }
 
     void print(char * id) const {
@@ -219,87 +308,6 @@ class Transform {
       invTranslation->print(invTranslationStr);
     }
 };
-
-
-Vector3D operator *(const Matrix4 &matrix, const Vector3D &vector) {
-  Vector3D result(matrix[0][0] * vector.x + matrix[0][1] * vector.y +
-                  matrix[0][2] * vector.z + matrix[0][3],
-                  matrix[1][0] * vector.x + matrix[1][1] * vector.y +
-                  matrix[1][2] * vector.z + matrix[1][3],
-                  matrix[2][0] * vector.x + matrix[2][1] * vector.y +
-                  matrix[2][2] * vector.z + matrix[2][3]);
-  result *= 1.0f / (matrix[3][0] * vector.x + matrix[3][1] * vector.y +
-                    matrix[3][2] * vector.z + matrix[3][3]);
-
-  return result;
-}
-
-
-Matrix4 operator +(const Matrix4 &A, const Matrix4 &B) {
-  return Matrix4(A[0][0] + B[0][0], A[0][1] + B[0][1],
-                 A[0][2] + B[0][2], A[0][3] + B[0][3],
-
-                 A[1][0] + B[1][0], A[1][1] + B[1][1],
-                 A[1][2] + B[1][2], A[1][3] + B[1][3],
-
-                 A[2][0] + B[2][0], A[2][1] + B[2][1],
-                 A[2][2] + B[2][2], A[2][3] + B[2][3],
-
-                 A[3][0] + B[3][0], A[3][1] + B[3][1],
-                 A[3][2] + B[3][2], A[3][3] + B[3][3]);
-}
-
-Matrix4 operator -(const Matrix4 &A, const Matrix4 &B) {
-  return Matrix4(A[0][0] - B[0][0], A[0][1] - B[0][1],
-                 A[0][2] - B[0][2], A[0][3] - B[0][3],
-
-                 A[1][0] - B[1][0], A[1][1] - B[1][1],
-                 A[1][2] - B[1][2], A[1][3] - B[1][3],
-
-                 A[2][0] - B[2][0], A[2][1] - B[2][1],
-                 A[2][2] - B[2][2], A[2][3] - B[2][3],
-
-                 A[3][0] - B[3][0], A[3][1] - B[3][1],
-                 A[3][2] - B[3][2], A[3][3] - B[3][3]);
-}
-
-Matrix4 operator *(const Matrix4 &A, const Matrix4 &B) {
-  return Matrix4(A[0][0] * B[0][0] + A[0][1] * B[1][0] +
-                 A[0][2] * B[2][0] + A[0][3] * B[3][0],
-                 A[0][0] * B[0][1] + A[0][1] * B[1][1] +
-                 A[0][2] * B[2][1] + A[0][3] * B[3][1],
-                 A[0][0] * B[0][2] + A[0][1] * B[1][2] +
-                 A[0][2] * B[2][2] + A[0][3] * B[3][2],
-                 A[0][0] * B[0][3] + A[0][1] * B[1][3] +
-                 A[0][2] * B[2][3] + A[0][3] * B[3][3],
-
-                 A[1][0] * B[0][0] + A[1][1] * B[1][0] +
-                 A[1][2] * B[2][0] + A[1][3] * B[3][0],
-                 A[1][0] * B[0][1] + A[1][1] * B[1][1] +
-                 A[1][2] * B[2][1] + A[1][3] * B[3][1],
-                 A[1][0] * B[0][2] + A[1][1] * B[1][2] +
-                 A[1][2] * B[2][2] + A[1][3] * B[3][2],
-                 A[1][0] * B[0][3] + A[1][1] * B[1][3] +
-                 A[1][2] * B[2][3] + A[1][3] * B[3][3],
-
-                 A[2][0] * B[0][0] + A[2][1] * B[1][0] +
-                 A[2][2] * B[2][0] + A[2][3] * B[3][0],
-                 A[2][0] * B[0][1] + A[2][1] * B[1][1] +
-                 A[2][2] * B[2][1] + A[2][3] * B[3][1],
-                 A[2][0] * B[0][2] + A[2][1] * B[1][2] +
-                 A[2][2] * B[2][2] + A[2][3] * B[3][2],
-                 A[2][0] * B[0][3] + A[2][1] * B[1][3] +
-                 A[2][2] * B[2][3] + A[2][3] * B[3][3],
-
-                 A[3][0] * B[0][0] + A[3][1] * B[1][0] +
-                 A[3][2] * B[2][0] + A[3][3] * B[3][0],
-                 A[3][0] * B[0][1] + A[3][1] * B[1][1] +
-                 A[3][2] * B[2][1] + A[3][3] * B[3][1],
-                 A[3][0] * B[0][2] + A[3][1] * B[1][2] +
-                 A[3][2] * B[2][2] + A[3][3] * B[3][2],
-                 A[3][0] * B[0][3] + A[3][1] * B[1][3] +
-                 A[3][2] * B[2][3] + A[3][3] * B[3][3]);
-}
 
 
 END_RAYTRACER

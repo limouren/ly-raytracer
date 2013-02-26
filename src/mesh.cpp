@@ -103,7 +103,7 @@ void TriangleMesh::transform(Transform * transform) {
   }
 
   for (int i = 0; i < normalNum; i++) {
-    transform->transformVector(&normals[i]);
+    transform->transformNormal(&normals[i]);
   }
 
   init();

@@ -112,7 +112,7 @@ void Polygon::transform(Transform * transform) {
     transform->transformPoint(&vertex[i]);
   }
 
-  transform->transformVector(&normal);
+  transform->transformNormal(&normal);
   normal.normalize();
   dominantIndex = normal.dominantIndex();
 
@@ -147,7 +147,7 @@ void PolygonPatch::getIntersect(const Point3D &point, Vector3D * normal,
 void PolygonPatch::transform(Transform * transform) {
   Polygon::transform(transform);
   for (int i = 0; i < vertexNum; i++) {
-    transform->transformVector(&vertexNormal[i]);
+    transform->transformNormal(&vertexNormal[i]);
   }
 }
 
@@ -373,7 +373,7 @@ int Cylinder::intersect(const Ray &ray, Intercept intercepts[]) const {
 void Cylinder::transform(Transform * transform) {
   transform->transformPoint(&apexCenter);
   transform->transformPoint(&baseCenter);
-  transform->transformVector(&axisNormal);
+  transform->transformNormal(&axisNormal);
   apexD = -dotProduct(axisNormal, apexCenter);
   baseD = -dotProduct(axisNormal, baseCenter);
 
