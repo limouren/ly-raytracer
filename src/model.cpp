@@ -55,13 +55,13 @@ void Primitive::transform(Transform * transform) {
 
 
 inline bool compareBoxX(BoundedModel * modelA, BoundedModel * modelB) {
-  return modelA->boundingBox->center.x < modelB->boundingBox->center.x;
+  return modelA->boundingBox->center().x < modelB->boundingBox->center().x;
 }
 inline bool compareBoxY(BoundedModel * modelA, BoundedModel * modelB) {
-  return modelA->boundingBox->center.y < modelB->boundingBox->center.y;
+  return modelA->boundingBox->center().y < modelB->boundingBox->center().y;
 }
 inline bool compareBoxZ(BoundedModel * modelA, BoundedModel * modelB) {
-  return modelA->boundingBox->center.z < modelB->boundingBox->center.z;
+  return modelA->boundingBox->center().z < modelB->boundingBox->center().z;
 }
 
 
