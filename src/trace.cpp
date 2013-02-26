@@ -44,7 +44,6 @@ int intersect(const Ray &ray, Model * model, Intercept intercepts[],
     case 20: {  // BVH Node
       BVHNode * bvhNode = static_cast<BVHNode *>(model);
 
-      P_FLT tFloor;
       if (!bvhNode->boundingBox->intersect(ray, *tCeil)) {
         return 0;
       }
@@ -76,8 +75,7 @@ int intersect(const Ray &ray, Model * model, Intercept intercepts[],
             return intersectMergeTwo(hits[0], interceptsLists[0],
                                      hits[1], interceptsLists[1], intercepts);
           } else {
-            std::copy(&interceptsLists[0][0], &interceptsLists[0][hits[0]],
-                      intercepts);
+            copy(interceptsLists[0], interceptsLists[0] + hits[0], intercepts);
             return hits[0];
           }
         } else if (dirValue > 0.0f) {
@@ -92,14 +90,40 @@ int intersect(const Ray &ray, Model * model, Intercept intercepts[],
             return intersectMergeTwo(hits[0], interceptsLists[0],
                                      hits[1], interceptsLists[1], intercepts);
           } else {
-            std::copy(&interceptsLists[0][0], &interceptsLists[0][hits[0]],
-                      intercepts);
+            copy(interceptsLists[0], interceptsLists[0] + hits[0], intercepts);
             return hits[0];
           }
         } else if (dirValue <= 0.0f) {
           return intersect(ray, kdNode->left, intercepts, tCeil);
         }
       }
+
+      return 0;
+    }
+
+    case 31: {  // KD Leaf
+      KDLeaf * kdLeaf = static_cast<KDLeaf *>(model);
+
+      if (!kdLeaf->boundingBox->intersect(ray, *tCeil)) {
+        return 0;
+      }
+
+      int nodeHits,
+          totalHits = 0;
+      Intercept nodeIntercepts[MAX_INTERSECTIONS];
+      for (int i = 0, offset = 0; i < kdLeaf->primNum;
+           i++, offset += MAX_INTERSECTIONS) {
+        if (kdLeaf->primitives[i]->boundingBox->intersect(ray, *tCeil)) {
+          nodeHits = kdLeaf->primitives[i] ->intersect(ray, nodeIntercepts);
+          if (nodeHits > 0 && *tCeil > nodeIntercepts[0].t) {
+            *tCeil = min(*tCeil, nodeIntercepts[0].t);
+            totalHits = nodeHits;
+            copy(nodeIntercepts, nodeIntercepts + nodeHits, intercepts);
+          }
+        }
+      }
+
+      return totalHits;
     }
   }
 
@@ -160,44 +184,37 @@ inline bool compareT(InterceptMerger im1, InterceptMerger im2) {
 
 
 inline int intersectMergeMulti(int listNum, int * hits,
-                               Intercept interceptsLists[][MAX_INTERSECTIONS],
+                               Intercept * interceptsLists,
                                Intercept merged[]) {
   // NOTE: Deprecated; Will adopt for octree
   // NOTE: Max merge 8 lists; Change to vector for more
-  InterceptMerger mergers[8];
+  InterceptMerger * mergers = new InterceptMerger[listNum];
   InterceptMerger * mergerPtr;
   unsigned int index = 0;
-  for (int i = 0; i < listNum; i++) {
+  for (int i = 0, offset = 0; i < listNum; i++, offset += MAX_INTERSECTIONS) {
     if (hits[i] == 0) {
-        continue;
+      listNum--;
+    } else {
+      mergers[index].remain = hits[i];
+      mergers[index].ptr = interceptsLists + offset;
+      index++;
     }
-
-    mergers[index].remain = hits[i];
-    mergers[index].ptr =  &interceptsLists[i][0];
-    index++;
   }
-  listNum = index;
 
-  for (index = 0; index < MAX_INTERSECTIONS; index++) {
-    if (listNum == 0) {
-      return index;
-    }
+  for (index = 0; listNum > 0 && index < MAX_INTERSECTIONS; index++) {
     mergerPtr = min_element(mergers, mergers + listNum, compareT);
-
     merged[index] = *(mergerPtr->ptr);
     mergerPtr->remain--;
-    switch (mergerPtr->remain) {
-      case 0:
-        mergerPtr->ptr = mergers[listNum - 1].ptr;
-        mergerPtr->remain = mergers[listNum - 1].remain;
-        listNum--;
-        break;
-      default:
-        mergerPtr->ptr++;
-        break;
+
+    if (mergerPtr->remain == 0) {
+      listNum--;
+      *mergerPtr = mergers[listNum];
+    } else {
+      mergerPtr->ptr++;
     }
   }
 
+  delete [] mergers;
   return index;
 }
 

@@ -57,7 +57,7 @@ class Triangle: public Plane {
     void buildBoundingBox();
     int intersect(const Ray &ray, Intercept intercepts[]) const;
     std::vector<P_FLT> inverseMap(const Point3D &point) const;
-    void transform(Transform * transform) {
+    virtual void transform(Transform * transform) {
       buildBoundingBox();
     }
 };

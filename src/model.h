@@ -63,10 +63,10 @@ class Primitive: public BoundedModel {
 
     virtual void buildBoundingBox();
     virtual void getIntersect(const Point3D &point, Vector3D * normal,
-                              std::vector<P_FLT> * mapping) const;
-    virtual Color getTextureColor(const std::vector<P_FLT> mapping) const;
+                              vector<P_FLT> * mapping) const;
+    virtual Color getTextureColor(const vector<P_FLT> mapping) const;
     virtual int intersect(const Ray &ray, Intercept intercepts[]) const;
-    virtual std::vector<P_FLT> inverseMap(const Point3D &point) const;
+    virtual vector<P_FLT> inverseMap(const Point3D &point) const;
     virtual void transform(Transform * transform);
 };
 
@@ -79,6 +79,32 @@ class BVHNode: public BoundedModel {
     explicit BVHNode(BoundedModel * left, BoundedModel * right);
 
     ~BVHNode();
+};
+
+
+class KDLeaf: public BoundedModel {
+  public:
+    Primitive ** primitives;
+    unsigned int primNum;
+
+    explicit KDLeaf(vector<Primitive *> inputPrims)
+      : BoundedModel(31), primNum(inputPrims.size()) {
+      primitives = new Primitive * [primNum];
+      copy(inputPrims.begin(), inputPrims.end(), primitives);
+
+      Point3D minExt = primitives[0]->boundingBox->minExt,
+              maxExt = primitives[0]->boundingBox->maxExt;
+      for (int i = 1; i < primNum; i++) {
+        minExt = pointMin(minExt, primitives[i]->boundingBox->minExt);
+        maxExt = pointMax(maxExt, primitives[i]->boundingBox->maxExt);
+      }
+
+      boundingBox = new BoundingBox(minExt, maxExt);
+    }
+
+    ~KDLeaf() {
+      delete [] primitives;
+    }
 };
 
 
@@ -98,19 +124,17 @@ class KDNode: public Model {
 
 BoundedModel * buildBVHNode(vector<Primitive *> primitives);
 BoundedModel * buildBVHTree(vector<Primitive *> primitives);
-Model * buildKDNode(vector<Primitive *> primitives, const int depth);
+Model * buildKDNode(const vector<Primitive *> &primitives, const int depth);
 Model * buildKDTree(vector<Primitive *> primitives);
 
 void findBVHSplit(vector<Primitive *> primitives,
                   int * minCostIndex, P_FLT * minCost);
 void sahBVHSplit(vector<Primitive *> * primitives,
                  int * axis, int * minCostIndex);
-bool findKDSplit(vector<Primitive *> primitives, const int axis,
+bool findKDSplit(const vector<Primitive *> &primitives, const int axis,
                  int * splitValue, P_FLT * minCost);
-bool sahKDSplit(vector<Primitive *> primitives,
-                int * axis, P_FLT * splitValue,
-                vector<Primitive *> * leftPrims,
-                vector<Primitive *> * rightPrims);
+bool sahKDSplit(const vector<Primitive *> &primitives,
+                int * axis, P_FLT * splitValue);
 
 
 END_RAYTRACER

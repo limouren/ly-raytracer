@@ -43,7 +43,7 @@ class Plane: public Primitive {
       *normal = this->normal;
     }
     virtual int intersect(const Ray &ray, Intercept intercepts[]) const;
-    void transform(Transform * transform);
+    virtual void transform(Transform * transform);
 };
 
 
@@ -87,7 +87,7 @@ class Polygon: public Plane {
 
     void buildBoundingBox();
     int intersect(const Ray &ray, Intercept intercepts[]) const;
-    void transform(Transform * transform);
+    virtual void transform(Transform * transform);
 };
 
 
