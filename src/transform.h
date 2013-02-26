@@ -255,9 +255,9 @@ class Transform {
                                    0.0f, 0.0f, 1.0f, -translate.z,
                                    0.0f, 0.0f, 0.0f, 1.0f);
 
-      matrix = new Matrix4(*translation * *rotation * *scale);
+      matrix = new Matrix4(*scale * *rotation * *translation);
 
-      inverse = new Matrix4(*invScale * *invRotation * *invTranslation);
+      inverse = new Matrix4(*invTranslation * *invRotation * *invScale);
     }
 
     ~Transform() {
@@ -272,7 +272,7 @@ class Transform {
     }
 
     void transformNormal(Vector3D * normal) const {
-      Matrix4 normalTransform = *invScale * *rotation;
+      Matrix4 normalTransform = *rotation * *invScale;
 
       *normal = normalTransform * (*normal);
       normal->normalize();
