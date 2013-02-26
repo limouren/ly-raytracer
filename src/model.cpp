@@ -65,6 +65,28 @@ inline bool compareBoxZ(BoundedModel * modelA, BoundedModel * modelB) {
 }
 
 
+Leaf::Leaf(vector<Primitive *>::iterator begin,
+           vector<Primitive *>::iterator end)
+  : BoundedModel(10), primNum(end - begin) {
+  primitives = new Primitive * [primNum];
+  copy(begin, end, primitives);
+
+  Point3D minExt = primitives[0]->boundingBox->minExt,
+          maxExt = primitives[0]->boundingBox->maxExt;
+  for (int i = 1; i < primNum; i++) {
+    minExt = pointMin(minExt, primitives[i]->boundingBox->minExt);
+    maxExt = pointMax(maxExt, primitives[i]->boundingBox->maxExt);
+  }
+
+  boundingBox = new BoundingBox(minExt, maxExt);
+}
+
+
+Leaf::~Leaf() {
+  delete primitives;
+}
+
+
 BVHNode::BVHNode(BoundedModel * left, BoundedModel * right)
   : BoundedModel(20), left(left), right(right) {
   boundingBox = new BoundingBox(pointMin(left->boundingBox->minExt,
@@ -99,37 +121,32 @@ KDNode::~KDNode() {
 }
 
 
-BoundedModel * buildBVHNode(vector<Primitive *> primitives) {
-  int axis, minCostIndex,
-      size = primitives.size();
-  if (size == 1) {
-    return primitives[0];
-  } else if (size <= 4) {
-    minCostIndex = size / 2;
+BoundedModel * buildBVHNode(vector<Primitive *>::iterator begin,
+                            vector<Primitive *>::iterator end) {
+  int axis, minCostIndex;
+  if (end - begin <= 8) {
+    return new Leaf(begin, end);
+  } else if (sahBVHSplit(begin, end, &axis, &minCostIndex)) {
+    return new BVHNode(buildBVHNode(begin, begin + minCostIndex),
+                       buildBVHNode(begin + minCostIndex, end));
   } else {
-    sahBVHSplit(&primitives, &axis, &minCostIndex);
+    return new Leaf(begin, end);
   }
-
-  vector<Primitive *>::iterator mid = primitives.begin() + minCostIndex;
-  vector<Primitive *> leftPrims(primitives.begin(), mid),
-                      rightPrims(mid, primitives.end());
-  return new BVHNode(buildBVHNode(leftPrims),
-                     buildBVHNode(rightPrims));
 }
 
 
-BoundedModel * buildBVHTree(vector<Primitive *> primitives) {
-  for (vector<Primitive *>::iterator itr = primitives.begin();
-       itr != primitives.end(); itr++) {
-    static_cast<Primitive *>(*itr)->buildBoundingBox();
-  }
-
-  if (primitives.empty()) {
+BoundedModel * buildBVHTree(vector<Primitive *>::iterator begin,
+                            vector<Primitive *>::iterator end) {
+  if (end == begin) {
     printf("ERROR: Attempted to construct tree with no primitives\n");
     exit(1);
     return NULL;
   } else {
-    return buildBVHNode(primitives);
+    for (vector<Primitive *>::iterator itr = begin; itr != end; itr++) {
+      static_cast<Primitive *>(*itr)->buildBoundingBox();
+    }
+
+    return buildBVHNode(begin, end);
   }
 }
 
@@ -137,16 +154,16 @@ BoundedModel * buildBVHTree(vector<Primitive *> primitives) {
 #define KD_MAX_DEPTH 32
 
 
-Model * buildKDNode(const vector<Primitive *> &primitives, const int depth) {
-  if (depth == KD_MAX_DEPTH || primitives.size() <= 8) {
-    return new KDLeaf(primitives);
+Model * buildKDNode(vector<Primitive *>::iterator begin,
+                    vector<Primitive *>::iterator end, const int depth) {
+  if (depth == KD_MAX_DEPTH || end - begin <= 8) {
+    return new Leaf(begin, end);
   } else {
     int axis;
     P_FLT splitValue;
-    if (sahKDSplit(primitives, &axis, &splitValue)) {
+    if (sahKDSplit(begin, end, &axis, &splitValue)) {
       vector<Primitive *> leftPrims, rightPrims;
-      for (vector<Primitive *>::const_iterator itr = primitives.begin();
-           itr != primitives.end(); itr++) {
+      for (vector<Primitive *>::iterator itr = begin; itr != end; itr++) {
         if ((*itr)->boundingBox->minExt[axis] < splitValue) {
           leftPrims.push_back(*itr);
         }
@@ -156,104 +173,112 @@ Model * buildKDNode(const vector<Primitive *> &primitives, const int depth) {
       }
 
       return new KDNode(axis, splitValue,
-                        buildKDNode(leftPrims, depth + 1),
-                        buildKDNode(rightPrims, depth + 1));
+                        buildKDNode(leftPrims.begin(), leftPrims.end(),
+                                    depth + 1),
+                        buildKDNode(rightPrims.begin(), rightPrims.end(),
+                                    depth + 1));
     } else {
-      return new KDLeaf(primitives);
+      return new Leaf(begin, end);
     }
   }
 }
 
 
-Model * buildKDTree(vector<Primitive *> primitives) {
-  for (vector<Primitive *>::iterator itr = primitives.begin();
-       itr != primitives.end(); itr++) {
-    static_cast<Primitive *>(*itr)->buildBoundingBox();
-  }
-
-  if (primitives.empty()) {
+Model * buildKDTree(vector<Primitive *>::iterator begin,
+                    vector<Primitive *>::iterator end) {
+  if (begin == end) {
     printf("ERROR: Attempted to construct tree with no primitives\n");
     exit(1);
     return NULL;
   } else {
-    return buildKDNode(primitives, 0);
+    for (vector<Primitive *>::iterator itr = begin; itr != end; itr++) {
+      static_cast<Primitive *>(*itr)->buildBoundingBox();
+    }
+
+    return buildKDNode(begin, end, 0);
   }
 }
 
 
-void findBVHSplit(vector<Primitive *> primitives,
+bool findBVHSplit(vector<Primitive *>::iterator begin,
+                  vector<Primitive *>::iterator end,
                   int * minCostIndex, P_FLT * minCost) {
-  int size = primitives.size();
+  int size = end - begin;
   P_FLT * leftSA = new P_FLT[size],
         * rightSA = new P_FLT[size];
 
   Point3D leftMinExt(P_FLT_MAX),
-          leftMaxExt(-P_FLT_MAX);
-  for (int i = 1; i < size; i++) {
-    leftMinExt = pointMin(leftMinExt, primitives[i]->boundingBox->minExt);
-    leftMaxExt = pointMax(leftMaxExt, primitives[i]->boundingBox->maxExt);
-    leftSA[i] = (leftMaxExt - leftMinExt).boxArea();
-  }
-
-  Point3D rightMinExt(P_FLT_MAX),
+          leftMaxExt(-P_FLT_MAX),
+          rightMinExt(P_FLT_MAX),
           rightMaxExt(-P_FLT_MAX);
-  for (int i = size - 1; i > 0; i--) {
-    rightMinExt = pointMin(rightMinExt, primitives[i]->boundingBox->minExt);
-    rightMaxExt = pointMax(rightMaxExt, primitives[i]->boundingBox->maxExt);
-    rightSA[i] = (rightMaxExt - rightMinExt).boxArea();
+  for (int i = 1 ; i < size; i++) {
+    leftMinExt = pointMin(leftMinExt, (*(begin + i))->boundingBox->minExt);
+    leftMaxExt = pointMax(leftMaxExt, (*(begin + i))->boundingBox->maxExt);
+    leftSA[i] = (leftMaxExt - leftMinExt).boxArea();
+
+    rightMinExt = pointMin(rightMinExt, (*(end - i))->boundingBox->minExt);
+    rightMaxExt = pointMax(rightMaxExt, (*(end - i))->boundingBox->maxExt);
+    rightSA[size - i] = (rightMaxExt - rightMinExt).boxArea();
   }
 
   P_FLT cost,
-        invTotalSA = 1.0f / ((rightMaxExt - leftMinExt).boxArea() * size);
+        invTotalSA = 1.0f / (rightMaxExt - leftMinExt).boxArea();
   *minCostIndex = 0;
-  *minCost = P_FLT_MAX;
-  for (int leftPrims = 1; leftPrims < size; leftPrims++) {
-    cost = 0.1f + ((leftSA[leftPrims] * leftPrims) +
-                   (rightSA[leftPrims] * (size - leftPrims))) * invTotalSA;
+  *minCost = static_cast<P_FLT>(size);
+  for (int leftPrimNum = 1; leftPrimNum < size; leftPrimNum++) {
+    cost = 0.1f + invTotalSA * (leftSA[leftPrimNum] * leftPrimNum +
+                                rightSA[leftPrimNum] * (size - leftPrimNum));
     if (cost < *minCost) {
       *minCost = cost;
-      *minCostIndex = leftPrims;
+      *minCostIndex = leftPrimNum;
     }
   }
   delete [] leftSA;
   delete [] rightSA;
+
+  return minCostIndex != 0;
 }
 
 
-void sahBVHSplit(vector<Primitive *> * primitives,
+bool sahBVHSplit(vector<Primitive *>::iterator begin,
+                 vector<Primitive *>::iterator end,
                  int * axis, int * minCostIndex) {
+  bool xSplitSuccess, ySplitSuccess, zSplitSuccess;
   int xSplit, ySplit, zSplit;
   P_FLT xSplitCost, ySplitCost, zSplitCost;
-  vector<Primitive *> xVector(*primitives),
-                      yVector(*primitives),
-                      zVector(*primitives);
-  sort(xVector.begin(), xVector.end(), compareBoxX);
-  findBVHSplit(xVector, &xSplit, &xSplitCost);
-  sort(yVector.begin(), yVector.end(), compareBoxY);
-  findBVHSplit(yVector, &ySplit, &ySplitCost);
-  sort(zVector.begin(), zVector.end(), compareBoxZ);
-  findBVHSplit(zVector, &zSplit, &zSplitCost);
+  vector<Primitive *> xVec(begin, end),
+                      yVec(begin, end),
+                      zVec(begin, end);
+  sort(xVec.begin(), xVec.end(), compareBoxX);
+  xSplitSuccess = findBVHSplit(xVec.begin(), xVec.end(), &xSplit, &xSplitCost);
+  sort(yVec.begin(), yVec.end(), compareBoxY);
+  ySplitSuccess = findBVHSplit(yVec.begin(), yVec.end(), &ySplit, &ySplitCost);
+  sort(zVec.begin(), zVec.end(), compareBoxZ);
+  zSplitSuccess = findBVHSplit(zVec.begin(), zVec.end(), &zSplit, &zSplitCost);
+
   if (xSplitCost < ySplitCost) {
     if (xSplitCost < zSplitCost) {
       *axis = 0;
       *minCostIndex = xSplit;
-      *primitives = xVector;
+      copy(xVec.begin(), xVec.end(), begin);
     } else {
       *axis = 2;
       *minCostIndex = zSplit;
-      *primitives = zVector;
+      copy(zVec.begin(), zVec.end(), begin);
     }
   } else {
     if (ySplitCost < zSplitCost) {
       *axis = 1;
       *minCostIndex = ySplit;
-      *primitives = yVector;
+      copy(yVec.begin(), yVec.end(), begin);
     } else {
       *axis = 2;
       *minCostIndex = zSplit;
-      *primitives = zVector;
+      copy(zVec.begin(), zVec.end(), begin);
     }
   }
+
+  return xSplitSuccess || ySplitSuccess || zSplitSuccess;
 }
 
 
@@ -281,17 +306,17 @@ bool edgeSort(const Edge &edgeA, const Edge &edgeB) {
 }
 
 
-bool findKDSplit(const vector<Primitive *> &primitives, const int axis,
-                 P_FLT * splitValue, P_FLT * minCost) {
+bool findKDSplit(vector<Primitive *>::iterator begin,
+                 vector<Primitive *>::iterator end,
+                 const int axis, P_FLT * splitValue, P_FLT * minCost) {
   vector<Edge> edges;
-  for (vector<Primitive *>::const_iterator itr = primitives.begin();
-       itr != primitives.end(); itr++) {
+  for (vector<Primitive *>::iterator itr = begin; itr != end; itr++) {
     edges.push_back(Edge((*itr)->boundingBox->minExt[axis], *itr, true));
     edges.push_back(Edge((*itr)->boundingBox->maxExt[axis], *itr, false));
   }
   sort(edges.begin(), edges.end(), edgeSort);
 
-  int primNum = primitives.size(),
+  int primNum = end - begin,
       edgeNum = edges.size();
 
   Point3D leftMinExt = edges.front().prim->boundingBox->minExt,
@@ -357,14 +382,15 @@ bool findKDSplit(const vector<Primitive *> &primitives, const int axis,
 }
 
 
-bool sahKDSplit(const vector<Primitive *> &primitives,
+bool sahKDSplit(vector<Primitive *>::iterator begin,
+                vector<Primitive *>::iterator end,
                 int * axis, P_FLT * splitValue) {
   bool xSplitSuccess, ySplitSuccess, zSplitSuccess;
   P_FLT xSplit, ySplit, zSplit;
   P_FLT minSplitCost, xSplitCost, ySplitCost, zSplitCost;
-  xSplitSuccess = findKDSplit(primitives, 0, &xSplit, &xSplitCost);
-  ySplitSuccess = findKDSplit(primitives, 1, &ySplit, &ySplitCost);
-  zSplitSuccess = findKDSplit(primitives, 2, &zSplit, &zSplitCost);
+  xSplitSuccess = findKDSplit(begin, end, 0, &xSplit, &xSplitCost);
+  ySplitSuccess = findKDSplit(begin, end, 1, &ySplit, &ySplitCost);
+  zSplitSuccess = findKDSplit(begin, end, 2, &zSplit, &zSplitCost);
 
   if (!(xSplitSuccess || ySplitSuccess || zSplitSuccess)) {
     return false;

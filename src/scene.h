@@ -92,7 +92,7 @@ class Scene {
            itr != meshes.end(); itr++) {
         (*itr)->init();
       }
-      modelRoot = buildBVHTree(primitives);
+      modelRoot = buildBVHTree(primitives.begin(), primitives.end());
       endTimer = clock();
       printf("completed (%.3f seconds).\n", clockTime(startTimer, endTimer));
     }

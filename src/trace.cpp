@@ -41,6 +41,31 @@ int intersect(const Ray &ray, Model * model, Intercept intercepts[],
       return 0;
     }
 
+    case 10: {  // KD Leaf
+      Leaf * leaf = static_cast<Leaf *>(model);
+
+      if (!leaf->boundingBox->intersect(ray, *tCeil)) {
+        return 0;
+      }
+
+      int nodeHits,
+          totalHits = 0;
+      Intercept nodeIntercepts[MAX_INTERSECTIONS];
+      for (int i = 0, offset = 0; i < leaf->primNum;
+           i++, offset += MAX_INTERSECTIONS) {
+        if (leaf->primitives[i]->boundingBox->intersect(ray, *tCeil)) {
+          nodeHits = leaf->primitives[i] ->intersect(ray, nodeIntercepts);
+          if (nodeHits > 0 && *tCeil > nodeIntercepts[0].t) {
+            *tCeil = min(*tCeil, nodeIntercepts[0].t);
+            totalHits = nodeHits;
+            copy(nodeIntercepts, nodeIntercepts + nodeHits, intercepts);
+          }
+        }
+      }
+
+      return totalHits;
+    }
+
     case 20: {  // BVH Node
       BVHNode * bvhNode = static_cast<BVHNode *>(model);
 
@@ -99,31 +124,6 @@ int intersect(const Ray &ray, Model * model, Intercept intercepts[],
       }
 
       return 0;
-    }
-
-    case 31: {  // KD Leaf
-      KDLeaf * kdLeaf = static_cast<KDLeaf *>(model);
-
-      if (!kdLeaf->boundingBox->intersect(ray, *tCeil)) {
-        return 0;
-      }
-
-      int nodeHits,
-          totalHits = 0;
-      Intercept nodeIntercepts[MAX_INTERSECTIONS];
-      for (int i = 0, offset = 0; i < kdLeaf->primNum;
-           i++, offset += MAX_INTERSECTIONS) {
-        if (kdLeaf->primitives[i]->boundingBox->intersect(ray, *tCeil)) {
-          nodeHits = kdLeaf->primitives[i] ->intersect(ray, nodeIntercepts);
-          if (nodeHits > 0 && *tCeil > nodeIntercepts[0].t) {
-            *tCeil = min(*tCeil, nodeIntercepts[0].t);
-            totalHits = nodeHits;
-            copy(nodeIntercepts, nodeIntercepts + nodeHits, intercepts);
-          }
-        }
-      }
-
-      return totalHits;
     }
   }
 
