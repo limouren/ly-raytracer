@@ -9,7 +9,6 @@
 #include "point.h"
 #include "primitive.h"
 #include "tree.h"
-#include "triangle.h"
 #include "vector.h"
 
 
@@ -67,7 +66,7 @@ class TriangleMesh: public Primitive {
       delete [] points;
       delete [] textureCoords;
 
-      if (triangleTree != NULL && triangleTree->type != 0) {
+      if (triangleTree != NULL && triangleTree->type) {
         delete triangleTree;
       }
       while (!triangles.empty()) {

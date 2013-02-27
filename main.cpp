@@ -11,6 +11,7 @@
 #include "material.cpp"
 #include "math_util.cpp"
 #include "mesh.cpp"
+#include "mesh_triangle.cpp"
 #include "parser.cpp"
 #include "point.cpp"
 #include "primitive.cpp"
