@@ -4,8 +4,6 @@
 
 #define DEBUG (1)
 
-#define THREAD_NUM (8)
-
 
 #define RAYTRACER_NAMESPACE raytracer
 #define BEGIN_RAYTRACER namespace RAYTRACER_NAMESPACE {
@@ -49,8 +47,16 @@ typedef float P_FLT;
 
 
 int aaLevel = DEFAULT_AA_LEVEL;
-int threadNum = THREAD_NUM;
 
+// Detect number of threads, ref: http://goo.gl/q9GsB
+#if Win32
+SYSTEM_INFO sysinfo;
+GetSystemInfo(&sysinfo);
+
+int threadNum = sysinfo.dwNumberOfProcessors;
+#else
+int threadNum = sysconf(_SC_NPROCESSORS_ONLN);
+#endif
 
 END_RAYTRACER
 

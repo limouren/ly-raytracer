@@ -129,7 +129,7 @@ void Screen::rayTrace() {
   }
   endTimer = clock();
   printf("\rTracing image...100.0%% completed (%.3f seconds).\n",
-         clockTime(startTimer, endTimer));
+         clockTimeMT(startTimer, endTimer));
 
   delete screenTracer;
 }
