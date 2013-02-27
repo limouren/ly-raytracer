@@ -42,16 +42,16 @@ void Texture::loadFromPpm() {
 }
 
 
-Color Texture::colorAt(const Vector2D &textureCoord) {
+Color Texture::colorAt(const Vector2D &texCoord) {
   int x, y;
   P_FLT xInteger, xFract, yInteger, yFract;
 
   // First modf removes texture coordinates > 1, second for color interpolation
-  xFract = modf(textureCoord.x, &xInteger);
+  xFract = modf(texCoord.x, &xInteger);
   xFract = modf(xFract * width, &xInteger);
   x = min(width - 2, static_cast<int>(xInteger));
 
-  yFract = modf(textureCoord.y, &yInteger);
+  yFract = modf(texCoord.y, &yInteger);
   yFract = modf(yFract * height, &yInteger);
   y = min(height - 2, static_cast<int>(yInteger));
 

@@ -145,7 +145,7 @@ void shade(const Scene * scene, const int level, const C_FLT weight,
   }
 
   if (intercepts[0].enter && intercepts[0].primitive->texture != NULL) {
-    *color *= intercepts[0].primitive->getTextureColor(mapping);
+    *color *= intercepts[0].primitive->getTexColor(mapping);
   }
 }
 

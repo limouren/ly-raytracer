@@ -25,10 +25,10 @@ class Transform;
 class TriangleMesh: public Primitive {
   private:
     Node * triangleTree;
-    unsigned int pointNum, normalNum, textureCoordNum;
+    unsigned int pointNum, normalNum, texCoordNum;
     Point3D * points;
     Vector3D * normals;
-    Vector2D * textureCoords;
+    Vector2D * texCoords;
     std::vector<Primitive *> triangles;
 
   public:
@@ -37,7 +37,7 @@ class TriangleMesh: public Primitive {
                  Texture * texture,
                  std::vector<Point3D> _points,
                  std::vector<Vector3D> _normals,
-                 std::vector<Vector2D> _textureCoords,
+                 std::vector<Vector2D> _texCoords,
                  std::vector<int *> triangleDefs):
       Primitive(material, texture), triangleTree(NULL) {
       pointNum = _points.size();
@@ -52,10 +52,10 @@ class TriangleMesh: public Primitive {
         normals[i] = _normals[i];
       }
 
-      textureCoordNum = _textureCoords.size();
-      textureCoords = new Vector2D[textureCoordNum];
-      for (int i = 0; i < textureCoordNum; i++) {
-        textureCoords[i] = _textureCoords[i];
+      texCoordNum = _texCoords.size();
+      texCoords = new Vector2D[texCoordNum];
+      for (int i = 0; i < texCoordNum; i++) {
+        texCoords[i] = _texCoords[i];
       }
 
       constructTriangles(triangleDefs);
@@ -64,7 +64,7 @@ class TriangleMesh: public Primitive {
     ~TriangleMesh() {
       delete [] normals;
       delete [] points;
-      delete [] textureCoords;
+      delete [] texCoords;
 
       if (triangleTree != NULL && triangleTree->type) {
         delete triangleTree;

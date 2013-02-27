@@ -34,7 +34,7 @@ class Primitive {
     virtual void buildBoundingBox();
     virtual void getIntersect(const Point3D &point, Vector3D * normal,
                               std::vector<P_FLT> * mapping) const;
-    virtual Color getTextureColor(const std::vector<P_FLT> mapping) const;
+    virtual Color getTexColor(const std::vector<P_FLT> mapping) const;
     virtual int intersect(const Ray &ray, Intercept intercepts[]) const;
     virtual std::vector<P_FLT> inverseMap(const Point3D &point) const;
     virtual void transform(Transform * transform);

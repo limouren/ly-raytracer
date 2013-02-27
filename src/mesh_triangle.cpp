@@ -187,13 +187,12 @@ void TexMeshTriangle::getIntersect(const Point3D &point, Vector3D * normal,
 }
 
 
-Color TexMeshTriangle::getTextureColor(
-  const std::vector<P_FLT> mapping) const {
-  Vector2D textureCoord = *vertexTextureCoord1 * mapping[0] +
-                          *vertexTextureCoord2 * mapping[1] +
-                          *vertexTextureCoord3 * mapping[2];
+Color TexMeshTriangle::getTexColor(const std::vector<P_FLT> mapping) const {
+  Vector2D texCoord = *vertexTexCoord1 * mapping[0] +
+                      *vertexTexCoord2 * mapping[1] +
+                      *vertexTexCoord3 * mapping[2];
 
-  return texture->colorAt(textureCoord);
+  return texture->colorAt(texCoord);
 }
 
 
@@ -215,13 +214,12 @@ void PhongMeshTriangle::getIntersect(const Point3D &point, Vector3D * normal,
 }
 
 
-Color PhongMeshTriangle::getTextureColor(
-  const std::vector<P_FLT> mapping) const {
-  Vector2D textureCoord = *vertexTextureCoord1 * mapping[0] +
-                          *vertexTextureCoord2 * mapping[1] +
-                          *vertexTextureCoord3 * mapping[2];
+Color PhongMeshTriangle::getTexColor(const std::vector<P_FLT> mapping) const {
+  Vector2D texCoord = *vertexTexCoord1 * mapping[0] +
+                      *vertexTexCoord2 * mapping[1] +
+                      *vertexTexCoord3 * mapping[2];
 
-  return texture->colorAt(textureCoord);
+  return texture->colorAt(texCoord);
 }
 
 

@@ -25,31 +25,33 @@ class Triangle: public Plane {
     unsigned char dominantIndex;
 
   public:
-    Point3D * vertex1,
-            * vertex2,
-            * vertex3;
+    Point3D vertex1,
+            vertex2,
+            vertex3;
 
     Triangle(Material * material,
-             Point3D * pointA, Point3D * pointB, Point3D * pointC):
+             const Point3D &pointA, const Point3D &pointB,
+             const Point3D &pointC):
       Plane(material), vertex1(pointA), vertex2(pointB), vertex3(pointC) {
-      normal = crossProduct(*vertex2 - *vertex1, *vertex3 - *vertex1);
+      normal = crossProduct(vertex2 - vertex1, vertex3 - vertex1);
       normal.normalize();
 
       dominantIndex = normal.dominantIndex();
 
-      d = -dotProduct(*vertex1, normal);
+      d = -dotProduct(vertex1, normal);
     };
 
     Triangle(Material * material, Texture * texture,
-             Point3D * pointA, Point3D * pointB, Point3D * pointC):
+             const Point3D &pointA, const Point3D &pointB,
+             const Point3D &pointC):
       Plane(material, texture),
       vertex1(pointA), vertex2(pointB), vertex3(pointC) {
-      normal = crossProduct(*vertex2 - *vertex1, *vertex3 - *vertex1);
+      normal = crossProduct(vertex2 - vertex1, vertex3 - vertex1);
       normal.normalize();
 
       dominantIndex = normal.dominantIndex();
 
-      d = -dotProduct(*vertex1, normal);
+      d = -dotProduct(vertex1, normal);
     };
 
     virtual ~Triangle() {}
@@ -65,35 +67,36 @@ class Triangle: public Plane {
 
 class TexturedTriangle: public Triangle {
   public:
-    Vector2D * vertexTextureCoord1,
-             * vertexTextureCoord2,
-             * vertexTextureCoord3;
+    Vector2D vertexTexCoord1,
+             vertexTexCoord2,
+             vertexTexCoord3;
 
     TexturedTriangle(Material * material, Texture * texture,
-                     Point3D * pointA, Point3D * pointB, Point3D * pointC,
-                     Vector2D * textureCoordA, Vector2D * textureCoordB,
-                     Vector2D * textureCoordC):
+                     const Point3D &pointA, const Point3D &pointB,
+                     const Point3D &pointC, const Vector2D &texCoordA,
+                     const Vector2D &texCoordB, const Vector2D &texCoordC):
       Triangle(material, texture, pointA, pointB, pointC),
-      vertexTextureCoord1(textureCoordA), vertexTextureCoord2(textureCoordB),
-      vertexTextureCoord3(textureCoordC) {}
+      vertexTexCoord1(texCoordA), vertexTexCoord2(texCoordB),
+      vertexTexCoord3(texCoordC) {}
 
     ~TexturedTriangle() {}
 
     void getIntersect(const Point3D &point, Vector3D * normal,
                       std::vector<P_FLT> * mapping) const;
-    Color getTextureColor(const std::vector<P_FLT> mapping) const;
+    Color getTexColor(const std::vector<P_FLT> mapping) const;
 };
 
 
 class TrianglePatch: public Triangle {
   public:
-    Vector3D * vertexNormal1,
-             * vertexNormal2,
-             * vertexNormal3;
+    Vector3D vertexNormal1,
+             vertexNormal2,
+             vertexNormal3;
 
     TrianglePatch(Material * material,
-                  Point3D * pointA, Point3D * pointB, Point3D * pointC,
-                  Vector3D * normalA, Vector3D * normalB, Vector3D * normalC):
+                  const Point3D &pointA, const Point3D &pointB,
+                  const Point3D &pointC, const Vector3D &normalA,
+                  const Vector3D &normalB, const Vector3D &normalC):
       Triangle(material, pointA, pointB, pointC),
       vertexNormal1(normalA), vertexNormal2(normalB), vertexNormal3(normalC) {}
 
@@ -108,28 +111,29 @@ class TrianglePatch: public Triangle {
 // TODO(kent): Do this without virtual inheritance and deadly diamond
 class PhongTriangle: public Triangle {
   public:
-    Vector2D * vertexTextureCoord1,
-             * vertexTextureCoord2,
-             * vertexTextureCoord3;
-    Vector3D * vertexNormal1,
-             * vertexNormal2,
-             * vertexNormal3;
+    Vector2D vertexTexCoord1,
+             vertexTexCoord2,
+             vertexTexCoord3;
+    Vector3D vertexNormal1,
+             vertexNormal2,
+             vertexNormal3;
 
     PhongTriangle(Material * material, Texture * texture,
-                  Point3D * pointA, Point3D * pointB, Point3D * pointC,
-                  Vector3D * normalA, Vector3D * normalB, Vector3D * normalC,
-                  Vector2D * textureCoordA, Vector2D * textureCoordB,
-                  Vector2D * textureCoordC):
+                  const Point3D &pointA, const Point3D &pointB,
+                  const Point3D &pointC, const Vector3D &normalA,
+                  const Vector3D &normalB, const Vector3D &normalC,
+                  const Vector2D &texCoordA, const Vector2D &texCoordB,
+                  const Vector2D &texCoordC):
       Triangle(material, texture, pointA, pointB, pointC),
       vertexNormal1(normalA), vertexNormal2(normalB), vertexNormal3(normalC),
-      vertexTextureCoord1(textureCoordA), vertexTextureCoord2(textureCoordB),
-      vertexTextureCoord3(textureCoordC) {}
+      vertexTexCoord1(texCoordA), vertexTexCoord2(texCoordB),
+      vertexTexCoord3(texCoordC) {}
 
     ~PhongTriangle() {}
 
     void getIntersect(const Point3D &point, Vector3D * normal,
                       std::vector<P_FLT> * mapping) const;
-    Color getTextureColor(const std::vector<P_FLT> mapping) const;
+    Color getTexColor(const std::vector<P_FLT> mapping) const;
 };
 
 

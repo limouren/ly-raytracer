@@ -64,23 +64,23 @@ class MeshTriangle: public Plane {
 
 class TexMeshTriangle: public MeshTriangle {
   public:
-    Vector2D * vertexTextureCoord1,
-             * vertexTextureCoord2,
-             * vertexTextureCoord3;
+    Vector2D * vertexTexCoord1,
+             * vertexTexCoord2,
+             * vertexTexCoord3;
 
     TexMeshTriangle(Material * material, Texture * texture,
                     Point3D * pointA, Point3D * pointB, Point3D * pointC,
-                    Vector2D * textureCoordA, Vector2D * textureCoordB,
-                    Vector2D * textureCoordC):
+                    Vector2D * texCoordA, Vector2D * texCoordB,
+                    Vector2D * texCoordC):
       MeshTriangle(material, texture, pointA, pointB, pointC),
-      vertexTextureCoord1(textureCoordA), vertexTextureCoord2(textureCoordB),
-      vertexTextureCoord3(textureCoordC) {}
+      vertexTexCoord1(texCoordA), vertexTexCoord2(texCoordB),
+      vertexTexCoord3(texCoordC) {}
 
     ~TexMeshTriangle() {}
 
     void getIntersect(const Point3D &point, Vector3D * normal,
                       std::vector<P_FLT> * mapping) const;
-    Color getTextureColor(const std::vector<P_FLT> mapping) const;
+    Color getTexColor(const std::vector<P_FLT> mapping) const;
 };
 
 
@@ -108,9 +108,9 @@ class PatchMeshTriangle: public MeshTriangle {
 // TODO(kent): Do this without virtual inheritance and deadly diamond
 class PhongMeshTriangle: public MeshTriangle {
   public:
-    Vector2D * vertexTextureCoord1,
-             * vertexTextureCoord2,
-             * vertexTextureCoord3;
+    Vector2D * vertexTexCoord1,
+             * vertexTexCoord2,
+             * vertexTexCoord3;
     Vector3D * vertexNormal1,
              * vertexNormal2,
              * vertexNormal3;
@@ -118,18 +118,18 @@ class PhongMeshTriangle: public MeshTriangle {
     PhongMeshTriangle(Material * material, Texture * texture,
                       Point3D * pointA, Point3D * pointB, Point3D * pointC,
                       Vector3D * normalA, Vector3D * normalB,
-                      Vector3D * normalC, Vector2D * textureCoordA,
-                      Vector2D * textureCoordB, Vector2D * textureCoordC):
+                      Vector3D * normalC, Vector2D * texCoordA,
+                      Vector2D * texCoordB, Vector2D * texCoordC):
       MeshTriangle(material, texture, pointA, pointB, pointC),
       vertexNormal1(normalA), vertexNormal2(normalB), vertexNormal3(normalC),
-      vertexTextureCoord1(textureCoordA), vertexTextureCoord2(textureCoordB),
-      vertexTextureCoord3(textureCoordC) {}
+      vertexTexCoord1(texCoordA), vertexTexCoord2(texCoordB),
+      vertexTexCoord3(texCoordC) {}
 
     ~PhongMeshTriangle() {}
 
     void getIntersect(const Point3D &point, Vector3D * normal,
                       std::vector<P_FLT> * mapping) const;
-    Color getTextureColor(const std::vector<P_FLT> mapping) const;
+    Color getTexColor(const std::vector<P_FLT> mapping) const;
 };
 
 

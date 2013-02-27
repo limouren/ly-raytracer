@@ -322,9 +322,9 @@ void parseTexturedTriangle(FILE *file, Scene * scene) {
   int patch;
   // TODO(kent): Clean this up later and avoid memory leak
   P_FLT x, y, z;
-  Point3D * vertex[3];
-  Vector2D * textureCoord[3];
-  Vector3D * normal[3];
+  Point3D vertex[3];
+  Vector2D texCoord[3];
+  Vector3D normal[3];
 
   patch = getc(file);
   if (patch != 'p') {
@@ -341,40 +341,40 @@ void parseTexturedTriangle(FILE *file, Scene * scene) {
   Texture * texture = scene->getOrCreateTexture(filepath);
 
   for (int i = 0; i < 3; i++) {
-    if (fscanf(file, " %f %f %f", &x, &y, &z) != 3) {
+    if (fscanf(file, " %f %f %f",
+               &vertex[i].x, &vertex[i].y, &vertex[i].z) != 3) {
       printf("Error: could not parse textured triangle\n");
       exit(1);
     }
-    vertex[i] = new Point3D(x, y, z);
 
     if (patch) {
-      if (fscanf(file, " %f %f %f", &x, &y, &z) != 3) {
+      if (fscanf(file, " %f %f %f",
+                 &normal[i].x, &normal[i].y, &normal[i].z) != 3) {
         printf("Error: could not parse textured triangle\n");
         exit(1);
       }
-      normal[i] = new Vector3D(x, y, z);
     }
 
-    if (fscanf(file, " %f %f ", &x, &y) != 2) {
+    if (fscanf(file, " %f %f ",
+        &texCoord[i].x, &texCoord[i].y) != 2) {
       printf("Error: could not parse textured triangle\n");
       exit(1);
     }
-    textureCoord[i] = new Vector2D(x, y);
   }
 
   if (patch) {
-    scene->addPrimitive(new PhongTriangle(
-        scene->latestMat(), texture,
-        vertex[0], vertex[1], vertex[2],
-        normal[0], normal[1], normal[2],
-        textureCoord[0], textureCoord[1], textureCoord[2]),
-      currentTransform);
+    scene->addPrimitive(new PhongTriangle(scene->latestMat(), texture,
+                                          vertex[0], vertex[1], vertex[2],
+                                          normal[0], normal[1], normal[2],
+                                          texCoord[0], texCoord[1],
+                                          texCoord[2]),
+                        currentTransform);
   } else {
-    scene->addPrimitive(new TexturedTriangle(
-        scene->latestMat(), texture,
-        vertex[0], vertex[1], vertex[2],
-        textureCoord[0], textureCoord[1], textureCoord[2]),
-      currentTransform);
+    scene->addPrimitive(new TexturedTriangle(scene->latestMat(), texture,
+                                             vertex[0], vertex[1], vertex[2],
+                                             texCoord[0], texCoord[1],
+                                             texCoord[2]),
+                        currentTransform);
   }
 }
 
@@ -648,12 +648,12 @@ void getVectors(FILE * file, const char * type, vector<Vector3D> * vectors) {
 }
 
 
-void getTextureCoordinates(FILE * file, const char * type, char * textureName,
-                           vector<Vector2D> * textureCoords) {
-  int flag, textureCoordNum;
+void getTexCoordinates(FILE * file, const char * type, char * textureName,
+                       vector<Vector2D> * texCoords) {
+  int flag, texCoordNum;
   P_FLT x, y;
 
-  if (fscanf(file, "%d", &textureCoordNum) != 1) {
+  if (fscanf(file, "%d", &texCoordNum) != 1) {
     printf("Error: could not parse mesh (expected '%sNum').\n", type);
     exit(1);
   }
@@ -662,13 +662,13 @@ void getTextureCoordinates(FILE * file, const char * type, char * textureName,
     exit(1);
   }
 
-  for (int i = 0; i < textureCoordNum; i++) {
+  for (int i = 0; i < texCoordNum; i++) {
     if (fscanf(file, "%f %f", &x, &y) != 2) {
-      printf("Error: could not read %d %ss of mesh.\n", textureCoordNum, type);
+      printf("Error: could not read %d %ss of mesh.\n", texCoordNum, type);
       exit(1);
     }
 
-    textureCoords->push_back(Vector2D(x, y));
+    texCoords->push_back(Vector2D(x, y));
   }
 }
 
@@ -731,7 +731,7 @@ void parseMesh(FILE * file, Scene * scene) {
   int flag;
   vector<Point3D> vertex;
   vector<Vector3D> normal;
-  vector<Vector2D> textureCoords;
+  vector<Vector2D> texCoords;
   vector<int *> triangleDefs;
   Texture * texture = NULL;
 
@@ -754,7 +754,7 @@ void parseMesh(FILE * file, Scene * scene) {
     flag = fscanf(file, "%s", buffer);
   }
   if (!strcmp(buffer, "texturecoords")) {
-    getTextureCoordinates(file, "textureCoord", textureName, &textureCoords);
+    getTexCoordinates(file, "texCoord", textureName, &texCoords);
 
     char filepath[1024];
     fullFilePath(filepath, textureName);
@@ -764,7 +764,7 @@ void parseMesh(FILE * file, Scene * scene) {
   }
 
   if (!strcmp(buffer, "triangles")) {
-    getTriangleDefs(file, normal.size() > 0, textureCoords.size() > 0,
+    getTriangleDefs(file, normal.size() > 0, texCoords.size() > 0,
                     &triangleDefs);
   } else {
     printf("Error: expected 'triangles' in mesh.\n");
@@ -772,7 +772,7 @@ void parseMesh(FILE * file, Scene * scene) {
   }
 
   TriangleMesh * mesh = new TriangleMesh(scene->latestMat(), texture, vertex,
-                                         normal, textureCoords, triangleDefs);
+                                         normal, texCoords, triangleDefs);
   scene->addPrimitive(mesh, currentTransform);
   scene->meshes.push_back(mesh);
 }

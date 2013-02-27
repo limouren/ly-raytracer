@@ -29,7 +29,7 @@ class Texture {
     void loadFromFile();
     void loadFromPpm();
 
-    inline Color colorAt(const Vector2D &textureCoord);
+    inline Color colorAt(const Vector2D &texCoord);
 
     ~Texture() {
       delete [] pixels;

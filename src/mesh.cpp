@@ -33,7 +33,7 @@ void TriangleMesh::buildBoundingBox() {
 void TriangleMesh::constructTriangles(
   const std::vector<int *> &triangleDefs) {
   std::vector<int *>::const_iterator itr;
-  if (normalNum == 0 && textureCoordNum == 0) {
+  if (normalNum == 0 && texCoordNum == 0) {
     for (itr = triangleDefs.begin(); itr != triangleDefs.end(); itr++) {
       triangles.push_back(
         new MeshTriangle(material,
@@ -41,7 +41,7 @@ void TriangleMesh::constructTriangles(
                          &points[(*itr)[1]],
                          &points[(*itr)[2]]));
     }
-  } else if (textureCoordNum == 0) {
+  } else if (texCoordNum == 0) {
     for (itr = triangleDefs.begin(); itr != triangleDefs.end(); itr++) {
       triangles.push_back(
         new PatchMeshTriangle(material,
@@ -60,9 +60,9 @@ void TriangleMesh::constructTriangles(
                             &points[(*itr)[0]],
                             &points[(*itr)[1]],
                             &points[(*itr)[2]],
-                            &textureCoords[(*itr)[3]],
-                            &textureCoords[(*itr)[4]],
-                            &textureCoords[(*itr)[5]]));
+                            &texCoords[(*itr)[3]],
+                            &texCoords[(*itr)[4]],
+                            &texCoords[(*itr)[5]]));
     }
   } else {
     for (itr = triangleDefs.begin(); itr != triangleDefs.end(); itr++) {
@@ -75,9 +75,9 @@ void TriangleMesh::constructTriangles(
                               &normals[(*itr)[3]],
                               &normals[(*itr)[4]],
                               &normals[(*itr)[5]],
-                              &textureCoords[(*itr)[6]],
-                              &textureCoords[(*itr)[7]],
-                              &textureCoords[(*itr)[8]]));
+                              &texCoords[(*itr)[6]],
+                              &texCoords[(*itr)[7]],
+                              &texCoords[(*itr)[8]]));
     }
   }
 }

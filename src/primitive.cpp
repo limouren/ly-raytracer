@@ -26,9 +26,9 @@ void Primitive::getIntersect(const Point3D &point, Vector3D * normal,
 }
 
 
-Color Primitive::getTextureColor(const std::vector<P_FLT> mapping)
+Color Primitive::getTexColor(const std::vector<P_FLT> mapping)
   const {
-  printf("ERROR: Unimplemented Primitive::getTextureCoord stub invoked\n");
+  printf("ERROR: Unimplemented Primitive::getTexCoord stub invoked\n");
   exit(1);
 }
 
