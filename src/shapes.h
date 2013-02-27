@@ -4,7 +4,7 @@
 
 #include "config.h"
 
-#include "model.h"
+#include "primitive.h"
 #include "point.h"
 #include "vector.h"
 

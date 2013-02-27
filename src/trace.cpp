@@ -5,44 +5,29 @@
 
 #include "color.h"
 #include "intercept.h"
-#include "model.h"
 #include "point.h"
 #include "ray.h"
 #include "scene.h"
 #include "shade.h"
 #include "trace.h"
+#include "tree.h"
 #include "vector.h"
 
 
 BEGIN_RAYTRACER
 
 
-int intersect(const Ray &ray, Model * model, Intercept intercepts[]) {
+int intersect(const Ray &ray, Node * node, Intercept intercepts[]) {
   P_FLT tDummy = P_FLT_MAX;
-  return intersect(ray, model, intercepts, &tDummy);
+  return intersect(ray, node, intercepts, &tDummy);
 }
 
 
-int intersect(const Ray &ray, Model * model, Intercept intercepts[],
+int intersect(const Ray &ray, Node * node, Intercept intercepts[],
               P_FLT * tCeil) {
-  switch (model->type) {
-    case 0: {  // Primitive
-      Primitive * primitive = static_cast<Primitive *>(model);
-      if (!primitive->boundingBox->intersect(ray, *tCeil)) {
-        return 0;
-      }
-
-      int hits = primitive->intersect(ray, intercepts);
-      if (hits > 0) {
-        *tCeil = std::min(*tCeil, intercepts[0].t);
-        return hits;
-      }
-
-      return 0;
-    }
-
-    case 10: {  // KD Leaf
-      Leaf * leaf = static_cast<Leaf *>(model);
+  switch (node->type) {
+    case 10: {  // Leaf node
+      Leaf * leaf = static_cast<Leaf *>(node);
 
       if (!leaf->boundingBox->intersect(ray, *tCeil)) {
         return 0;
@@ -67,7 +52,7 @@ int intersect(const Ray &ray, Model * model, Intercept intercepts[],
     }
 
     case 20: {  // BVH Node
-      BVHNode * bvhNode = static_cast<BVHNode *>(model);
+      BVHNode * bvhNode = static_cast<BVHNode *>(node);
 
       if (!bvhNode->boundingBox->intersect(ray, *tCeil)) {
         return 0;
@@ -84,7 +69,7 @@ int intersect(const Ray &ray, Model * model, Intercept intercepts[],
     }
 
     case 30: {  // KD Node
-      KDNode * kdNode = static_cast<KDNode *>(model);
+      KDNode * kdNode = static_cast<KDNode *>(node);
 
       int hits[2];
       Intercept interceptsLists[2][MAX_INTERSECTIONS];
@@ -223,7 +208,7 @@ int trace(const Scene * scene, const int level, const C_FLT weight,
           const Ray &ray, Color * color) {
   Intercept intercepts[MAX_INTERSECTIONS];
 
-  int hits = intersect(ray, scene->modelRoot, intercepts);
+  int hits = intersect(ray, scene->sceneRoot, intercepts);
   if (hits > 0) {
     shade(scene, level, weight, ray, intercepts, color);
     return hits;

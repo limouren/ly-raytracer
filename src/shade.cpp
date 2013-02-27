@@ -21,7 +21,7 @@ BEGIN_RAYTRACER
 C_FLT shadow(const Scene * scene, const Ray &ray, P_FLT t) {
   Intercept intercepts[MAX_INTERSECTIONS];
 
-  int hits = intersect(ray, scene->modelRoot, intercepts);
+  int hits = intersect(ray, scene->sceneRoot, intercepts);
   if (hits == 0 || intercepts[0].t > t) {
     return 1.0f;
   }

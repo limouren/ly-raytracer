@@ -12,9 +12,9 @@
 #include "color.h"
 #include "point.h"
 #include "ray.h"
-#include "model.h"
 #include "scene.h"
 #include "trace.h"
+#include "tree.h"
 
 
 BEGIN_RAYTRACER

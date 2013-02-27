@@ -81,7 +81,7 @@ void Screen::saveBmp(char * outputFilename) const {
 void Screen::rayTrace() {
   clock_t startTimer, endTimer;
 
-  scene->buildModelTree();
+  scene->buildNodeTree();
 
   startTimer = clock();
   Vector3D dir = scene->camera->target - scene->camera->viewpoint;

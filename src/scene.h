@@ -11,7 +11,8 @@
 
 #include "material.h"
 #include "mesh.h"
-#include "model.h"
+#include "primitive.h"
+#include "tree.h"
 #include "utils.h"
 
 
@@ -27,7 +28,7 @@ class Transform;
 
 class Scene {
   public:
-    Model * modelRoot;
+    Node * sceneRoot;
     Camera * camera;
     Color ambience, backgroundColor;
     Material * medium;
@@ -39,7 +40,7 @@ class Scene {
     std::vector<Texture *> textures;
     std::vector<Transform *> transforms;
 
-    Scene(): modelRoot(NULL) {
+    Scene(): sceneRoot(NULL) {
       medium = new Material("Vacuum",
                             Color(0.0f, 0.0f, 0.0f),
                             Color(0.0f, 0.0f, 0.0f),
@@ -65,8 +66,8 @@ class Scene {
       }
 
       // Check for empty or single element scene
-      if (modelRoot != NULL && modelRoot->type != 0) {
-        delete modelRoot;
+      if (sceneRoot != NULL && sceneRoot->type != 0) {
+        delete sceneRoot;
       }
       while (!primitives.empty()) {
         delete primitives.back();
@@ -82,17 +83,17 @@ class Scene {
       primitives.push_back(primitive);
     }
 
-    void buildModelTree() {
+    void buildNodeTree() {
       clock_t startTimer, endTimer;
 
-      printf("Building model tree...");
+      printf("Building node tree...");
       fflush(stdout);
       startTimer = clock();
       for (std::vector<TriangleMesh *>::iterator itr = meshes.begin();
            itr != meshes.end(); itr++) {
         (*itr)->init();
       }
-      modelRoot = buildBVHTree(primitives.begin(), primitives.end());
+      sceneRoot = buildBVHTree(primitives.begin(), primitives.end());
       endTimer = clock();
       printf("completed (%.3f seconds).\n", clockTime(startTimer, endTimer));
     }

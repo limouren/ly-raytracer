@@ -6,6 +6,7 @@
 #include "point.h"
 #include "trace.h"
 #include "transform.h"
+#include "tree.h"
 #include "vector.h"
 
 
@@ -84,7 +85,7 @@ void TriangleMesh::constructTriangles(
 void TriangleMesh::init() {
   buildBoundingBox();
 
-  Model * newTree = buildBVHTree(triangles.begin(), triangles.end());
+  Node * newTree = buildBVHTree(triangles.begin(), triangles.end());
   if (newTree && triangleTree) {
     delete triangleTree;
   }

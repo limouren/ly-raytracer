@@ -5,7 +5,6 @@
 #include "bounding_volume.h"
 #include "intercept.h"
 #include "math_util.h"
-#include "model.h"
 #include "point.h"
 #include "shapes.h"
 #include "transform.h"

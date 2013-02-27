@@ -4,8 +4,9 @@
 #include "config.h"
 
 #include "bounding_volume.h"
-#include "model.h"
 #include "point.h"
+#include "primitive.h"
+#include "tree.h"
 #include "vector.h"
 
 
@@ -15,59 +16,20 @@ BEGIN_RAYTRACER
 using namespace std;
 
 
-void Primitive::buildBoundingBox() {
-  printf("ERROR: Unimplemented Primitive::buildBoundingBox stub "
-         "invoked\n");
-  exit(1);
+inline bool boxCmpX(Primitive * primA, Primitive * primB) {
+  return primA->boundingBox->center().x < primB->boundingBox->center().x;
 }
-
-
-void Primitive::getIntersect(const Point3D &point, Vector3D * normal,
-                             std::vector<P_FLT> * mapping) const {
-  printf("ERROR: Unimplemented Primitive::getIntersect stub invoked\n");
-  exit(1);
+inline bool boxCmpY(Primitive * primA, Primitive * primB) {
+  return primA->boundingBox->center().y < primB->boundingBox->center().y;
 }
-
-
-Color Primitive::getTextureColor(const std::vector<P_FLT> mapping)
-  const {
-  printf("ERROR: Unimplemented Primitive::getTextureCoord stub invoked\n");
-  exit(1);
-}
-
-
-int Primitive::intersect(const Ray &ray, Intercept intercepts[]) const {
-  printf("ERROR: Unimplemented Primitive::intersect stub invoked\n");
-  exit(1);
-}
-
-
-std::vector<P_FLT> Primitive::inverseMap(const Point3D &point) const {
-  printf("ERROR: Unimplemented Primitive::inverseMap stub invoked\n");
-  exit(1);
-}
-
-
-void Primitive::transform(Transform * transform) {
-  printf("ERROR: Unimplemented Primitive::transform stub invoked\n");
-  exit(1);
-}
-
-
-inline bool compareBoxX(BoundedModel * modelA, BoundedModel * modelB) {
-  return modelA->boundingBox->center().x < modelB->boundingBox->center().x;
-}
-inline bool compareBoxY(BoundedModel * modelA, BoundedModel * modelB) {
-  return modelA->boundingBox->center().y < modelB->boundingBox->center().y;
-}
-inline bool compareBoxZ(BoundedModel * modelA, BoundedModel * modelB) {
-  return modelA->boundingBox->center().z < modelB->boundingBox->center().z;
+inline bool boxCmpZ(Primitive * primA, Primitive * primB) {
+  return primA->boundingBox->center().z < primB->boundingBox->center().z;
 }
 
 
 Leaf::Leaf(vector<Primitive *>::iterator begin,
            vector<Primitive *>::iterator end)
-  : BoundedModel(10), primNum(end - begin) {
+  : BoundedNode(10), primNum(end - begin) {
   primitives = new Primitive * [primNum];
   copy(begin, end, primitives);
 
@@ -87,8 +49,8 @@ Leaf::~Leaf() {
 }
 
 
-BVHNode::BVHNode(BoundedModel * left, BoundedModel * right)
-  : BoundedModel(20), left(left), right(right) {
+BVHNode::BVHNode(BoundedNode * left, BoundedNode * right)
+  : BoundedNode(20), left(left), right(right) {
   boundingBox = new BoundingBox(pointMin(left->boundingBox->minExt,
                                          right->boundingBox->minExt),
                                 pointMax(left->boundingBox->maxExt,
@@ -97,31 +59,23 @@ BVHNode::BVHNode(BoundedModel * left, BoundedModel * right)
 
 
 BVHNode::~BVHNode() {
-  if (left->type != 0) {
-    delete left;
-  }
-  if (right->type != 0) {
-    delete right;
-  }
+  delete left;
+  delete right;
 }
 
 
 KDNode::KDNode(const unsigned char axis, const P_FLT value,
-               Model * left, Model * right)
-  : Model(30), axis(axis), value(value), left(left), right(right) {}
+               Node * left, Node * right)
+  : Node(30), axis(axis), value(value), left(left), right(right) {}
 
 
 KDNode::~KDNode() {
-  if (left->type != 0) {
-    delete left;
-  }
-  if (right->type != 0) {
-    delete right;
-  }
+  delete left;
+  delete right;
 }
 
 
-BoundedModel * buildBVHNode(vector<Primitive *>::iterator begin,
+BoundedNode * buildBVHNode(vector<Primitive *>::iterator begin,
                             vector<Primitive *>::iterator end) {
   int axis, minCostIndex;
   if (end - begin <= 8) {
@@ -135,7 +89,7 @@ BoundedModel * buildBVHNode(vector<Primitive *>::iterator begin,
 }
 
 
-BoundedModel * buildBVHTree(vector<Primitive *>::iterator begin,
+BoundedNode * buildBVHTree(vector<Primitive *>::iterator begin,
                             vector<Primitive *>::iterator end) {
   if (end == begin) {
     printf("ERROR: Attempted to construct tree with no primitives\n");
@@ -154,7 +108,7 @@ BoundedModel * buildBVHTree(vector<Primitive *>::iterator begin,
 #define KD_MAX_DEPTH 32
 
 
-Model * buildKDNode(vector<Primitive *>::iterator begin,
+Node * buildKDNode(vector<Primitive *>::iterator begin,
                     vector<Primitive *>::iterator end, const int depth) {
   if (depth == KD_MAX_DEPTH || end - begin <= 8) {
     return new Leaf(begin, end);
@@ -184,7 +138,7 @@ Model * buildKDNode(vector<Primitive *>::iterator begin,
 }
 
 
-Model * buildKDTree(vector<Primitive *>::iterator begin,
+Node * buildKDTree(vector<Primitive *>::iterator begin,
                     vector<Primitive *>::iterator end) {
   if (begin == end) {
     printf("ERROR: Attempted to construct tree with no primitives\n");
@@ -249,11 +203,11 @@ bool sahBVHSplit(vector<Primitive *>::iterator begin,
   vector<Primitive *> xVec(begin, end),
                       yVec(begin, end),
                       zVec(begin, end);
-  sort(xVec.begin(), xVec.end(), compareBoxX);
+  sort(xVec.begin(), xVec.end(), boxCmpX);
   xSplitSuccess = findBVHSplit(xVec.begin(), xVec.end(), &xSplit, &xSplitCost);
-  sort(yVec.begin(), yVec.end(), compareBoxY);
+  sort(yVec.begin(), yVec.end(), boxCmpY);
   ySplitSuccess = findBVHSplit(yVec.begin(), yVec.end(), &ySplit, &ySplitCost);
-  sort(zVec.begin(), zVec.end(), compareBoxZ);
+  sort(zVec.begin(), zVec.end(), boxCmpZ);
   zSplitSuccess = findBVHSplit(zVec.begin(), zVec.end(), &zSplit, &zSplitCost);
 
   if (xSplitCost < ySplitCost) {
@@ -293,7 +247,7 @@ struct Edge {
 };
 
 
-bool edgeSort(const Edge &edgeA, const Edge &edgeB) {
+bool edgeCmp(const Edge &edgeA, const Edge &edgeB) {
   if (edgeA.value == edgeB.value) {
     if (edgeA.left == edgeB.left) {
       return edgeA.prim < edgeB.prim;
@@ -314,7 +268,7 @@ bool findKDSplit(vector<Primitive *>::iterator begin,
     edges.push_back(Edge((*itr)->boundingBox->minExt[axis], *itr, true));
     edges.push_back(Edge((*itr)->boundingBox->maxExt[axis], *itr, false));
   }
-  sort(edges.begin(), edges.end(), edgeSort);
+  sort(edges.begin(), edges.end(), edgeCmp);
 
   int primNum = end - begin,
       edgeNum = edges.size();

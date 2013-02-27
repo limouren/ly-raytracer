@@ -6,8 +6,9 @@
 
 #include "config.h"
 
-#include "model.h"
 #include "point.h"
+#include "primitive.h"
+#include "tree.h"
 #include "triangle.h"
 #include "vector.h"
 
@@ -24,7 +25,7 @@ class Transform;
 
 class TriangleMesh: public Primitive {
   private:
-    Model * triangleTree;
+    Node * triangleTree;
     unsigned int pointNum, normalNum, textureCoordNum;
     Point3D * points;
     Vector3D * normals;

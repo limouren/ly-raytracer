@@ -11,9 +11,9 @@
 #include "material.cpp"
 #include "math_util.cpp"
 #include "mesh.cpp"
-#include "model.cpp"
 #include "parser.cpp"
 #include "point.cpp"
+#include "primitive.cpp"
 #include "ray.cpp"
 #include "scene.cpp"
 #include "screen.cpp"
@@ -22,6 +22,7 @@
 #include "texture.cpp"
 #include "trace.cpp"
 #include "transform.cpp"
+#include "tree.cpp"
 #include "triangle.cpp"
 #include "vector.cpp"
 
