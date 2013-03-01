@@ -21,7 +21,19 @@ void Triangle::buildBoundingBox() {
 }
 
 
-// Ref: Glassner -An Introduction to Ray Tracing - P.53-59
+Primitive * Triangle::interpolate(Primitive * primitive,
+                                  const P_FLT ratio) const {
+  Triangle * triangle = static_cast<Triangle *>(primitive);
+  P_FLT ratioSub = 1.0f - ratio;
+
+  Point3D newVertex1 = vertex1 * ratioSub + triangle->vertex1 * ratio,
+          newVertex2 = vertex2 * ratioSub + triangle->vertex2 * ratio,
+          newVertex3 = vertex3 * ratioSub + triangle->vertex3 * ratio;
+
+  return new Triangle(material, newVertex1, newVertex2, newVertex3);
+}
+
+
 int Triangle::intersect(const Ray &ray, Intercept intercepts[]) const {
   P_FLT normalDotOrig, normalDotDir,
         t, u, v;
@@ -196,12 +208,53 @@ Color TexturedTriangle::getTexColor(const std::vector<P_FLT> mapping) const {
 }
 
 
+Primitive * TexturedTriangle::interpolate(Primitive * primitive,
+                                          const P_FLT ratio) const {
+  TexturedTriangle * triangle = static_cast<TexturedTriangle *>(primitive);
+  P_FLT ratioSub = 1.0f - ratio;
+
+  Point3D newVertex1 = vertex1 * ratioSub + triangle->vertex1 * ratio,
+          newVertex2 = vertex2 * ratioSub + triangle->vertex2 * ratio,
+          newVertex3 = vertex3 * ratioSub + triangle->vertex3 * ratio;
+  Vector2D newTexCoord1 = vertexTexCoord1 * ratioSub +
+                          triangle->vertexTexCoord1 * ratio,
+           newTexCoord2 = vertexTexCoord2 * ratioSub +
+                          triangle->vertexTexCoord2 * ratio,
+           newTexCoord3 = vertexTexCoord3 * ratioSub +
+                          triangle->vertexTexCoord3 * ratio;
+
+  return new TexturedTriangle(material, texture,
+                              newVertex1, newVertex2, newVertex3,
+                              newTexCoord1, newTexCoord2, newTexCoord3);
+}
+
+
 void TrianglePatch::getIntersect(const Point3D &point, Vector3D * normal,
                                  std::vector<P_FLT> * mapping) const {
   *mapping = inverseMap(point);
   *normal = vertexNormal1 * (*mapping)[0] +
             vertexNormal2 * (*mapping)[1] +
             vertexNormal3 * (*mapping)[2];
+}
+
+
+Primitive * TrianglePatch::interpolate(Primitive * primitive,
+                                       const P_FLT ratio) const {
+  TrianglePatch * triangle = static_cast<TrianglePatch *>(primitive);
+  P_FLT ratioSub = 1.0f - ratio;
+
+  Point3D newVertex1 = vertex1 * ratioSub + triangle->vertex1 * ratio,
+          newVertex2 = vertex2 * ratioSub + triangle->vertex2 * ratio,
+          newVertex3 = vertex3 * ratioSub + triangle->vertex3 * ratio;
+  Vector3D newNormal1 = vertexNormal1 * ratioSub +
+                        triangle->vertexNormal1 * ratio,
+           newNormal2 = vertexNormal2 * ratioSub +
+                        triangle->vertexNormal2 * ratio,
+           newNormal3 = vertexNormal3 * ratioSub +
+                        triangle->vertexNormal3 * ratio;
+
+  return new TrianglePatch(material, newVertex1, newVertex2, newVertex3,
+                           vertexNormal1, vertexNormal2, vertexNormal3);
 }
 
 
@@ -220,6 +273,34 @@ Color PhongTriangle::getTexColor(const std::vector<P_FLT> mapping) const {
                       vertexTexCoord3 * mapping[2];
 
   return texture->colorAt(texCoord);
+}
+
+
+Primitive * PhongTriangle::interpolate(Primitive * primitive,
+                                       const P_FLT ratio) const {
+  PhongTriangle * triangle = static_cast<PhongTriangle *>(primitive);
+  P_FLT ratioSub = 1.0f - ratio;
+
+  Point3D newVertex1 = vertex1 * ratioSub + triangle->vertex1 * ratio,
+          newVertex2 = vertex2 * ratioSub + triangle->vertex2 * ratio,
+          newVertex3 = vertex3 * ratioSub + triangle->vertex3 * ratio;
+  Vector3D newNormal1 = vertexNormal1 * ratioSub +
+                        triangle->vertexNormal1 * ratio,
+           newNormal2 = vertexNormal2 * ratioSub +
+                        triangle->vertexNormal2 * ratio,
+           newNormal3 = vertexNormal3 * ratioSub +
+                        triangle->vertexNormal3 * ratio;
+  Vector2D newTexCoord1 = vertexTexCoord1 * ratioSub +
+                          triangle->vertexTexCoord1 * ratio,
+           newTexCoord2 = vertexTexCoord2 * ratioSub +
+                          triangle->vertexTexCoord2 * ratio,
+           newTexCoord3 = vertexTexCoord3 * ratioSub +
+                          triangle->vertexTexCoord3 * ratio;
+
+  return new PhongTriangle(material, texture,
+                           newVertex1, newVertex2, newVertex3,
+                           vertexNormal1, vertexNormal2, vertexNormal3,
+                           newTexCoord1, newTexCoord2, newTexCoord3);
 }
 
 

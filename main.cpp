@@ -35,9 +35,17 @@ int main(char * inputFilename, char * outputFilename) {
   Scene scene;
   scene.init(inputFilename);
 
-  Screen screen(&scene);
-  screen.rayTrace();
-  screen.saveBmp(outputFilename);
+  P_FLT time;
+  char filename[1024];
+  for (int i = 1; i <= 150; i++) {
+    time = (i - 1) * (1.0f / 30.0f);
+    Screen screen(&scene);
+    screen.rayTrace(time);
+
+    snprintf(filename, strlen(outputFilename) + 10,
+             "%s%.3d.bmp", outputFilename, i);
+    screen.saveBmp(filename);
+  }
 
   return 0;
 }

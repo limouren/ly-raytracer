@@ -208,9 +208,9 @@ void parseCone(FILE * file, Scene * scene) {
   }
 
   if (apexRadius == baseRadius) {
-    scene->addPrimitive(new Cylinder(scene->latestMat(), baseCenter,
-                                     apexCenter, apexRadius),
-                        currentTransform);
+    scene->addStaticPrimitive(new Cylinder(scene->latestMat(), baseCenter,
+                                           apexCenter, apexRadius),
+                              currentTransform);
   } else {
     printf("WARNING: Skipped unimplemented cone\n");
   }
@@ -227,8 +227,8 @@ void parseSphere(FILE * file, Scene * scene) {
     exit(1);
   }
 
-  scene->addPrimitive(new Sphere(scene->latestMat(), center, radius),
-                      currentTransform);
+  scene->addStaticPrimitive(new Sphere(scene->latestMat(), center, radius),
+                            currentTransform);
 }
 
 
@@ -271,9 +271,9 @@ void parsePoly(FILE * file, Scene * scene) {
       }
     }
 
-    scene->addPrimitive(new PolygonPatch(scene->latestMat(), vertexNum, vertex,
-                                         normal),
-                        currentTransform);
+    scene->addStaticPrimitive(new PolygonPatch(scene->latestMat(), vertexNum,
+                                               vertex, normal),
+                              currentTransform);
   } else {
     for (int i = 0; i < vertexNum; i++) {
       if (fscanf(file, " %f %f %f",
@@ -283,8 +283,9 @@ void parsePoly(FILE * file, Scene * scene) {
       }
     }
 
-    scene->addPrimitive(new Polygon(scene->latestMat(), vertexNum, vertex),
-                        currentTransform);
+    scene->addStaticPrimitive(new Polygon(scene->latestMat(), vertexNum,
+                                          vertex),
+                              currentTransform);
   }
 }
 
@@ -320,7 +321,6 @@ void parseTexturedTriangle(FILE *file, Scene * scene) {
   char filepath[1024],
        textureName[200];
   int patch;
-  // TODO(kent): Clean this up later and avoid memory leak
   P_FLT x, y, z;
   Point3D vertex[3];
   Vector2D texCoord[3];
@@ -363,60 +363,64 @@ void parseTexturedTriangle(FILE *file, Scene * scene) {
   }
 
   if (patch) {
-    scene->addPrimitive(new PhongTriangle(scene->latestMat(), texture,
-                                          vertex[0], vertex[1], vertex[2],
-                                          normal[0], normal[1], normal[2],
-                                          texCoord[0], texCoord[1],
-                                          texCoord[2]),
-                        currentTransform);
+    scene->addStaticPrimitive(
+      new PhongTriangle(scene->latestMat(), texture,
+                        vertex[0], vertex[1], vertex[2],
+                        normal[0], normal[1], normal[2],
+                        texCoord[0], texCoord[1],
+                        texCoord[2]),
+      currentTransform);
   } else {
-    scene->addPrimitive(new TexturedTriangle(scene->latestMat(), texture,
-                                             vertex[0], vertex[1], vertex[2],
-                                             texCoord[0], texCoord[1],
-                                             texCoord[2]),
-                        currentTransform);
+    scene->addStaticPrimitive(
+      new TexturedTriangle(scene->latestMat(), texture,
+                           vertex[0], vertex[1], vertex[2],
+                           texCoord[0], texCoord[1],
+                           texCoord[2]),
+      currentTransform);
   }
 }
 
 
-void parseAnimatedTriangle(FILE *file) {
-  int q, w;
-  int num_times;
-  Vec3f *verts;
-  Vec3f *norms;
-  float *times;
-
-  int dummy = fscanf(file, "%d", &num_times);
-  times = static_cast<float*>(malloc(sizeof(times)*num_times));
-  verts = static_cast<Vec3f*>(malloc(sizeof(Vec3f)*3*num_times));
-  norms = static_cast<Vec3f*>(malloc(sizeof(Vec3f)*3*num_times));
-
-  for (q = 0; q < num_times; q++) {
-    if (fscanf(file, " %f", &times[q]) != 1) {
-      goto parseErr;
-    }
-
-    for (w = 0; w < 3; w++) {
-      if (fscanf(file, " %f %f %f",
-                 &verts[q*3+w][X], &verts[q*3+w][Y], &verts[q*3+w][Z]) != 3) {
-        goto parseErr;
-      }
-
-      if (fscanf(file, " %f %f %f",
-                 &norms[q*3+w][X], &norms[q*3+w][Y], &norms[q*3+w][Z]) != 3) {
-        goto parseErr;
-      }
-    }
-  }
-
-  /* add a animated triangle here
-   * e.g., viAddAnimatedTriangle(num_times, times, verts, norms);
-   */
-  return;
-
-  parseErr:
+void parseAnimatedTriangle(FILE *file, Scene * scene) {
+  int frameTimeNum;
+  if (fscanf(file, "%d", &frameTimeNum) != 1) {
     printf("Error: could not parse animated triangle (tpa)\n");
     exit(1);
+  };
+
+  P_FLT time;
+  Point3D vertex[3];
+  Vector3D normal[3];
+
+  TimedPrimitive * timedPrim = new TimedPrimitive();
+
+  for (int i = 0; i < frameTimeNum; i++) {
+    if (fscanf(file, " %f", &time) != 1) {
+      printf("Error: could not parse animated triangle (tpa)\n");
+      exit(1);
+    }
+
+    for (int j = 0; j < 3; j++) {
+      if (fscanf(file, " %f %f %f",
+                 &vertex[j].x, &vertex[j].y, &vertex[j].z) != 3) {
+        printf("Error: could not parse animated triangle (tpa)\n");
+        exit(1);
+      }
+
+      if (fscanf(file, " %f %f %f",
+                 &normal[j].x, &normal[j].y, &normal[j].z) != 3) {
+        printf("Error: could not parse animated triangle (tpa)\n");
+        exit(1);
+      }
+    }
+
+    timedPrim->addFrame(time,
+                        new TrianglePatch(scene->latestMat(),
+                                          vertex[0], vertex[1], vertex[2],
+                                          normal[0], normal[1], normal[2]));
+  }
+
+  scene->addTimedPrimitive(timedPrim);
 }
 
 
@@ -429,7 +433,7 @@ void parseTextureStuff(FILE * file, Scene * scene) {
   } else if (inputChar == 'p') {
     inputChar = getc(file);
     if (inputChar == 'a') {
-      parseAnimatedTriangle(file);
+      parseAnimatedTriangle(file, scene);
     }
   } else {
     printf("Error: tt and ttp are valid codes (not t%c).\n", inputChar);
@@ -529,11 +533,12 @@ void parseKeyFrames(FILE *file) {
 
 void parseXform(FILE * f, Scene * scene) {
   char name[100];
-  char ch, isStatic;
+  char ch;
 
   ch = getc(f);
   if (ch != 's') {
-     ungetc(ch, f);
+    // Static transform
+    ungetc(ch, f);
 
     if (fscanf(f, "%s", name) != 1) {
       printf("Error: could not read transform name.\n");
@@ -773,7 +778,7 @@ void parseMesh(FILE * file, Scene * scene) {
 
   TriangleMesh * mesh = new TriangleMesh(scene->latestMat(), texture, vertex,
                                          normal, texCoords, triangleDefs);
-  scene->addPrimitive(mesh, currentTransform);
+  scene->addStaticPrimitive(mesh, currentTransform);
   scene->meshes.push_back(mesh);
 }
 

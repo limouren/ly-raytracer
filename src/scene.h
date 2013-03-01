@@ -19,6 +19,9 @@
 BEGIN_RAYTRACER
 
 
+using namespace std;
+
+
 class Camera;
 class Color;
 class Light;
@@ -27,18 +30,21 @@ class Transform;
 
 
 class Scene {
+  private:
+    vector<Primitive *> staticPrimitives;
+    vector<TimedPrimitive *> timedPrimitives;
+    vector<Texture *> textures;
+    vector<Transform *> transforms;
+
   public:
     Node * sceneRoot;
     Camera * camera;
     Color ambience, backgroundColor;
     Material * medium;
-    std::vector<Light *> lights;
-    std::vector<Material *> materials;
+    vector<TriangleMesh *> meshes;
+    vector<Light *> lights;
+    vector<Material *> materials;
     // Keep track of meshes for later initialization
-    std::vector<TriangleMesh *> meshes;
-    std::vector<Primitive *> primitives;
-    std::vector<Texture *> textures;
-    std::vector<Transform *> transforms;
 
     Scene(): sceneRoot(NULL) {
       medium = new Material("Vacuum",
@@ -69,31 +75,58 @@ class Scene {
       if (sceneRoot != NULL && sceneRoot->type != 0) {
         delete sceneRoot;
       }
-      while (!primitives.empty()) {
-        delete primitives.back();
-        primitives.pop_back();
+      while (!staticPrimitives.empty()) {
+        delete staticPrimitives.back();
+        staticPrimitives.pop_back();
+      }
+      while (!timedPrimitives.empty()) {
+        delete timedPrimitives.back();
+        timedPrimitives.pop_back();
       }
     }
 
-    void addPrimitive(Primitive * primitive, Transform * staticTransform) {
+    void addStaticPrimitive(Primitive * primitive,
+                            Transform * staticTransform) {
       if (staticTransform) {
         primitive->transform(staticTransform);
       }
 
-      primitives.push_back(primitive);
+      staticPrimitives.push_back(primitive);
     }
 
-    void buildNodeTree() {
+    void addTimedPrimitive(TimedPrimitive * timedPrimitive) {
+      timedPrimitives.push_back(timedPrimitive);
+    }
+
+    void buildNodeTree(const P_FLT time) {
       clock_t startTimer, endTimer;
 
       printf("Building node tree...");
       fflush(stdout);
       startTimer = clock();
-      for (std::vector<TriangleMesh *>::iterator itr = meshes.begin();
+
+      // Include static primitives
+      vector<Primitive *> primitives(staticPrimitives);
+
+      // Include timed primitives
+      for (vector<TimedPrimitive *>::iterator itr= timedPrimitives.begin();
+           itr != timedPrimitives.end(); itr++) {
+        // Modify to accept time parameter
+        primitives.push_back((*itr)->atTime(time));
+      }
+
+      // Initialize meshes
+      for (vector<TriangleMesh *>::iterator itr = meshes.begin();
            itr != meshes.end(); itr++) {
         (*itr)->init();
       }
-      sceneRoot = buildBVHTree(primitives.begin(), primitives.end());
+
+      Node * newSceneRoot = buildBVHTree(primitives.begin(), primitives.end());
+      if (newSceneRoot && sceneRoot) {
+        delete sceneRoot;
+      }
+      sceneRoot = newSceneRoot;
+
       endTimer = clock();
       printf("completed (%.3f seconds).\n", clockTime(startTimer, endTimer));
     }
@@ -108,7 +141,7 @@ class Scene {
     }
 
     Texture * getOrCreateTexture(char * filepath) {
-      for (std::vector<Texture *>::iterator itr = textures.begin();
+      for (vector<Texture *>::iterator itr = textures.begin();
            itr != textures.end(); itr++) {
         if (strncmp(filepath, (*itr)->filepath, strlen(filepath) + 1) == 0) {
           return *itr;
@@ -126,7 +159,7 @@ class Scene {
       printf("Loading textures...");
       fflush(stdout);
       startTimer = clock();
-      for (std::vector<Texture *>::iterator itr = textures.begin();
+      for (vector<Texture *>::iterator itr = textures.begin();
            itr != textures.end(); itr++) {
         (*itr)->loadFromFile();
       }

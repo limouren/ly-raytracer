@@ -57,11 +57,13 @@ class Triangle: public Plane {
     virtual ~Triangle() {}
 
     void buildBoundingBox();
-    int intersect(const Ray &ray, Intercept intercepts[]) const;
+    virtual int intersect(const Ray &ray, Intercept intercepts[]) const;
     std::vector<P_FLT> inverseMap(const Point3D &point) const;
     virtual void transform(Transform * transform) {
       buildBoundingBox();
     }
+    virtual Primitive * interpolate(Primitive * primitive,
+                                    const P_FLT ratio) const;
 };
 
 
@@ -84,6 +86,7 @@ class TexturedTriangle: public Triangle {
     void getIntersect(const Point3D &point, Vector3D * normal,
                       std::vector<P_FLT> * mapping) const;
     Color getTexColor(const std::vector<P_FLT> mapping) const;
+    Primitive * interpolate(Primitive * primitive, const P_FLT ratio) const;
 };
 
 
@@ -104,6 +107,7 @@ class TrianglePatch: public Triangle {
 
     void getIntersect(const Point3D &point, Vector3D * normal,
                       std::vector<P_FLT> * mapping) const;
+    Primitive * interpolate(Primitive * primitive, const P_FLT ratio) const;
 };
 
 
@@ -134,6 +138,7 @@ class PhongTriangle: public Triangle {
     void getIntersect(const Point3D &point, Vector3D * normal,
                       std::vector<P_FLT> * mapping) const;
     Color getTexColor(const std::vector<P_FLT> mapping) const;
+    Primitive * interpolate(Primitive * primitive, const P_FLT ratio) const;
 };
 
 

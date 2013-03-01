@@ -157,7 +157,7 @@ class Screen {
     }
 
     void calibrate();
-    void rayTrace();
+    void rayTrace(const P_FLT time);
     void saveBmp(char * outputFilename) const;
 };
 
