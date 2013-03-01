@@ -114,6 +114,7 @@ void Screen::rayTrace(const P_FLT time) {
                         pixelVert * static_cast<P_FLT>(j);
       rayDir.normalize();
 
+      pixels[j * width + i] = Color();
       screenTracer->addTask(&pixels[j * width + i], rayDir);
     }
   }
