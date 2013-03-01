@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "bitmap/bitmap/bitmap_image.hpp"
+#include "lodepng/lodepng.cpp"
 
 #include "config.h"
 
@@ -73,6 +74,29 @@ void Screen::saveBmp(char * outputFilename) const {
   delete [] redChannel;
   delete [] greenChannel;
   delete [] blueChannel;
+  endTimer = clock();
+  printf("completed (%.3f seconds).\n", clockTime(startTimer, endTimer));
+}
+
+
+void Screen::savePng(char * outputFilename) const {
+  clock_t startTimer, endTimer;
+
+  printf("Saving file to \"%s\"...", outputFilename);
+  fflush(stdout);
+  startTimer = clock();
+
+  int pixelCount = height * width;
+  std::vector<unsigned char> png;
+  for (int i = pixelCount - 1; i >=0; i--) {
+    RGBColor rgbColor(pixels[i]);
+    png.push_back(rgbColor.r);
+    png.push_back(rgbColor.g);
+    png.push_back(rgbColor.b);
+    png.push_back(255);
+  }
+  lodepng::encode(outputFilename, png, width, height);
+
   endTimer = clock();
   printf("completed (%.3f seconds).\n", clockTime(startTimer, endTimer));
 }

@@ -43,8 +43,8 @@ int main(char * inputFilename, char * outputFilename) {
     screen.rayTrace(time);
 
     snprintf(filename, strlen(outputFilename) + 10,
-             "%s%.3d.bmp", outputFilename, i);
-    screen.saveBmp(filename);
+             "%s%.3d.png", outputFilename, i);
+    screen.savePng(filename);
   }
 
   return 0;

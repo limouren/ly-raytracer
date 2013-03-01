@@ -53,14 +53,19 @@ class Color {
 
 class RGBColor {
   public:
-    int r, g, b;
+    unsigned char r, g, b;
 
     inline RGBColor() {}
+    explicit inline RGBColor(const Color &color) {
+      r = static_cast<unsigned char>(256.0f * color.r);
+      g = static_cast<unsigned char>(256.0f * color.g);
+      b = static_cast<unsigned char>(256.0f * color.b);
+    }
 
     inline explicit RGBColor(unsigned char * mRGB) {
-      r = static_cast<int>(*mRGB);
-      g = static_cast<int>(*(mRGB + 1));
-      b = static_cast<int>(*(mRGB + 2));
+      r = *mRGB;
+      g = *(mRGB + 1);
+      b = *(mRGB + 2);
     }
 
     inline Color toColor() const;
