@@ -578,16 +578,12 @@ void parseXform(FILE * f, Scene * scene) {
 }
 
 
-void parseAnimParams(FILE * file) {
-  float start, end;
-  int num_frames;
-  if (fscanf(file, "%f %f %d", &start, &end, &num_frames) != 3) {
+void parseAnimParams(FILE * file, Scene * scene) {
+  if (fscanf(file, "%f %f %d",
+             &scene->startTime, &scene->endTime, &scene->frameNum) != 3) {
      printf("Error: could not parse animations parameters.\n");
      exit(1);
   }
-  /* add animations parameters here
-   * e.g., viSetupAnimParams(start, end, num_frames);
-   */
 }
 
 
@@ -599,7 +595,7 @@ void parseA(FILE * file, Scene * scene) {
   ambient = getc(file);
   if (ambient != 'm') {
     ungetc(ambient, file);
-    parseAnimParams(file);
+    parseAnimParams(file, scene);
   } else {
     Color ambience;
     if (fscanf(file, "%f %f %f",

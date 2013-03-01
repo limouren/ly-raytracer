@@ -37,6 +37,8 @@ class Scene {
     vector<Transform *> transforms;
 
   public:
+    int frameNum;
+    P_FLT startTime, endTime;
     Node * sceneRoot;
     Camera * camera;
     Color ambience, backgroundColor;

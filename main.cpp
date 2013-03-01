@@ -38,9 +38,10 @@ int main(char * inputFilename, char * outputFilename) {
   Screen screen(&scene);
   P_FLT time;
   char filename[1024];
-  for (int i = 1; i <= 150; i++) {
-    time = (i - 1) * (1.0f / 30.0f);
-    screen.rayTrace(time);
+
+  P_FLT frametime = (scene.endTime - scene.startTime) / (scene.frameNum - 1);
+  for (int i = 0; i < scene.frameNum; i++) {
+    screen.rayTrace(i * frametime);
 
     snprintf(filename, strlen(outputFilename) + 10,
              "%s%.3d.png", outputFilename, i);
