@@ -108,11 +108,10 @@ int Polygon::intersect(const Ray &ray, Intercept intercepts[]) const {
 
 void Polygon::transform(Transform * transform) {
   for (int i = 0; i < vertexNum; i++) {
-    transform->transformPoint(&vertex[i]);
+    transform->transformPoint(vertex[i], &vertex[i]);
   }
 
-  transform->transformNormal(&normal);
-  normal.normalize();
+  transform->transformNormal(normal, &normal);
   dominantIndex = normal.dominantIndex();
 
   d = -dotProduct(vertex[0], normal);
@@ -146,7 +145,7 @@ void PolygonPatch::getIntersect(const Point3D &point, Vector3D * normal,
 void PolygonPatch::transform(Transform * transform) {
   Polygon::transform(transform);
   for (int i = 0; i < vertexNum; i++) {
-    transform->transformNormal(&vertexNormal[i]);
+    transform->transformNormal(vertexNormal[i], &vertexNormal[i]);
   }
 }
 
@@ -370,9 +369,9 @@ int Cylinder::intersect(const Ray &ray, Intercept intercepts[]) const {
 
 
 void Cylinder::transform(Transform * transform) {
-  transform->transformPoint(&apexCenter);
-  transform->transformPoint(&baseCenter);
-  transform->transformNormal(&axisNormal);
+  transform->transformPoint(apexCenter, &apexCenter);
+  transform->transformPoint(baseCenter, &baseCenter);
+  transform->transformNormal(axisNormal, &axisNormal);
   apexD = -dotProduct(axisNormal, apexCenter);
   baseD = -dotProduct(axisNormal, baseCenter);
 
@@ -435,7 +434,7 @@ int Sphere::intersect(const Ray &ray, Intercept intercepts[]) const {
 
 
 void Sphere::transform(Transform * transform) {
-  transform->transformPoint(&center);
+  transform->transformPoint(center, &center);
 
   buildBoundingBox();
 }

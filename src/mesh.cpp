@@ -101,11 +101,11 @@ int TriangleMesh::intersect(const Ray &ray, Intercept intercepts[]) const {
 
 void TriangleMesh::transform(Transform * transform) {
   for (int i = 0; i < pointNum; i++) {
-    transform->transformPoint(&points[i]);
+    transform->transformPoint(points[i], &points[i]);
   }
 
   for (int i = 0; i < normalNum; i++) {
-    transform->transformNormal(&normals[i]);
+    transform->transformNormal(normals[i], &normals[i]);
   }
 
   init();

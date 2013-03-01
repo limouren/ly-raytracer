@@ -80,13 +80,16 @@ class Matrix4 {
 
 Point3D operator *(const Matrix4 &matrix, const Point3D &point) {
   Point3D result(matrix[0][0] * point.x + matrix[0][1] * point.y +
-                  matrix[0][2] * point.z + matrix[0][3],
-                  matrix[1][0] * point.x + matrix[1][1] * point.y +
-                  matrix[1][2] * point.z + matrix[1][3],
-                  matrix[2][0] * point.x + matrix[2][1] * point.y +
-                  matrix[2][2] * point.z + matrix[2][3]);
-  result *= 1.0f / (matrix[3][0] * point.x + matrix[3][1] * point.y +
-                    matrix[3][2] * point.z + matrix[3][3]);
+                 matrix[0][2] * point.z + matrix[0][3],
+                 matrix[1][0] * point.x + matrix[1][1] * point.y +
+                 matrix[1][2] * point.z + matrix[1][3],
+                 matrix[2][0] * point.x + matrix[2][1] * point.y +
+                 matrix[2][2] * point.z + matrix[2][3]);
+  P_FLT w = matrix[3][0] * point.x + matrix[3][1] * point.y +
+            matrix[3][2] * point.z + matrix[3][3];
+  if (!fIsZero(w)) {
+    result *= w;
+  }
 
   return result;
 }
@@ -99,8 +102,6 @@ Vector3D operator *(const Matrix4 &matrix, const Vector3D &vector) {
                   matrix[1][2] * vector.z + matrix[1][3],
                   matrix[2][0] * vector.x + matrix[2][1] * vector.y +
                   matrix[2][2] * vector.z + matrix[2][3]);
-  result *= 1.0f / (matrix[3][0] * vector.x + matrix[3][1] * vector.y +
-                    matrix[3][2] * vector.z + matrix[3][3]);
 
   return result;
 }
@@ -271,19 +272,17 @@ class Transform {
       delete invTranslation;
     }
 
-    void transformNormal(Vector3D * normal) const {
-      Matrix4 normalTransform = *rotation * *invScale;
-
-      *normal = normalTransform * (*normal);
-      normal->normalize();
+    void transformNormal(const Vector3D &normal, Vector3D * result) const {
+      *result = (*inverse) * normal;
+      result->normalize();
     }
 
-    void transformPoint(Point3D * point) const {
-      *point = (*matrix) * (*point);
+    void transformPoint(const Point3D &point, Point3D * result) const {
+      *result = (*matrix) * point;
     }
 
-    void transformVector(Vector3D * vector) const {
-      // TODO(kent): Apply transforms to vector
+    void transformVector(const Vector3D &vector, Vector3D * result) const {
+      *result = (*matrix) * vector;
     }
 
     void print(char * id) const {

@@ -192,6 +192,13 @@ std::vector<P_FLT> Triangle::inverseMap(const Point3D &point) const {
 }
 
 
+void Triangle::transform(Transform * transform) {
+  transform->transformPoint(vertex1, &vertex1);
+  transform->transformPoint(vertex2, &vertex2);
+  transform->transformPoint(vertex3, &vertex3);
+}
+
+
 void TexturedTriangle::getIntersect(const Point3D &point, Vector3D * normal,
                                     std::vector<P_FLT> * mapping) const {
   *mapping = inverseMap(point);
@@ -258,6 +265,14 @@ Primitive * TrianglePatch::interpolate(Primitive * primitive,
 }
 
 
+void TrianglePatch::transform(Transform * transform) {
+  Triangle::transform(transform);
+  transform->transformNormal(vertexNormal1, &vertexNormal1);
+  transform->transformNormal(vertexNormal2, &vertexNormal2);
+  transform->transformNormal(vertexNormal3, &vertexNormal3);
+}
+
+
 void PhongTriangle::getIntersect(const Point3D &point, Vector3D * normal,
                                  std::vector<P_FLT> * mapping) const {
   *mapping = inverseMap(point);
@@ -301,6 +316,14 @@ Primitive * PhongTriangle::interpolate(Primitive * primitive,
                            newVertex1, newVertex2, newVertex3,
                            vertexNormal1, vertexNormal2, vertexNormal3,
                            newTexCoord1, newTexCoord2, newTexCoord3);
+}
+
+
+void PhongTriangle::transform(Transform * transform) {
+  Triangle::transform(transform);
+  transform->transformNormal(vertexNormal1, &vertexNormal1);
+  transform->transformNormal(vertexNormal2, &vertexNormal2);
+  transform->transformNormal(vertexNormal3, &vertexNormal3);
 }
 
 
