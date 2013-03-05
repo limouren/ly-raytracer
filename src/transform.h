@@ -256,9 +256,9 @@ class Transform {
                                    0.0f, 0.0f, 1.0f, -translate.z,
                                    0.0f, 0.0f, 0.0f, 1.0f);
 
-      matrix = new Matrix4(*scale * *rotation * *translation);
+      matrix = new Matrix4(*translation * *rotation * *scale);
 
-      inverse = new Matrix4(*invTranslation * *invRotation * *invScale);
+      inverse = new Matrix4(*invScale * *invRotation * *invTranslation);
     }
 
     ~Transform() {
