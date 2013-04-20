@@ -1,4 +1,4 @@
-#include "raytracer.cpp"
+#include "raytracer.h"
 #include "window.cpp"
 
 
