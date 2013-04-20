@@ -4,8 +4,6 @@
 
 #include "wx/wx.h"
 
-#include "config.h"
-
 
 class RaytracerApp: public wxApp {
   virtual bool OnInit();
