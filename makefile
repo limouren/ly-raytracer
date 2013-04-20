@@ -5,7 +5,7 @@ MISC_FLAGS = -pthread -O3
 DEBUG_FLAGS = -ggdb
 VPATH = $(SRC_DIR):$(TEST_DIR)
 
-O_DIR = bin
+BIN_DIR = bin
 
 CONFIG_DIR = config
 GUI_DIR = gui
@@ -20,12 +20,12 @@ OBJS := $(patsubst %.h,%.o,$(wildcard $(SRC_DIR)/*.h))
 WXWIDGET_FLAGS = $(shell wx-config --libs --cxxflags)
 
 .PHONY : raytracer
-raytracer: $(O_DIR)/raytracer
+raytracer: $(BIN_DIR)/raytracer
 
-$(O_DIR)/raytracer: main.cpp $(GUI_DIR)/*.cpp $(GUI_DIR)/*.h\
+$(BIN_DIR)/raytracer: main.cpp $(GUI_DIR)/*.cpp $(GUI_DIR)/*.h\
                     $(RAYTRACER_DIR)/*.cpp $(RAYTRACER_DIR)/*.h
 	$(CXX) $< $(CFLAGS) -o $@
 
 .PHONY : clean
 clean:
-	rm -rf $(O_DIR)/* $(SRC_DIR)/*.o
+	rm -rf $(BIN_DIR)/*
