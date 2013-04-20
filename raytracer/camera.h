@@ -19,9 +19,8 @@ class Camera {
     P_FLT angle,  // horizontal view angle
           aspectRatio,
           hither;
-    Point3D target,
-            viewpoint;
-    Vector3D up;
+    Point3D viewpoint;
+    Vector3D forward, up;
 
     Camera(const Point3D &viewpoint, const Point3D &target,
            const Vector3D &up, const P_FLT angle, const P_FLT hither,
@@ -29,8 +28,11 @@ class Camera {
       imageHeight(imageHeight), imageWidth(imageWidth),
       angle(angle), aspectRatio(static_cast<P_FLT>(imageWidth) /
                                 static_cast<P_FLT>(imageHeight)),
-      hither(hither), target(target), viewpoint(viewpoint), up(up) {
+      hither(hither), viewpoint(viewpoint), up(up) {
       this->up.normalize();
+
+      forward = target - viewpoint;
+      forward.normalize();
     }
 };
 

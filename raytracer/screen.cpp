@@ -106,20 +106,19 @@ void Screen::rayTrace(const P_FLT time) {
   clock_t startTimer, endTimer;
 
   startTimer = clock();
-  Vector3D dir = scene->camera->target - scene->camera->viewpoint;
-  dir.normalize();
 
   P_FLT horizontal = sin(scene->camera->angle * 0.5f),
         vertical = horizontal / scene->camera->aspectRatio;
 
-  Vector3D top = scene->camera->up - dir * dotProduct(scene->camera->up, dir),
-           left = crossProduct(scene->camera->up, dir);
+  Vector3D top = scene->camera->up - scene->camera->forward *
+                 dotProduct(scene->camera->up, scene->camera->forward),
+           left = crossProduct(scene->camera->up, scene->camera->forward);
   top.normalize();
   top *= vertical;
   left.normalize();
   left *= horizontal;
 
-  Point3D center = scene->camera->viewpoint + dir,
+  Point3D center = scene->camera->viewpoint + scene->camera->forward,
           topLeft = center + top + left;
 
   Vector3D pixelHor = -left / static_cast<P_FLT>(width / 2),
