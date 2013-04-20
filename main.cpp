@@ -26,12 +26,15 @@
 #include "tree.cpp"
 #include "triangle.cpp"
 #include "vector.cpp"
+#include "window.cpp"
 
 
 BEGIN_RAYTRACER
 
 
 int main(char * inputFilename, char * outputFilename) {
+  // TODO(kent): Modify aaLevel, threadNum with command line params
+
   Scene scene;
   scene.init(inputFilename);
 
@@ -48,6 +51,7 @@ int main(char * inputFilename, char * outputFilename) {
     screen.savePng(filename);
   }
 
+
   return 0;
 }
 
@@ -55,17 +59,18 @@ int main(char * inputFilename, char * outputFilename) {
 END_RAYTRACER
 
 
-using namespace std;
+// using namespace std;
+// NOTE(kent): Old main function. Obseleted by IMPLEMENT_APP
+// int main(int argc, char * argv[]) {
+//   if (argc != 3) {
+//     printf("Usage: raytracer <input filename> <output filename>\n");
+//     return 1;
+//   }
+//
+//
+//   RAYTRACER_NAMESPACE::main(argv[1], argv[2]);
+//   return 0;
+// }
 
 
-int main(int argc, char * argv[]) {
-  if (argc != 3) {
-    printf("Usage: raytracer <input filename> <output filename>\n");
-    return 1;
-  }
-
-  // TODO(kent): Modify aaLevel, threadNum with command line params
-
-  RAYTRACER_NAMESPACE::main(argv[1], argv[2]);
-  return 0;
-}
+IMPLEMENT_APP(RaytracerApp)
