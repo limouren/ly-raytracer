@@ -1,4 +1,8 @@
+#include "config.h"
+
 #include "window.h"
+
+#include "raytracer.h"
 
 
 bool RaytracerApp::OnInit() {
@@ -50,17 +54,16 @@ void RaytracerFrame::OnOpen(wxCommandEvent &WXUNUSED(event)) {
 
   if (openFileDialog->ShowModal() == wxID_OK) {
     wxString openFilePath = openFileDialog->GetPath();
+    RAYTRACER_NAMESPACE::RayTracer raytracer(openFilePath.char_str());
 
-    if (image->LoadFile(openFilePath)) {
-      this->SetClientSize(image->GetWidth(), image->GetHeight());
+    delete image;
+    image = new wxImage(raytracer.screen->width, raytracer.screen->height,
+                        raytracer.rayTrace(), false);
 
-      wxClientDC imagePainter(this);
-      imagePainter.DrawBitmap(wxBitmap(*image), 0, 0, false);
+    this->SetClientSize(image->GetWidth(), image->GetHeight());
 
-      SetStatusText(_("Success!"));
-    } else {
-      SetStatusText(_("Failed!"));
-    }
+    wxClientDC imagePainter(this);
+    imagePainter.DrawBitmap(wxBitmap(*image), 0, 0, false);
   }
 }
 
