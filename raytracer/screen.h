@@ -119,11 +119,11 @@ class ScreenTracer {
         tasks.pop_back();
         pthread_mutex_unlock(&tasksMutex);
 
-        if (index % thousandth == 0) {
-          progress = static_cast<float>(taskCount - index) * progressPercent;
-          printf("\rTracing image...%.1f%% completed.", progress);
-          fflush(stdout);
-        }
+        //if (index % thousandth == 0) {
+        //  progress = static_cast<float>(taskCount - index) * progressPercent;
+        //  printf("\rTracing image...%.1f%% completed.", progress);
+        //  fflush(stdout);
+        //}
         pixelTracer->run(scene, rayOrig, pixelHor, pixelVert);
         delete pixelTracer;
 

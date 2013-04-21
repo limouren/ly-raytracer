@@ -41,6 +41,14 @@ RaytracerFrame::RaytracerFrame(const wxString &title, const wxPoint &pos,
 
 void RaytracerFrame::OnChar(wxKeyEvent &event) {
   switch (event.GetKeyCode()) {
+    case 65:
+    case 97:
+      rayTracer->scene->camera->move('a', 0.2f);
+      break;
+    case 68:
+    case 100:
+      rayTracer->scene->camera->move('d', 0.2f);
+      break;
     case 83:
     case 115:
       rayTracer->scene->camera->move('s', 0.2f);
@@ -48,6 +56,18 @@ void RaytracerFrame::OnChar(wxKeyEvent &event) {
     case 87:
     case 119:
       rayTracer->scene->camera->move('w', 0.2f);
+      break;
+    case WXK_LEFT:
+      rayTracer->scene->camera->turn('4', 0.017453f);
+      break;
+    case WXK_UP:
+      rayTracer->scene->camera->turn('8', 0.017453f);
+      break;
+    case WXK_RIGHT:
+      rayTracer->scene->camera->turn('6', 0.017453f);
+      break;
+    case WXK_DOWN:
+      rayTracer->scene->camera->turn('2', 0.017453f);
       break;
     default:
       event.Skip();

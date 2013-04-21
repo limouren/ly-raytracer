@@ -20,7 +20,7 @@ class Camera {
           aspectRatio,
           hither;
     Point3D viewpoint;
-    Vector3D forward, up;
+    Vector3D forward, up, left;
 
     Camera(const Point3D &viewpoint, const Point3D &target,
            const Vector3D &up, const P_FLT angle, const P_FLT hither,
@@ -33,20 +33,50 @@ class Camera {
 
       forward = target - viewpoint;
       forward.normalize();
+
+      left = crossProduct(up, forward);
+      left.normalize();
     }
 
     void move(char direction, P_FLT distance) {
       switch (direction) {
-        case 'w':
+        case 'w':  // forward
           viewpoint += forward * distance;
           break;
-        case 's':
+        case 'a':  // leftward
+          viewpoint += left * distance;
+          break;
+        case 's':  // backward
           viewpoint -= forward * distance;
+          break;
+        case 'r':  // rightward
+          viewpoint -= left * distance;
           break;
       }
     }
 
-    void turn(char direction, P_FLT radians) {
+    void turn(char direction, P_FLT angle) {
+      P_FLT cosine = cos(angle),
+            sine = sin(angle);
+      switch (direction) {
+        case '8':  // up
+          sine = -sine;
+        case '2':  // down
+          forward = forward * cosine + crossProduct(left, forward) * sine +
+                    left * dotProduct(left, forward) * (1.0f - cosine);
+          forward.normalize();
+          break;
+        case '6':  // right
+          sine = -sine;
+        case '4':  // left
+          forward = forward * cosine + crossProduct(up, forward) * sine +
+                    up * dotProduct(up, forward) * (1.0f - cosine);
+          forward.normalize();
+
+          left = crossProduct(up, forward);
+          left.normalize();
+          break;
+      }
     }
 };
 
