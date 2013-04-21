@@ -38,25 +38,25 @@ BEGIN_RAYTRACER
 
 class RayTracer {
   public:
-    Scene scene;
+    Scene * scene;
     Screen * screen;
 
     // TODO(kent): Expose aaLevel, threadNum
-    RayTracer(char * inputFilename) {
-      scene.init(inputFilename);
-      // TODO(kent): Don't hardcode time
-      scene.buildNodeTree(0.0f);
-
-      screen = new Screen(&scene);
+    RayTracer() {
+      scene = new Scene();
     }
 
-    ~RayTracer() {
-      delete screen;
+    void init(char * inputFilename) {
+      scene->init(inputFilename);
+      // TODO(kent): Don't hardcode time
+      scene->buildNodeTree(2.5f);
+
+      screen = new Screen(scene);
     }
 
     unsigned char * rayTrace() {
       // TODO(kent): Don't hardcode time
-      screen->rayTrace(0.0f);
+      screen->rayTrace(2.5f);
 
       int screenSize = screen->height * screen->width;
       unsigned char * data =

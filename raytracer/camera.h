@@ -34,6 +34,20 @@ class Camera {
       forward = target - viewpoint;
       forward.normalize();
     }
+
+    void move(char direction, P_FLT distance) {
+      switch (direction) {
+        case 'w':
+          viewpoint += forward * distance;
+          break;
+        case 's':
+          viewpoint -= forward * distance;
+          break;
+      }
+    }
+
+    void turn(char direction, P_FLT radians) {
+    }
 };
 
 
