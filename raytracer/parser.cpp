@@ -537,7 +537,7 @@ void parseXform(FILE * f, Scene * scene) {
 
   ch = getc(f);
   if (ch != 's') {
-    // Static transform
+    // TODO(kent): Implement animation transforms
     ungetc(ch, f);
 
     if (fscanf(f, "%s", name) != 1) {
@@ -551,8 +551,8 @@ void parseXform(FILE * f, Scene * scene) {
       exit(1);
     }
 
-    // TODO(kent): Implement animation transforms
   } else {
+    // Static transform
     P_FLT xScale, yScale, zScale, degrees;
     Vector3D rotateAxis, translate;
 
