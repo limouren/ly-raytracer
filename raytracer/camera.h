@@ -49,7 +49,7 @@ class Camera {
         case 's':  // backward
           viewpoint -= forward * distance;
           break;
-        case 'r':  // rightward
+        case 'd':  // rightward
           viewpoint -= left * distance;
           break;
       }
