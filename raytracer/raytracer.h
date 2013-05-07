@@ -49,14 +49,14 @@ class RayTracer {
     void init(char * inputFilename) {
       scene->init(inputFilename);
       // TODO(kent): Don't hardcode time
-      scene->buildNodeTree(2.5f);
+      scene->buildNodeTree(3.0f);
 
       screen = new Screen(scene);
     }
 
     unsigned char * rayTrace() {
       // TODO(kent): Don't hardcode time
-      screen->rayTrace(2.5f);
+      screen->rayTrace(3.0f);
 
       int screenSize = screen->height * screen->width;
       unsigned char * data =
