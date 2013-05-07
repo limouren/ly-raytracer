@@ -44,13 +44,13 @@ class Camera {
           viewpoint += forward * distance;
           break;
         case 'a':  // leftward
-          viewpoint -= left * distance;
+          viewpoint += left * distance;
           break;
         case 's':  // backward
           viewpoint -= forward * distance;
           break;
         case 'd':  // rightward
-          viewpoint += left * distance;
+          viewpoint -= left * distance;
           break;
       }
     }
