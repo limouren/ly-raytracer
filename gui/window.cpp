@@ -2,6 +2,8 @@
 
 
 bool RaytracerApp::OnInit() {
+  rayTracer = new RAYTRACER_NAMESPACE::RayTracer();
+
   RaytracerFrame * frame = new RaytracerFrame(_("Interactive Raytracer"),
                                               wxPoint(50, 50),
                                               wxSize(800, 600));
@@ -29,7 +31,6 @@ RaytracerFrame::RaytracerFrame(const wxString &title, const wxPoint &pos,
   SetMenuBar(menuBar);
 
   panel = new wxPanel(this);
-  rayTracer = new RAYTRACER_NAMESPACE::RayTracer();
 
   CreateStatusBar();
   SetStatusText(_("Interactive Raytracer Ready"));
@@ -110,7 +111,7 @@ void RaytracerFrame::OnOpen(wxCommandEvent &WXUNUSED(event)) {
 
 void RaytracerFrame::OnPaint(wxPaintEvent &WXUNUSED(event)) {
   if (image != NULL) {
-    wxPaintDC imagePainter(panel);
+    wxPaintDC imagePainter(this);
     imagePainter.DrawBitmap(wxBitmap(*image), 0, 0, false);
   }
 }
