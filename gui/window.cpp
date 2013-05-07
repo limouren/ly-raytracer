@@ -31,6 +31,8 @@ RaytracerFrame::RaytracerFrame(const wxString &title, const wxPoint &pos,
   SetMenuBar(menuBar);
 
   panel = new wxPanel(this);
+  panel->SetClientSize(800, 600);
+  this->Fit();
 
   CreateStatusBar();
   SetStatusText(_("Interactive Raytracer Ready"));
@@ -78,6 +80,8 @@ void RaytracerFrame::OnChar(wxKeyEvent &event) {
   delete image;
   image = new wxImage(rayTracer->screen->width, rayTracer->screen->height,
                       rayTracer->rayTrace());
+  image->Rescale(800, 600, wxIMAGE_QUALITY_NORMAL);
+
   wxClientDC imagePainter(panel);
   imagePainter.DrawBitmap(wxBitmap(*image), 0, 0, false);
 }
@@ -97,11 +101,11 @@ void RaytracerFrame::OnOpen(wxCommandEvent &WXUNUSED(event)) {
     wxString openFilePath = openFileDialog->GetPath();
 
     rayTracer->init(openFilePath.char_str());
-    panel->SetClientSize(rayTracer->screen->width, rayTracer->screen->height);
-    this->Fit();
 
     image = new wxImage(rayTracer->screen->width, rayTracer->screen->height,
                         rayTracer->rayTrace());
+    image->Rescale(800, 600, wxIMAGE_QUALITY_NORMAL);
+
     wxClientDC imagePainter(panel);
     imagePainter.DrawBitmap(wxBitmap(*image), 0, 0, false);
     panel->Connect(wxEVT_CHAR, wxKeyEventHandler(RaytracerFrame::OnChar));
