@@ -43,6 +43,7 @@ class Scene {
     Camera * camera;
     Color ambience, backgroundColor;
     Material * medium;
+    stack<Transform *> staticTransforms;
     vector<TriangleMesh *> meshes;
     vector<Light *> lights;
     vector<Material *> materials;
@@ -87,10 +88,9 @@ class Scene {
       }
     }
 
-    void addStaticPrimitive(Primitive * primitive,
-                            Transform * staticTransform) {
-      if (staticTransform) {
-        primitive->transform(staticTransform);
+    void addStaticPrimitive(Primitive * primitive) {
+      if (!staticTransforms.empty()) {
+        primitive->transform(staticTransforms.top());
       }
 
       staticPrimitives.push_back(primitive);

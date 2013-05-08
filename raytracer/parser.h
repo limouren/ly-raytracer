@@ -14,8 +14,6 @@ class Scene;
 class Transform;
 
 int parseFile(const char * filename, Scene * scene);
-int parseFile(const char * filename, Scene * scene,
-              Transform ** previousTransform);
 
 
 END_RAYTRACER

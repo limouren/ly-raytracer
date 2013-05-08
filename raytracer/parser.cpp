@@ -1,5 +1,6 @@
 // TODO(kent): Finish up the stubs for animation
 #include <math.h>
+#include <stack>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -19,13 +20,6 @@
 
 #define PI_DIV_180 0.01745329251994329576923690768489f
 
-// TODO(kent): Get rid of these
-#define X 0
-#define Y 1
-#define Z 2
-typedef float Vec2f[2];
-typedef float Vec3f[3];
-
 
 using namespace std;
 
@@ -33,7 +27,6 @@ using namespace std;
 BEGIN_RAYTRACER
 
 
-Transform * currentTransform;
 char directoryPath[1024];
 int globalDetailLevel = 0;
 
@@ -209,8 +202,7 @@ void parseCone(FILE * file, Scene * scene) {
 
   if (apexRadius == baseRadius) {
     scene->addStaticPrimitive(new Cylinder(scene->latestMat(), baseCenter,
-                                           apexCenter, apexRadius),
-                              currentTransform);
+                                           apexCenter, apexRadius));
   } else {
     printf("WARNING: Skipped unimplemented cone\n");
   }
@@ -227,8 +219,7 @@ void parseSphere(FILE * file, Scene * scene) {
     exit(1);
   }
 
-  scene->addStaticPrimitive(new Sphere(scene->latestMat(), center, radius),
-                            currentTransform);
+  scene->addStaticPrimitive(new Sphere(scene->latestMat(), center, radius));
 }
 
 
@@ -272,8 +263,7 @@ void parsePoly(FILE * file, Scene * scene) {
     }
 
     scene->addStaticPrimitive(new PolygonPatch(scene->latestMat(), vertexNum,
-                                               vertex, normal),
-                              currentTransform);
+                                               vertex, normal));
   } else {
     for (int i = 0; i < vertexNum; i++) {
       if (fscanf(file, " %f %f %f",
@@ -284,12 +274,11 @@ void parsePoly(FILE * file, Scene * scene) {
     }
 
     scene->addStaticPrimitive(new Polygon(scene->latestMat(), vertexNum,
-                                          vertex),
-                              currentTransform);
+                                          vertex));
   }
 }
 
-void parseInclude(FILE * file, Scene * scene, Transform ** currentTransform) {
+void parseInclude(FILE * file, Scene * scene) {
   char filename[80],
        filepath[1024];
   FILE * includeFile;
@@ -302,7 +291,7 @@ void parseInclude(FILE * file, Scene * scene, Transform ** currentTransform) {
 
   if (detailLevel <= globalDetailLevel) {
     fullFilePath(filepath, filename);
-    parseFile(filepath, scene, currentTransform);
+    parseFile(filepath, scene);
   } else {
     printf("Skipping include file: %s\n", filename);
   }
@@ -368,15 +357,13 @@ void parseTexturedTriangle(FILE *file, Scene * scene) {
                         vertex[0], vertex[1], vertex[2],
                         normal[0], normal[1], normal[2],
                         texCoord[0], texCoord[1],
-                        texCoord[2]),
-      currentTransform);
+                        texCoord[2]));
   } else {
     scene->addStaticPrimitive(
       new TexturedTriangle(scene->latestMat(), texture,
                            vertex[0], vertex[1], vertex[2],
                            texCoord[0], texCoord[1],
-                           texCoord[2]),
-      currentTransform);
+                           texCoord[2]));
   }
 }
 
@@ -571,9 +558,17 @@ void parseXform(FILE * f, Scene * scene) {
       exit(1);
     }
 
-    currentTransform = new Transform(xScale, yScale, zScale,
-                                     degreesToRadians(degrees),
-                                     rotateAxis, translate);
+    scene->staticTransforms.push(new Transform(xScale, yScale, zScale,
+                                               degreesToRadians(degrees),
+                                               rotateAxis, translate));
+  }
+}
+
+
+void parseEndXform(FILE * file, Scene * scene) {
+  if (!scene->staticTransforms.empty()) {
+    delete scene->staticTransforms.top();
+    scene->staticTransforms.pop();
   }
 }
 
@@ -774,18 +769,12 @@ void parseMesh(FILE * file, Scene * scene) {
 
   TriangleMesh * mesh = new TriangleMesh(scene->latestMat(), texture, vertex,
                                          normal, texCoords, triangleDefs);
-  scene->addStaticPrimitive(mesh, currentTransform);
+  scene->addStaticPrimitive(mesh);
   scene->meshes.push_back(mesh);
 }
 
 
 int parseFile(const char * filename, Scene * scene) {
-  return parseFile(filename, scene, NULL);
-}
-
-
-int parseFile(const char * filename, Scene * scene,
-              Transform ** previousTransform) {
   FILE * file;
 
   if (!(file = fopen(filename, "r"))) {
@@ -794,8 +783,6 @@ int parseFile(const char * filename, Scene * scene,
   }
   strncpy(directoryPath, filename, 1024);
   *(strrchr(directoryPath, '/') + 1) = '\0';
-
-  currentTransform = previousTransform? *previousTransform: NULL;
 
   char last;
   int ch;
@@ -833,7 +820,7 @@ int parseFile(const char * filename, Scene * scene,
         parsePoly(file, scene);
         break;
       case 'i':
-        parseInclude(file, scene, &currentTransform);
+        parseInclude(file, scene);
         break;
       case 'd':
         parseDetailLevel(file);
@@ -845,7 +832,7 @@ int parseFile(const char * filename, Scene * scene,
         parseXform(file, scene);
         break;
       case '}':
-        currentTransform = NULL;
+        parseEndXform(file, scene);
         break;
       case 'a':
         parseA(file, scene);
@@ -861,10 +848,6 @@ int parseFile(const char * filename, Scene * scene,
         printf("previous was %c\n", last);
         exit(1);
     }
-  }
-
-  if (previousTransform) {
-    *previousTransform = currentTransform;
   }
 
   return 0;
