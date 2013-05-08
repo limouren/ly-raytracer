@@ -1,6 +1,6 @@
 # Compiler
 CXX = g++
-CFLAGS = $(MISC_FLAGS) $(INCLUDES) $(DEBUG_FLAGS)
+CFLAGS = $(MISC_FLAGS) $(INCLUDES)
 MISC_FLAGS = -pthread -O3
 DEBUG_FLAGS = -ggdb
 VPATH = $(SRC_DIR):$(TEST_DIR)
