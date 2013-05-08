@@ -11,7 +11,7 @@ at 0 1.6 0
 up 0 1 0
 angle 45
 hither 0.1
-resolution 200 150
+resolution 400 300
 l -4 4.5 0 0.5 0.5 0.5
 l  4 4.5 0 0.5 0.5 0.5
 
