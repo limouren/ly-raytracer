@@ -43,15 +43,22 @@ void Texture::loadFromPpm() {
 
 
 Color Texture::colorAt(const Vector2D &texCoord) {
+  // Handle negative texture coordinates
   int x, y;
   P_FLT xInteger, xFract, yInteger, yFract;
 
   // First modf removes texture coordinates > 1, second for color interpolation
   xFract = modf(texCoord.x, &xInteger);
+  while (xFract < 0.0f) {
+    xFract++;
+  }
   xFract = modf(xFract * width, &xInteger);
   x = min(width - 2, static_cast<int>(xInteger));
 
   yFract = modf(texCoord.y, &yInteger);
+  while (yFract < 0.0f) {
+    yFract++;
+  }
   yFract = modf(yFract * height, &yInteger);
   y = min(height - 2, static_cast<int>(yInteger));
 
