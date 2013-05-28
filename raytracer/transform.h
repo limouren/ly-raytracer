@@ -272,6 +272,15 @@ class Transform {
       delete invTranslation;
     }
 
+    Transform& operator*=(const Transform& that) {
+      *matrix = (*matrix) * (*that.matrix);
+      *inverse = (*that.inverse) * (*inverse);
+
+      // TODO(kenji): derive other matices as well or simply delete them
+
+      return *this;
+    }
+
     void transformNormal(const Vector3D &normal, Vector3D * result) const {
       *result = (*inverse) * normal;
       result->normalize();

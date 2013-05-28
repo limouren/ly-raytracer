@@ -542,6 +542,7 @@ void parseXform(FILE * f, Scene * scene) {
     // Static transform
     P_FLT xScale, yScale, zScale, degrees;
     Vector3D rotateAxis, translate;
+    Transform* newTransform;
 
     if (fscanf(f, " %f %f %f %f %f %f %f %f %f %f",
                &xScale, &yScale, &zScale,
@@ -558,18 +559,27 @@ void parseXform(FILE * f, Scene * scene) {
       exit(1);
     }
 
-    scene->staticTransforms.push(new Transform(xScale, yScale, zScale,
-                                               degreesToRadians(degrees),
-                                               rotateAxis, translate));
+    newTransform = new Transform(xScale, yScale, zScale,
+                                 degreesToRadians(degrees),
+                                 rotateAxis, translate);
+    if (!scene->staticTransforms.empty()) {
+      *newTransform *= *(scene->staticTransforms.top());
+    }
+    scene->staticTransforms.push(newTransform);
   }
 }
 
 
 void parseEndXform(FILE * file, Scene * scene) {
-  if (!scene->staticTransforms.empty()) {
-    delete scene->staticTransforms.top();
-    scene->staticTransforms.pop();
+  if (scene->staticTransforms.empty()) {
+    // NOTE(kenji): it might hint a malformed AFF file
+    // We cannot throw exception here since '}' also closes animated
+    // transform, and currently Scene::staticTransforms only handle static transform
+    return;
   }
+
+  delete scene->staticTransforms.top();
+  scene->staticTransforms.pop();
 }
 
 
