@@ -104,20 +104,21 @@ void shade(const Scene * scene, const int level, const C_FLT weight,
         *color += (*itr)->color * hitMat->specular *
                   pow(specDot, hitMat->shine);
       }
-    } else if (transmission && fLessZero(lightDotNormal) &&
-               fLessZero(shadow(scene, rayToLight, distanceToLight))) {
-      // Light source specular transmission
-      C_FLT refrRatio = hitMat->refraction / entryMat->refraction;
-      if (!fEqual(refrRatio, 1.0f)) {
-        Vector3D h_j = (-ray.dir - pointToLight * refrRatio) /
-                       (refrRatio - 1);
-        h_j.normalize();
+    } 
+    // else if (transmission && fLessZero(lightDotNormal) &&
+    //            fLessZero(shadow(scene, rayToLight, distanceToLight))) {
+    //   // Light source specular transmission
+    //   C_FLT refrRatio = hitMat->refraction / entryMat->refraction;
+    //   if (!fEqual(refrRatio, 1.0f)) {
+    //     Vector3D h_j = (-ray.dir - pointToLight * refrRatio) /
+    //                    (refrRatio - 1);
+    //     h_j.normalize();
 
-        // TODO(kent): Define transmission highlight coefficient
-        *color += (*itr)->color * hitMat->transmission *
-                  pow(dotProduct(-normal, h_j), hitMat->shine);
-      }
-    }
+    //     // TODO(kent): Define transmission highlight coefficient
+    //     *color += (*itr)->color * hitMat->transmission *
+    //               pow(dotProduct(-normal, h_j), hitMat->shine);
+    //   }
+    // }
   }
 
   if (level < MAX_LEVEL) {
