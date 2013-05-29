@@ -272,13 +272,35 @@ class Transform {
       delete invTranslation;
     }
 
-    Transform& operator*=(const Transform& that) {
-      *matrix = (*matrix) * (*that.matrix);
-      *inverse = (*that.inverse) * (*inverse);
-
-      // TODO(kenji): derive other matices as well or simply delete them
+    Transform& operator=(const Transform& that) {
+      *matrix = *that.matrix;
+      *scale = *that.scale;
+      *rotation = *that.rotation;
+      *translation = *that.translation;
+      *inverse = *that.inverse;
+      *invScale = *that.invScale;
+      *invRotation = *that.invRotation;
+      *invTranslation = *that.invTranslation;
 
       return *this;
+    }
+
+    Transform operator*(const Transform& that) const {
+      Transform ret;
+
+      ret.matrix = new Matrix4((*matrix) * (*that.matrix));
+      ret.inverse = new Matrix4((*that.inverse) * (*inverse));
+
+      // TODO(kenji): derive other matices as well or simply delete them
+      Matrix4 identity = Matrix4::Identity();
+      ret.scale = new Matrix4(identity);
+      ret.rotation = new Matrix4(identity);
+      ret.translation = new Matrix4(identity);
+      ret.invScale = new Matrix4(identity);
+      ret.invRotation = new Matrix4(identity);
+      ret.invTranslation = new Matrix4(identity);
+
+      return ret;
     }
 
     void transformNormal(const Vector3D &normal, Vector3D * result) const {

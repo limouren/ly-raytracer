@@ -563,7 +563,7 @@ void parseXform(FILE * f, Scene * scene) {
                                  degreesToRadians(degrees),
                                  rotateAxis, translate);
     if (!scene->staticTransforms.empty()) {
-      *newTransform *= *(scene->staticTransforms.top());
+      *newTransform = (*scene->staticTransforms.top()) * (*newTransform);
     }
     scene->staticTransforms.push(newTransform);
   }
